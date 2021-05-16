@@ -1,0 +1,108 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+
+}
+
+.field {
+  display: grid;
+  grid-row-gap: 0.5rem;
+
+  font-weight: var(--medium);
+  color: rgba(var(--text), 0.6);
+}
+
+
+.input {
+  display: grid;
+  grid-column-gap: calc(var(--spacing-unit) * 0.5);
+
+  min-height: 3rem;
+  padding: 0.5rem 1.25rem;
+
+  box-sizing: border-box;
+
+  border: 1px solid rgba(var(--text), 0.16);
+  border-radius: 0.875rem;
+
+  transition-timing-function: linear;
+  transition-duration: 250ms;
+  transition-property: border-color;
+}
+
+.before {
+  grid-template-columns: auto 1fr;
+}
+
+.after {
+  grid-template-columns: 1fr auto;
+}
+
+.beforeAndAfter {
+  grid-template-columns: auto 1fr auto;
+}
+
+.input input{
+  height: 100%;
+  padding: 0;
+
+  font-family: inherit;
+  font-size: 1rem;
+  color: rgba(var(--text), 1);
+
+  box-sizing: border-box;
+
+  border: 0;
+}
+
+.input input::placeholder {
+  color: rgba(var(--text), 0.3);
+  opacity: 1;
+}
+
+.input input::-webkit-search-cancel-button{
+  display: none;
+}
+
+.input input::-webkit-outer-spin-button,
+.input input::-webkit-inner-spin-button,
+.input input::-webkit-clear-button {
+  appearance: none;
+}
+
+.input input:-webkit-autofill {
+  color: inherit;
+
+  background-color: rgba(var(--bg), 1);
+
+  &,
+  &:hover,
+  &:focus,
+  &:active {
+    transition-delay: 9999s, 9999s;
+    transition-property: background-color, color;
+  }
+}
+
+.input:hover,
+.input:focus {
+  border-color: rgba(var(--pink), 1);
+}
+
+.input input:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+.error {
+  position: relative;
+}
+
+.error span {
+  --lighten: 1;
+
+  position: absolute;
+  top: 0.25rem;
+
+  font-size: 0.75rem;
+}

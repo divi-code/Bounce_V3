@@ -1,0 +1,48 @@
+@mixin visuallyHidden {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  border: 0;
+
+  clip: rect(0 0 0 0);
+  clip-path: inset(100%);
+}
+
+@mixin clearList {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+@mixin image {
+  width: 100%;
+  height: auto;
+}
+
+@mixin from($breakpoint) {
+  @media screen and (min-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin until($breakpoint) {
+  @media screen and (max-width: $breakpoint - 1px) {
+    @content;
+  }
+}
+
+@mixin between($breakpoint_from, $breakpoint_to) {
+  @media (min-width: $breakpoint_from) and (max-width: $breakpoint_to - 1px) {
+    @content;
+  }
+}
+

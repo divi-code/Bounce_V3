@@ -1,0 +1,37 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+
+  background-color: rgba(var(--bg), 0.7);
+
+  opacity: 0;
+
+  pointer-events: none;
+  visibility: hidden;
+
+  overflow: hidden;
+
+  transition-timing-function: linear;
+  transition-duration: 250ms;
+  transition-property: opacity;
+}
+
+.animation {
+  opacity: 1;
+
+  transition-timing-function: linear;
+  transition-duration: 500ms;
+  transition-property: opacity;
+}
+
+.visible {
+  pointer-events: var(--events);
+  visibility: visible;
+}

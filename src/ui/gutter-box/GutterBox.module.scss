@@ -1,0 +1,16 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  display: grid;
+  grid-template-columns: var(--grid);
+  grid-column-gap: var(--gap);
+
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--gutters);
+
+  box-sizing: border-box;
+
+  max-width: var(--max-width);
+}

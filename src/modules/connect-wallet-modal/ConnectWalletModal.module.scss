@@ -1,0 +1,79 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  display: grid;
+  grid-row-gap: 2.25rem;
+
+  width: 100%;
+  margin: 0 auto;
+}
+
+.title {
+  margin: 0;
+
+  font-size: 1.5rem;
+  font-weight: var(--medium);
+  text-align: center;
+}
+
+.list {
+  display: grid;
+  grid-row-gap: 1rem;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  justify-items: center;
+}
+
+.button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  min-height: 3rem;
+  min-width: 18.75rem;
+  padding-left: 0.5rem;
+  padding-right: 1.25rem;
+
+  font-family: inherit;
+  color: rgba(var(--text), 1);
+  font-size: 1rem;
+  font-weight: var(--medium);
+
+  border: 1px solid rgba(var(--text), 0.2);
+  border-radius: 3.0625rem;
+
+  background-color: rgba(var(--bg), 1);
+
+  transition-timing-function: linear;
+  transition-property: border-color;
+  transition-duration: 250ms;
+
+  &:hover,
+  &:focus {
+    border-color: rgba(var(--pink), 1);
+  }
+}
+
+.icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  width: 3.5rem;
+  height: 100%;
+}
+
+.arrow {
+  margin-left: auto;
+}
+
+

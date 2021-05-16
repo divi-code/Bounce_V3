@@ -1,0 +1,25 @@
+@use "../helper/style/mixin";
+@use "../helper/style/media";
+
+html {
+  font-family: var(--primary-font);
+  font-size: 16px;
+
+  @include mixin.between(media.$md, media.$xl) {
+    font-size: 14px;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &::-moz-focus-inner {
+    border: 0;
+  }
+}

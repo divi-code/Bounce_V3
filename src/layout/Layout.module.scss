@@ -1,0 +1,31 @@
+@use "../helper/style/mixin";
+@use "../helper/style/media";
+
+.component {
+
+}
+
+
+.header {
+
+}
+
+.main {
+
+}
+
+.mobile {
+  @include mixin.from(media.$md) {
+    display: none;
+  }
+}
+
+.desktop {
+  @include mixin.until(media.$md) {
+    display: none;
+  }
+}
+
+.footer {
+
+}

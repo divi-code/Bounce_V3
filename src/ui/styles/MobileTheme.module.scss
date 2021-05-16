@@ -1,0 +1,35 @@
+
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+@include mixin.until(media.$md) {
+  .dark {
+    --text: 255, 255, 255;
+    --bg: 0, 0, 0;
+    --pink: 255, 27, 130;
+
+    --success: 13, 208, 21;
+    --announce: 59, 153, 252;
+    --error: 153, 153, 153;
+  }
+
+  .light {
+    --text: 255, 255, 255;
+    --bg: 0, 0, 0;
+    --pink: 255, 27, 130;
+
+    --success: 13, 208, 21;
+    --announce: 59, 153, 252;
+    --error: 153, 153, 153;
+  }
+
+  .transparent {
+    --text: 255, 255, 255;
+    --bg: 0, 0, 0;
+    --pink: 255, 27, 130;
+
+    --success: 13, 208, 21;
+    --announce: 59, 153, 252;
+    --error: 153, 153, 153;
+  }
+}

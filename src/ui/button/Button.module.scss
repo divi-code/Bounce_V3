@@ -1,0 +1,172 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  font-family: "Roboto", sans-serif;
+  line-height: var(--line-118);
+  text-decoration: none;
+
+  border: 0;
+
+  background-color: transparent;
+
+  cursor: pointer;
+
+  &:disabled {
+    cursor: initial;
+    pointer-events: none;
+  }
+}
+
+.icon {
+  position: relative;
+}
+
+.icon span {
+  @include mixin.visuallyHidden();
+}
+
+.large {
+  font-size: 1.125rem;
+}
+
+.medium {
+  font-size: 1rem;
+}
+
+.small {
+  font-size: 0.875rem;
+}
+
+.icon-medium svg {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+.iconBefore-medium svg {
+  width: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.iconAfter-medium svg {
+  width: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.text {
+  justify-content: start;
+
+  padding: 0;
+}
+
+.contained {
+  justify-content: center;
+
+  padding: 0.625rem 1.5rem;
+
+  box-sizing: border-box;
+
+  border-radius: 2.625rem;
+}
+
+.contained-medium {
+  min-height: 2.5rem;
+}
+
+.contained-large {
+  min-height: 3.75rem;
+}
+
+.outlined {
+  justify-content: center;
+
+  padding: 0.625rem 1.5rem;
+
+  box-sizing: border-box;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 2.625rem;
+}
+
+.outlined-medium {
+  min-height: 2.5rem;
+}
+
+.outlined-large {
+  min-height: 3.75rem;
+}
+
+.text-grey {
+  color: rgba(var(--text), 0.5);
+
+  transition-timing-function: linear;
+  transition-duration: 250ms;
+  transition-property: color;
+
+  &:hover,
+  &:focus {
+    color: rgba(var(--pink), 1);
+  }
+}
+
+.text-pink {
+  color: rgba(var(--pink), 1);
+
+  transition-timing-function: linear;
+  transition-duration: 250ms;
+  transition-property: color;
+
+  &:hover,
+  &:focus {
+    color: rgba(var(--pink), 0.8);
+  }
+}
+
+.contained-pink {
+  color: rgba(var(--bg), 1);
+
+  background-color: rgba(var(--pink), 1);
+
+  transition-timing-function: linear;
+  transition-duration: 250ms;
+  transition-property: background-color;
+
+  &:hover,
+  &:focus {
+    background-color: rgba(var(--pink), 0.8);
+  }
+
+  &.disabled {
+    opacity: 0.4;
+  }
+}
+
+.contained-grey {
+  color: rgba(var(--text), 0.5);
+
+  background-color: rgba(var(--text), 0.2);
+}
+
+.outlined-pink {
+  color: rgba(var(--pink), 1);
+
+  border-color: rgba(var(--pink), 1);
+
+  background-color: rgba(var(--bg), 1);
+
+  transition-timing-function: linear;
+  transition-duration: 250ms;
+  transition-property: opacity;
+
+  &:hover,
+  &:focus {
+    opacity: 0.8;
+  }
+}
+
+

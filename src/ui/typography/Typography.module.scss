@@ -1,0 +1,10 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.primary {
+  font-family: var(--primary-font);
+}
+
+.secondary {
+  font-family: var(--secondary-font);
+}
