@@ -13,7 +13,6 @@
   color: rgba(var(--text), 0.6);
 }
 
-
 .input {
   display: grid;
   grid-column-gap: calc(var(--spacing-unit) * 0.5);
@@ -43,7 +42,7 @@
   grid-template-columns: auto 1fr auto;
 }
 
-.input input{
+.input input {
   height: 100%;
   padding: 0;
 
@@ -61,7 +60,7 @@
   opacity: 1;
 }
 
-.input input::-webkit-search-cancel-button{
+.input input::-webkit-search-cancel-button {
   display: none;
 }
 

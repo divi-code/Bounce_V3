@@ -2,7 +2,7 @@
 @use "../../helper/style/media";
 
 .component {
-  --removed-body-scroll-bar-size: 0px;
+  --removed-body-scroll-bar-size: 0;
 
   position: fixed;
   z-index: 100;
