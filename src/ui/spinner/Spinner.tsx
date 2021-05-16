@@ -1,9 +1,11 @@
 import classNames from "classnames";
 import React from "react";
-import type { FC } from "react";
+
+import { MaybeWithClassName } from "../../helper/react/types";
 
 import styles from "./Spinner.module.scss";
-import { MaybeWithClassName } from "../../helper/react/types";
+
+import type { FC } from "react";
 
 type SpinnerType = {
 	color?: "default" | "white";

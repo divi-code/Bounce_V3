@@ -1,5 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { useCallback, useEffect, useState } from "react";
+
 import { KNOWN_WALLETS, KNOWN_WALLET_KEY } from "../const/wallets";
 
 const SELECT_WEB3_PROVIDER_KEY = "";
@@ -37,6 +38,7 @@ export const useAutomaticReconnection = () => {
 					SELECT_WEB3_PROVIDER_KEY
 				) as KNOWN_WALLET_KEY | null;
 				console.log("wallet content", chosenProvider);
+
 				if (chosenProvider && KNOWN_WALLETS[chosenProvider]) {
 					console.log("activate", chosenProvider);
 					activate(KNOWN_WALLETS[chosenProvider]());
@@ -52,6 +54,7 @@ export const useAutomaticReconnection = () => {
 		if (active) {
 			setWasActive(true);
 		}
+
 		if (!active && wasActive) {
 			console.log("wallet disconnect");
 			// forgetting saved network

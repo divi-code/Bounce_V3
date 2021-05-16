@@ -1,8 +1,10 @@
 import classNames from "classnames";
-import type { CSSProperties, FC } from "react";
+
+import { MaybeWithClassName } from "../../helper/react/types";
 
 import styles from "./Shadow.module.scss";
-import { MaybeWithClassName } from "../../helper/react/types";
+
+import type { CSSProperties, FC } from "react";
 
 type ShadowType = {
 	animated: boolean;

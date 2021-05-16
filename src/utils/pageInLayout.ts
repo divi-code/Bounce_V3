@@ -17,5 +17,6 @@ export const pageWithLayout = <T extends {}>(
 ): PageWithLayout<T> => {
 	const page: any = pageComponent;
 	page.layout = layout;
+
 	return page;
 };

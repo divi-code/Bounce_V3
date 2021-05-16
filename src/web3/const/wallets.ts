@@ -1,5 +1,6 @@
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+
 import { PROVIDER_POLLING_INTERVAL, RPC_URLS } from "../../const/const";
 
 const metaMaskFactory = () =>

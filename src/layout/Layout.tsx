@@ -1,9 +1,10 @@
-import Head from "next/head";
 import classNames from "classnames";
+import Head from "next/head";
 import { FC, ReactNode } from "react";
 
-import styles from "./Layout.module.scss";
 import { Web3ProviderRoot } from "../web3/provider/Web3Provider";
+
+import styles from "./Layout.module.scss";
 
 type LayoutType = {
 	children?: ReactNode;

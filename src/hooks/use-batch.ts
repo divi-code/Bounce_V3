@@ -14,5 +14,6 @@ export const callBatched = (callback: Callback) => {
 	if (!bulkOperations.length) {
 		setTimeout(executeInBulk, 1);
 	}
+
 	bulkOperations.push(callback);
 };

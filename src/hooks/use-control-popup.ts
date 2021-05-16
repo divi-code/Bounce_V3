@@ -1,5 +1,6 @@
-import { ScatteredContinuousState, useScatteredContinuousState } from "./use-continuous-state";
 import { useCallback, useState } from "react";
+
+import { ScatteredContinuousState, useScatteredContinuousState } from "./use-continuous-state";
 
 export const useControlPopUp = (): {
 	popUp: ScatteredContinuousState<boolean>;

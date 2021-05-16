@@ -12,5 +12,6 @@ export const toDeltaTimer = (delta: number) => {
 	const h = Math.floor((delta / (60 * 60)) % 24);
 	const m = Math.floor((delta / 60) % 60);
 	const s = Math.floor(delta % 60);
+
 	return formatTime(d, h, m, s);
 };

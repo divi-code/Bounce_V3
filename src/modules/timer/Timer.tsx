@@ -7,6 +7,7 @@ export const Timer: FC<{ timer: number; onZero: () => void }> = ({ timer, onZero
 
 	useEffect(() => {
 		const tm = setInterval(() => setTime(getDeltaTime(timer)), 1000);
+
 		return () => clearInterval(tm);
 	}, [timer]);
 

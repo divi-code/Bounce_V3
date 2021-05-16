@@ -93,6 +93,7 @@ export const useScatteredContinuousState = <T>(
 					definePresent();
 				}, props.timeout);
 			}, [definePresent]);
+
 			return null;
 		},
 		[definePresent]

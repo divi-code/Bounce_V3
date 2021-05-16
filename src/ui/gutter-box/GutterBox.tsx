@@ -1,8 +1,10 @@
 import classNames from "classnames";
-import type { FC, CSSProperties } from "react";
+
+import { MaybeWithClassName, WithChildren } from "../../helper/react/types";
 
 import styles from "./GutterBox.module.scss";
-import { MaybeWithClassName, WithChildren } from "../../helper/react/types";
+
+import type { FC, CSSProperties } from "react";
 
 type GutterBoxType = {
 	style?: CSSProperties;

@@ -1,10 +1,14 @@
-import React, { FC } from "react";
 import classNames from "classnames";
-import styles from "./Input.module.scss";
-import { Field } from "react-final-form";
-import { MaybeWithClassName } from "@app/helper/react/types";
-import { TextColor } from "../text-color";
+import React, { FC } from "react";
+
 import { ReactNode } from "react";
+import { Field } from "react-final-form";
+
+import { MaybeWithClassName } from "@app/helper/react/types";
+
+import { TextColor } from "../text-color";
+
+import styles from "./Input.module.scss";
 
 type InputType = {
 	name: string;

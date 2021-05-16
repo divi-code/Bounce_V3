@@ -1,7 +1,8 @@
-import React, { CSSProperties, ComponentType, FC, ReactNode } from "react";
-import { EmptyObject, MaybeWithClassName, WithChildren } from "../../helper/react/types";
-import { default as Link } from "next/dist/client/link";
 import classNames from "classnames";
+import { default as Link } from "next/dist/client/link";
+import React, { CSSProperties, ComponentType, FC, ReactNode } from "react";
+
+import { EmptyObject, MaybeWithClassName, WithChildren } from "../../helper/react/types";
 
 import styles from "./Button.module.scss";
 
