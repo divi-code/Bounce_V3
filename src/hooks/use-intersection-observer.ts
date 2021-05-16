@@ -1,4 +1,5 @@
 import { useEffect, useState, RefObject } from "react";
+
 import { callBatched } from "./use-batch";
 
 const withIntersectionObserver = (cb: (observer: typeof IntersectionObserver) => void) => {
@@ -18,28 +19,33 @@ interface Options {
 }
 
 export const useIntersectionObserver = (callback, nodeRef, options: Options = {}) => {
-	const [node, setNode] = useState(nodeRef?.current);
+	const [node, setNode] = useState<Element>(nodeRef?.current);
+
+	const currentNodeRef = nodeRef?.current;
 
 	useEffect(() => {
-		if (node !== nodeRef?.current) {
-			setNode(nodeRef?.current);
+		if (node !== currentNodeRef) {
+			setNode(currentNodeRef);
 		}
-	}, [nodeRef?.current]);
+	}, [currentNodeRef, node]);
 
 	useEffect(() => {
 		let observer;
 		let canceled = false;
+
 		if (node) {
 			withIntersectionObserver((Observer) => {
 				if (canceled) {
 					return;
 				}
+
 				observer = new Observer(
 					(entries) => {
 						entries.forEach(({ isIntersecting, intersectionRatio, target }) => {
 							if (nodeRef.current === target) {
 								callBatched(() => callback(isIntersecting, { ratio: intersectionRatio }));
 							}
+
 							if (isIntersecting && options.once) {
 								observer.unobserve(node);
 							}
@@ -58,11 +64,22 @@ export const useIntersectionObserver = (callback, nodeRef, options: Options = {}
 
 		return () => {
 			canceled = true;
+
 			if (observer) {
 				observer.disconnect();
 			}
 		};
-	}, [node, options.rootMargin, ...(options.deps || [])]);
+	}, [
+		node,
+		options.rootMargin,
+		callback,
+		options.rootRef,
+		options.threshold,
+		options.once,
+		nodeRef,
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		...(options.deps || []),
+	]);
 };
 
 const percentageThreshold = (n: number) =>

@@ -1,13 +1,17 @@
-import { RC } from "../../helper/react/types";
-import { ScatteredContinuousState } from "../../hooks/use-continuous-state";
-import { PopUpContainer } from "../../ui/pop-up-container";
-import styles from "./ConnectWalletModal.module.scss";
-import React, { useEffect, useState } from "react";
-import { MetaIcon, RightArrow, WalletIcon } from "./icons";
-import { useWalletConnection } from "../../web3/hooks/use-connection";
-import theme from "../../ui/styles/Theme.module.scss";
 import { useWeb3React } from "@web3-react/core";
-import { useControlPopUp } from "../../hooks/use-control-popup";
+
+import React, { useEffect, useState } from "react";
+
+import { RC } from "@app/helper/react/types";
+import { ScatteredContinuousState } from "@app/hooks/use-continuous-state";
+import { useControlPopUp } from "@app/hooks/use-control-popup";
+import { PopUpContainer } from "@app/ui/pop-up-container";
+import { useWalletConnection } from "@app/web3/hooks/use-connection";
+
+import theme from "../../ui/styles/Theme.module.scss";
+
+import styles from "./ConnectWalletModal.module.scss";
+import { MetaIcon, RightArrow, WalletIcon } from "./icons";
 
 const ConnectWalletModalBase: RC<{
 	control: ScatteredContinuousState<boolean>;
@@ -90,6 +94,7 @@ const ConnectWalletModalBase: RC<{
 export const ConnectWalletModal = () => {
 	const { active } = useWeb3React();
 	const { popUp, close, open } = useControlPopUp();
+
 	useEffect(() => {
 		if (active) {
 			close();
