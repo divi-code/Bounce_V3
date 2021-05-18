@@ -1,0 +1,8 @@
+@font-face {
+	font-family: "Graphik";
+	src: local("Graphik Semibold"), local("Graphik-Semibold");
+	src: url("graphik-semibold.woff2") format("woff2");
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}

@@ -19,9 +19,11 @@ class MyDocument extends Document {
 					/>
 					<link rel="preconnect" href="https://fonts.gstatic.com" />
 					<link
-						href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Work+Sans:wght@500;600;700&display=swap"
+						href="https://fonts.googleapis.com/css2?family=Rokkitt&display=swap"
 						rel="stylesheet"
 					/>
+					<link rel="stylesheet" href="/fonts/Helvetica/stylesheet.css" />
+					<link rel="stylesheet" href="/fonts/Graphik/stylesheet.css" />
 				</Head>
 				<body>
 					<Main />

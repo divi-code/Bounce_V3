@@ -1,6 +1,6 @@
 import classNames from "classnames";
 
-import { MaybeWithClassName, WithChildren } from "../../helper/react/types";
+import { MaybeWithClassName, WithChildren } from "@app/helper/react/types";
 
 import colorStyles from "../styles/Color.module.scss";
 import sizeStyles from "../styles/Size.module.scss";
@@ -30,8 +30,8 @@ export const Typography: FC<TypographyType> = ({
 	className,
 	variant,
 	weight = "regular",
-	color = "white",
-	size = 18,
+	color = "primary-black",
+	size = 16,
 	lighten = 100,
 	style,
 	children,
@@ -44,7 +44,7 @@ export const Typography: FC<TypographyType> = ({
 			//
 			styles[variant],
 			//
-			getSizeClassName(size, sizeStyles),
+			getSizeClassName(size as FontSizeType, sizeStyles),
 			//
 			getWeightClassName(weight, weightStyles),
 			//
@@ -66,46 +66,37 @@ type HeadingType = Omit<TypographyType, "size" | "Component" | "weight" | "varia
 
 export const Heading1: FC<HeadingType> = ({ Component = "h1", ...props }) => {
 	return (
-		<Typography Component={Component} size={58} weight="bold" variant="secondary" {...props} />
+		<Typography Component={Component} size={40} weight="semi-bold" variant="secondary" {...props} />
 	);
 };
 
 export const Heading2: FC<HeadingType> = ({ Component = "h2", ...props }) => {
 	return (
-		<Typography Component={Component} size={50} weight="bold" variant="secondary" {...props} />
+		<Typography Component={Component} size={28} weight="semi-bold" variant="secondary" {...props} />
 	);
 };
 
 export const Heading3: FC<HeadingType> = ({ Component = "h3", ...props }) => {
 	return (
-		<Typography Component={Component} size={28} weight="bold" variant="secondary" {...props} />
-	);
-};
-
-export const Heading4: FC<HeadingType & { weight?: WeightType }> = ({
-	Component = "h4",
-	weight = "bold",
-	...props
-}) => {
-	return (
-		<Typography Component={Component} size={22} weight={weight} variant="secondary" {...props} />
+		<Typography Component={Component} size={18} weight="semi-bold" variant="secondary" {...props} />
 	);
 };
 
 type BodyComponentType = Exclude<keyof JSX.IntrinsicElements, "button" | "a">;
 
-type BodyType = Omit<TypographyType, "size" | "Component" | "variant"> & {
+type BodyType = Omit<TypographyType, "size" | "Component" | "variant" | "weight"> & {
 	Component?: BodyComponentType;
+	weight?: Exclude<WeightType, "semi-bold">;
 };
 
-export const Body1: FC<BodyType> = ({ Component = "p", ...props }) => {
-	return <Typography Component={Component} size={18} variant="primary" {...props} />;
+export const Body1: FC<BodyType> = ({ Component = "p", weight = "regular", ...props }) => {
+	return (
+		<Typography Component={Component} size={16} variant="primary" weight={weight} {...props} />
+	);
 };
 
-export const Body2: FC<BodyType> = ({ Component = "p", ...props }) => {
-	return <Typography Component={Component} size={16} variant="primary" {...props} />;
-};
-
-export const Body3: FC<BodyType> = ({ Component = "p", ...props }) => {
-	return <Typography Component={Component} size={14} variant="primary" {...props} />;
+export const Caption: FC<BodyType> = ({ Component = "p", weight = "regular", ...props }) => {
+	return (
+		<Typography Component={Component} size={12} variant="primary" weight={weight} {...props} />
+	);
 };

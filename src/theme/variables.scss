@@ -7,20 +7,21 @@ html {
 
   //sizes
 
-  --headline-1: 1.75rem;
-  --headline-2: 2rem;
-  --headline-3: 1.375rem;
-  --headline-4: 1.375rem;
+  --headline-1: 2.5rem;
+  --headline-2: 1.75rem;
+  --headline-3: 1.125rem;
   --body-1: 1rem;
-  --body-2: 1rem;
-  --body-3: 0.875rem;
-  --line-118: 1.18;
-  --line-140: 1.4;
+  --caption: 0.75rem;
 
   //font
 
-  --primary-font: "Roboto", sans-serif;
-  --secondary-font: "Work Sans", sans-serif;
+  --primary-font: "Helvetica Neue", sans-serif;
+  --secondary-font: "Graphik", sans-serif;
+
+  //colors
+
+  --primary-white: 255, 255, 255;
+  --primary-black: 0, 0, 0;
 
   //grid
 
@@ -42,40 +43,4 @@ html {
   --breakpoint-md: 1024px;
   --breakpoint-lg: 1200px;
   --breakpoint-xl: 1350px;
-
-  //resolutions
-
-  @media (min-width: 414px) {
-    --gutters: 2rem;
-  }
-
-  @media (min-width: 768px) {
-    --grid: repeat(3, 1fr);
-    --gutters: 2rem;
-    --gap: 2rem;
-    --headline-1: 3rem;
-    --headline-2: 2.5rem;
-    --headline-3: 1.75rem;
-    --headline-4: 1.375rem;
-    --body-1: 1.125rem;
-  }
-
-  @media (min-width: 1024px) {
-    --gutters: 5rem;
-    --small-gutters: 1.5rem;
-    --headline-1: 3.625rem;
-    --headline-2: 3.125rem;
-  }
-
-  @media (min-width: 1200px) {
-    --gutters: 7.5rem;
-    --small-gutters: 2rem;
-    --gap: 5rem;
-  }
-
-  @media (min-width: 1350px) {
-    --gutters: 10.5rem;
-    --small-gutters: 2.5rem;
-    --gap: 7rem;
-  }
 }
