@@ -2,28 +2,19 @@
 @use "../../helper/style/media";
 
 .component {
-
-}
-
-.field {
   display: grid;
-  grid-row-gap: 0.5rem;
+  grid-column-gap: calc(var(--spacing-unit) * 1.5);
+  align-items: center;
 
-  font-weight: var(--medium);
-  color: rgba(var(--text), 0.6);
-}
-
-.input {
-  display: grid;
-  grid-column-gap: calc(var(--spacing-unit) * 0.5);
-
-  min-height: 3rem;
-  padding: 0.5rem 1.25rem;
+  min-height: 3.75rem;
+  padding: 1rem 1.25rem;
 
   box-sizing: border-box;
 
-  border: 1px solid rgba(var(--text), 0.16);
+  border: 1px solid rgba(var(--primary-black), 0.1);
   border-radius: 0.875rem;
+
+  background-color: rgba(var(--primary-white), 1);
 
   transition-timing-function: linear;
   transition-duration: 250ms;
@@ -42,38 +33,44 @@
   grid-template-columns: auto 1fr auto;
 }
 
-.input input {
+.component:hover,
+.focus {
+  border-color: rgba(var(--primary-black), 0.4);
+}
+
+.input {
   height: 100%;
   padding: 0;
 
-  font-family: inherit;
-  font-size: 1rem;
-  color: rgba(var(--text), 1);
+  font-family: var(--primary-font);
+  font-size: var(--body-1);
+  font-weight: var(--regular);
+  color: rgba(var(--primary-black), 1);
 
   box-sizing: border-box;
 
   border: 0;
 }
 
-.input input::placeholder {
-  color: rgba(var(--text), 0.3);
+.input::placeholder {
+  color: rgba(var(--primary-black), 0.5);
   opacity: 1;
 }
 
-.input input::-webkit-search-cancel-button {
+.input::-webkit-search-cancel-button {
   display: none;
 }
 
-.input input::-webkit-outer-spin-button,
-.input input::-webkit-inner-spin-button,
-.input input::-webkit-clear-button {
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button,
+.input::-webkit-clear-button {
   appearance: none;
 }
 
-.input input:-webkit-autofill {
+.input:-webkit-autofill {
   color: inherit;
 
-  background-color: rgba(var(--bg), 1);
+  background-color: rgba(var(--primary-white), 1);
 
   &,
   &:hover,
@@ -84,12 +81,7 @@
   }
 }
 
-.input:hover,
-.input:focus {
-  border-color: rgba(var(--pink), 1);
-}
-
-.input input:-moz-ui-invalid {
+.input:-moz-ui-invalid {
   box-shadow: none;
 }
 

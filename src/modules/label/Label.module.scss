@@ -1,0 +1,15 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  display: grid;
+  grid-row-gap: calc(var(--spacing-unit) * 2);
+}
+
+.label {
+  display: grid;
+  grid-auto-flow: column;
+  grid-column-gap: var(--spacing-unit);
+  justify-content: start;
+  align-items: center;
+}

@@ -15,7 +15,7 @@ export const Variant = () => (
 			Create
 		</Button>
 		Outlined
-		<Button size="large" variant="outlined" color="primary-black">
+		<Button size="large" variant="outlined" color="primary-white">
 			Create
 		</Button>
 		Text

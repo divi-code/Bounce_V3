@@ -1,75 +1,80 @@
 import classNames from "classnames";
-import React, { FC } from "react";
-
-import { ReactNode } from "react";
-import { Field } from "react-final-form";
+import React, { FC, ReactNode, useCallback, useState } from "react";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
-
-import { TextColor } from "../text-color";
 
 import styles from "./Input.module.scss";
 
 type InputType = {
 	name: string;
-	label: string | ReactNode;
-	type: "text" | "email";
+	type: string;
 	placeholder?: string;
 	readOnly?: boolean;
-	initialValue?: any;
 	required?: boolean;
-	validate?: (value: string) => any;
 	before?: string | ReactNode;
 	after?: string | ReactNode;
-	value?: any;
+	error?: string;
+	onBlur?(e: React.FocusEvent): void;
+	onFocus?(e: React.FocusEvent): void;
 };
 
 export const Input: FC<InputType & MaybeWithClassName> = ({
 	className,
 	name,
-	label,
 	type,
 	placeholder,
 	readOnly,
-	initialValue,
 	required,
-	validate,
 	before,
 	after,
-	value,
+	error,
+	onBlur,
+	onFocus,
 }) => {
+	const [inputFocused, setInputFocused] = useState(false);
+
+	const onInputFocused = useCallback(
+		(e) => {
+			setInputFocused(true);
+			onFocus && onFocus(e.target.value);
+		},
+		[onFocus]
+	);
+
+	const onInputBlur = useCallback(
+		(e) => {
+			setInputFocused(false);
+			onBlur && onBlur(e.target.value);
+		},
+		[onBlur]
+	);
+
 	return (
-		<Field name={name} initialValue={initialValue} validate={validate} value={value}>
-			{({ input, meta }) => (
-				<div className={classNames(className, styles.component)}>
-					<div className={styles.field}>
-						<label htmlFor={name}>{label}</label>
-						<div
-							className={classNames(
-								styles.input,
-								before && styles.before,
-								after && styles.after,
-								before && after && styles.beforeAndAfter
-							)}
-						>
-							{before}
-							<input
-								{...input}
-								id={name}
-								type={type}
-								placeholder={placeholder}
-								readOnly={readOnly}
-								required={required}
-							/>
-							{after}
-						</div>
-					</div>
-					<div className={styles.error}>
-						{meta.error && meta.touched && <TextColor color="pink">{meta.error}</TextColor>}
-						{meta.submitError && <TextColor color="pink">{meta.submitError}</TextColor>}
-					</div>
-				</div>
-			)}
-		</Field>
+		<>
+			<div
+				className={classNames(
+					className,
+					styles.component,
+					inputFocused && styles.focus,
+					before && styles.before,
+					after && styles.after,
+					before && after && styles.beforeAndAfter
+				)}
+			>
+				{before}
+				<input
+					className={styles.input}
+					name={name}
+					type={type}
+					placeholder={!inputFocused && placeholder}
+					readOnly={readOnly}
+					required={required}
+					onFocus={onInputFocused}
+					onBlur={onInputBlur}
+				/>
+				{after}
+			</div>
+			<div className={styles.error}>{error && <span>{error}</span>}</div>
+		</>
 	);
 };

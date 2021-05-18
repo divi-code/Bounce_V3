@@ -1,0 +1,82 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.component:hover .message {
+  opacity: 1;
+
+  visibility: visible;
+
+  pointer-events: all;
+}
+
+.small svg {
+  width: 1rem;
+  height: auto;
+}
+
+.medium svg {
+  width: 1.375rem;
+  height: auto;
+}
+
+.wrapper {
+  position: relative;
+
+  display: inline-block;
+  width: 100%;
+}
+
+.message {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--spacing-unit) * 1.5);
+
+  display: inline-block;
+
+  padding: var(--spacing-unit) calc(var(--spacing-unit) * 1.5);
+
+  color: rgba(var(--primary-white), 1);
+  font-size: var(--caption);
+  font-weight: var(--regular);
+  line-height: 1.2;
+  white-space: nowrap;
+
+  border-radius: 0.5rem;
+
+  background-color: #3C3C3C;
+
+  transform: translateX(-50%);
+
+  transition-timing-function: linear;
+  transition-duration: 250ms;
+  transition-property: all;
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  pointer-events: none;
+}
+
+.message::before {
+  position: absolute;
+  top: -0.5rem;
+  left: 50%;
+  content: "";
+
+  display: inline-block;
+  width: 0.625rem;
+  height: 0.5rem;
+
+  background-image: url("./assets/icon.svg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  transform: translateX(-50%);
+}
