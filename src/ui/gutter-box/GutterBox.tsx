@@ -1,6 +1,6 @@
 import classNames from "classnames";
 
-import { MaybeWithClassName, WithChildren } from "../../helper/react/types";
+import { MaybeWithClassName, WithChildren } from "@app/helper/react/types";
 
 import styles from "./GutterBox.module.scss";
 

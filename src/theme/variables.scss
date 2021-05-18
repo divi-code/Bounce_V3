@@ -22,13 +22,14 @@ html {
 
   --primary-white: 255, 255, 255;
   --primary-black: 0, 0, 0;
+  --ocean-blue: 38, 99, 255;
 
   //grid
 
   --spacing-unit: 0.5rem;
-  --max-width: 1440px;
-  --small-gutters: 1.5rem;
-  --gutters: 1rem;
+  --max-width: 100rem;
+  --small-gutters: 2.75rem;
+  --gutters: 6rem;
   --grid: 100%;
 
   //header
@@ -43,4 +44,9 @@ html {
   --breakpoint-md: 1024px;
   --breakpoint-lg: 1200px;
   --breakpoint-xl: 1350px;
+
+  @media (min-width: 1350px) {
+    --small-gutters: 2.75rem;
+    --gutters: 6rem;
+  }
 }

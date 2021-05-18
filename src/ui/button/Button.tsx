@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { default as Link } from "next/dist/client/link";
 import React, { CSSProperties, ComponentType, FC, ReactNode } from "react";
 
-import { EmptyObject, MaybeWithClassName, WithChildren } from "../../helper/react/types";
+import { EmptyObject, MaybeWithClassName, WithChildren } from "@app/helper/react/types";
 
 import styles from "./Button.module.scss";
 
@@ -20,8 +20,11 @@ export type ButtonComponentType = {
 	iconBefore?: ReactNode;
 	icon?: ReactNode;
 	variant?: "contained" | "text" | "outlined";
-	color?: "grey" | "pink";
-	size?: "large" | "medium" | "small";
+	color?: "primary-white" | "primary-black" | "ocean-blue" | "dark-grey" | "light-grey";
+	size?: "large" | "medium";
+	weight?: "regular" | "medium";
+	hover?: boolean;
+	active?: boolean;
 };
 
 type ButtonProps<T extends EmptyObject> = ButtonComponentType &
@@ -55,6 +58,9 @@ export const ButtonComponent: FC<ButtonProps<EmptyObject> & MaybeWithClassName &
 	variant,
 	color,
 	size,
+	weight = "medium",
+	hover,
+	active,
 	disabled,
 	onClick,
 	...props
@@ -71,6 +77,9 @@ export const ButtonComponent: FC<ButtonProps<EmptyObject> & MaybeWithClassName &
 			size && icon && styles[`icon-${size}`],
 			size && iconBefore && styles[`iconBefore-${size}`],
 			size && iconAfter && styles[`iconAfter-${size}`],
+			weight && styles[`weight-${weight}`],
+			hover && styles.hover,
+			active && styles.active,
 			disabled && styles.disabled
 		)}
 		onClick={onClick}
