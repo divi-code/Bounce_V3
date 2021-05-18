@@ -72,6 +72,7 @@
     "husky": "4",
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
+    "tsconfig-paths-webpack-plugin": "^3.5.1",
     "typescript": "^4.2.3"
   },
   "husky": {

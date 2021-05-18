@@ -8,12 +8,14 @@ import styles from "./Input.module.scss";
 type InputType = {
 	name: string;
 	type: string;
+	value?: string;
 	placeholder?: string;
 	readOnly?: boolean;
 	required?: boolean;
 	before?: string | ReactNode;
 	after?: string | ReactNode;
 	error?: string;
+	onChange?(e: React.ChangeEvent<HTMLInputElement>): void;
 	onBlur?(e: React.FocusEvent): void;
 	onFocus?(e: React.FocusEvent): void;
 };
@@ -28,6 +30,8 @@ export const Input: FC<InputType & MaybeWithClassName> = ({
 	before,
 	after,
 	error,
+	value,
+	onChange,
 	onBlur,
 	onFocus,
 }) => {
@@ -66,9 +70,11 @@ export const Input: FC<InputType & MaybeWithClassName> = ({
 					className={styles.input}
 					name={name}
 					type={type}
+					value={value}
 					placeholder={!inputFocused && placeholder}
 					readOnly={readOnly}
 					required={required}
+					onChange={onChange}
 					onFocus={onInputFocused}
 					onBlur={onInputBlur}
 				/>

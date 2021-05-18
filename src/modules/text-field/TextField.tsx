@@ -3,7 +3,7 @@ import { Field } from "react-final-form";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
-import { Input } from "../../ui/input";
+import { Input } from "@app/ui/input";
 
 type TextFieldType = {
 	name: string;
@@ -11,11 +11,11 @@ type TextFieldType = {
 	placeholder?: string;
 	readOnly?: boolean;
 	initialValue?: any;
+	value?: any;
 	required?: boolean;
 	validate?: (value: string) => any;
 	before?: string | ReactNode;
 	after?: string | ReactNode;
-	value?: any;
 };
 
 export const TextField: FC<TextFieldType & MaybeWithClassName> = ({
@@ -37,6 +37,8 @@ export const TextField: FC<TextFieldType & MaybeWithClassName> = ({
 					className={className}
 					name={input.name}
 					type={input.type}
+					value={input.value}
+					onChange={input.onChange}
 					onBlur={input.onBlur}
 					onFocus={input.onFocus}
 					placeholder={placeholder}

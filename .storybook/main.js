@@ -1,3 +1,5 @@
+const tsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+
 module.exports = {
   "stories": [
     "../src/**/*.stories.tsx"
@@ -16,5 +18,9 @@ module.exports = {
         }
       }
     },
-  ]
+  ],
+  webpackFinal: async (config) => {
+    config.resolve.plugins = [new tsConfigPathsPlugin()];
+    return config;
+  }
 }

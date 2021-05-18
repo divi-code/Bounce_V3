@@ -2,8 +2,8 @@ import classNames from "classnames";
 
 import { MaybeWithClassName, WithChildren } from "@app/helper/react/types";
 
-import { Tooltip } from "../../ui/tooltip";
-import { Body1 } from "../../ui/typography";
+import { Tooltip } from "@app/ui/tooltip";
+import { Body1 } from "@app/ui/typography";
 
 import styles from "./Label.module.scss";
 

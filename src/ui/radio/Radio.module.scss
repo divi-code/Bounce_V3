@@ -1,0 +1,57 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  align-items: center;
+
+  grid-column-gap: calc(var(--spacing-unit) * 1.5);
+}
+
+.label {
+  position: relative;
+
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  align-items: center;
+
+  min-height: 1.75rem;
+
+  &::before {
+    position: relative;
+    content: '';
+
+    display: block;
+    width: 0.875rem;
+    height: 0.875rem;
+    margin-left: 0.5rem;
+    margin-right: calc(var(--spacing-unit) + 0.5rem);
+
+    border-radius: 50%;
+    border: 0;
+
+    background-color: #ECECEC;
+
+    box-shadow: 0 0 0 0.5rem #ECECEC;
+
+    transition-timing-function: linear;
+    transition-duration: 200ms;
+    transition-property: background-color, box-shadow;
+  }
+
+  &:hover::before,
+  &:focus::before {
+    box-shadow: 0 0 0 calc(0.5rem - 1px) #ECECEC, 0 0 0 0.5rem rgba(var(--primary-black), 1);
+  }
+}
+
+.checked::before {
+  background-color: rgba(var(--primary-black), 1);
+}
+
+.input {
+  @include mixin.visuallyHidden();
+}

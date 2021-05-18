@@ -1,0 +1,43 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  position: relative;
+
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  align-items: center;
+
+  &::before {
+    position: relative;
+    content: '';
+
+    display: block;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-right: var(--spacing-unit);
+
+    border-radius: 0.25rem;
+    border: 1px solid rgba(var(--primary-black), 1);
+
+    background-color: rgba(var(--primary-white), 1);
+
+    background-image: url("./assets/check.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: auto;
+
+    transition-timing-function: linear;
+    transition-duration: 200ms;
+    transition-property: background-color, box-shadow;
+  }
+}
+
+.checked::before {
+  background-color: rgba(var(--primary-black), 1);
+}
+
+.input {
+  @include mixin.visuallyHidden();
+}
