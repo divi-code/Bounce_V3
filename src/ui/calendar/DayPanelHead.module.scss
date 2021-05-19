@@ -1,0 +1,25 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  display: grid;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(7, 1.75rem);
+  grid-gap: calc(var(--spacing-unit) * 0.25);
+  justify-items: start;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  place-content: center;
+
+  width: 100%;
+}

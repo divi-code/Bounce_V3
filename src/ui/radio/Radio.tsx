@@ -31,6 +31,7 @@ export const Radio: FC<RadioType & MaybeWithClassName> = ({
 }) => {
 	return (
 		<div className={classNames(className, styles.component)}>
+			{/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
 			<label className={classNames(styles.label, checked && styles.checked)}>
 				{children}
 				<input

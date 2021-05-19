@@ -34,7 +34,7 @@ export const Placeholder = () => {
 export const InitialValue = () => {
 	return (
 		<div>
-			<Select options={LIST} initialValue="done" name="status" />
+			<Select options={LIST} value="done" name="status" />
 		</div>
 	);
 };
@@ -42,7 +42,7 @@ export const InitialValue = () => {
 export const InitialValueWithPlaceholder = () => {
 	return (
 		<div>
-			<Select options={LIST} placeholder="Choose OTC offer" initialValue="done" name="status" />
+			<Select options={LIST} placeholder="Choose OTC offer" value="done" name="status" />
 		</div>
 	);
 };

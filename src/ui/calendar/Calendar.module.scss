@@ -1,0 +1,17 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  padding: calc(var(--spacing-unit) * 2);
+}
+
+.content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: var(--gap);
+  justify-items: center;
+}
+
+.head {
+  margin-bottom: calc(var(--spacing-unit) * 2.5);
+}

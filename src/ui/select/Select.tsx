@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { ReactNode } from "react";
+import { ReactNode, SVGAttributes } from "react";
 import {
 	useCallback,
 	useState,
@@ -15,6 +15,21 @@ import { uid, useUID } from "react-uid";
 import styles from "./Select.module.scss";
 
 import { useFocusTracker, useOpenControl } from "./hooks";
+
+const Arrow = (props: SVGAttributes<SVGElement>) => {
+	return (
+		<svg
+			width={18}
+			height={11}
+			viewBox="0 0 18 11"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			{...props}
+		>
+			<path d="M17 10L9 2l-8 8" stroke="#000" strokeWidth={2} />
+		</svg>
+	);
+};
 
 interface ItemProps<T> {
 	className?: string;
@@ -205,7 +220,11 @@ export const Select = <P extends any>({
 					required={required}
 				/>
 				<button
-					className={classNames(styles.toggle, on && styles.toggleActive)}
+					className={classNames(
+						styles.toggle,
+						on && styles.focus,
+						active.key === undefined && styles.placeholder
+					)}
 					onClick={toggle}
 					onKeyDown={handleControlKeyDown}
 					ref={controlButtonRef}
@@ -214,12 +233,13 @@ export const Select = <P extends any>({
 					aria-expanded={on}
 				>
 					{active && active.label}
+					<Arrow style={{ transform: !on ? "rotate(180deg)" : "rotate(0)" }} />
 				</button>
 
 				<div className={styles.wrapper}>
 					{/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
 					<div
-						className={classNames(styles.dropdown, on && styles.visibleDropdown)}
+						className={classNames(styles.dropdown, on && styles.visible)}
 						onFocus={onFocus}
 						onBlur={onBlur}
 						onKeyUp={handleDropKeyPress}
@@ -243,7 +263,7 @@ export const Select = <P extends any>({
 										>
 											<Item
 												ref={checked || (!active && index === 0) ? activeRef : undefined}
-												className={classNames(styles.input, checked && styles.inputActive)}
+												className={classNames(styles.input, checked && styles.active)}
 												onChange={handleChange}
 												reference={item}
 												label={item.label}

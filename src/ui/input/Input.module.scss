@@ -6,8 +6,8 @@
   grid-column-gap: calc(var(--spacing-unit) * 1.5);
   align-items: center;
 
-  min-height: 3.75rem;
-  padding: 1rem 1.25rem;
+  min-height: var(--field-height);
+  padding: var(--field-padding);
 
   box-sizing: border-box;
 

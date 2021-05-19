@@ -1,0 +1,137 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  position: relative;
+
+  display: grid;
+}
+
+.toggle {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-column-gap: calc(var(--spacing-unit) * 1.5);
+  align-items: center;
+
+  min-height: var(--field-height);
+  padding: var(--field-padding);
+
+  box-sizing: border-box;
+
+  font-family: var(--primary-font);
+  font-size: var(--body-1);
+  font-weight: var(--regular);
+  color: rgba(var(--primary-black), 1);
+  text-align: left;
+
+  border: 1px solid rgba(var(--primary-black), 0.1);
+  border-radius: 0.875rem;
+
+  background-color: rgba(var(--primary-white), 1);
+
+  transition-timing-function: linear;
+  transition-duration: 250ms;
+  transition-property: border-color;
+
+  cursor: pointer;
+
+  &:hover,
+  &:focus,
+  &.focus {
+    border: 1px solid rgba(var(--primary-black), 0.4);
+  }
+}
+
+.placeholder {
+  color: rgba(var(--primary-black), 0.5);
+}
+
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--spacing-unit) * 0.5);
+  z-index: 1;
+
+  transition-timing-function: linear;
+  transition-duration: 250ms;
+  transition-property: all;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  visibility: hidden;
+}
+
+.visible {
+  opacity: 1;
+
+  pointer-events: all;
+
+  visibility: visible;
+}
+
+.list {
+  display: grid;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
+  box-sizing: border-box;
+
+  border: 1px solid #e6e6e6;
+  border-radius: 1rem;
+
+  background-color: rgba(var(--primary-white), 1);
+
+  list-style: none;
+
+  overflow: hidden;
+}
+
+.item {
+
+}
+
+.input {
+  position: relative;
+}
+
+.input input {
+  @include mixin.visuallyHidden();
+}
+
+.input label {
+  display: inline-block;
+
+  width: 100%;
+  min-height: 2.75rem;
+  padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2.5);
+
+  box-sizing: border-box;
+
+  font-family: var(--primary-font);
+  font-size: var(--body-1);
+  font-weight: var(--regular);
+  color: rgba(var(--primary-black), 1);
+
+  transition-timing-function: linear;
+  transition-duration: 250ms;
+  transition-property: background-color;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ededed;
+  }
+}
+
+.active label {
+  background-color: #ededed;
+}

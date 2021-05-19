@@ -45,3 +45,5 @@ export const MOBILE_HEADER_LINKS = {
 	Docs: "/",
 	Testnet: "/",
 };
+
+export const LANGUAGE = "en-AU";

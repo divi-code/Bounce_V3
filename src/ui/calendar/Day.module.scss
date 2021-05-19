@@ -1,0 +1,36 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  display: grid;
+  place-content: center;
+
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+
+  box-sizing: border-box;
+
+  font-size: var(--body-1);
+  line-height: 1.4;
+  font-family: var(--primary-font);
+  font-weight: var(--medium);
+  color: rgba(var(--primary-black), 1);
+
+  border-radius: 50%;
+  border: 0;
+
+  background-color: transparent;
+
+  cursor: pointer;
+}
+
+.disabled {
+  opacity: 0;
+}
+
+.selected {
+  color: rgba(var(--primary-white), 1);
+
+  background-color: rgba(var(--primary-black), 1);
+}
