@@ -3,14 +3,34 @@ import { Form } from "react-final-form";
 import { CheckboxField } from "@app/modules/checkbox-field";
 import { Label } from "@app/modules/label";
 import { RadioField } from "@app/modules/radio-field";
+import { SelectField } from "@app/modules/select-field";
 import { TextField } from "@app/modules/text-field";
 import { RadioGroup } from "@app/ui/radio-group";
+
+const LIST = [
+	{
+		label: "In progress",
+		key: "progress",
+	},
+	{
+		label: "Re-Open",
+		key: "reOpen",
+	},
+	{
+		label: "Closed",
+		key: "done",
+	},
+];
 
 export const FinalFormIntegration = () => (
 	<div>
 		<Form
 			onSubmit={() => null}
-			initialValues={{ "auction-type": "otc", apply: ["minimal-bid-price"] }}
+			initialValues={{
+				"auction-type": "otc",
+				apply: ["minimal-bid-price"],
+				"auction-status": "done",
+			}}
 		>
 			{(sub) => (
 				<form onSubmit={sub.handleSubmit}>
@@ -21,7 +41,10 @@ export const FinalFormIntegration = () => (
 							placeholder="0x00A9b7ED8C71C6910Fb4A9bc41de2391b74c0000"
 						/>
 					</Label>
-					<Label Component="label" label="Select Creation Type" style={{ marginBottom: 40 }}>
+					<Label Component="div" label="Select status" style={{ marginBottom: 40 }}>
+						<SelectField name="auction-status" placeholder="Status" options={LIST} />
+					</Label>
+					<Label Component="div" label="Select Creation Type" style={{ marginBottom: 40 }}>
 						<RadioGroup count={2}>
 							<RadioField
 								name="auction-type"
