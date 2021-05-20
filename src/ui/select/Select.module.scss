@@ -7,45 +7,6 @@
   display: grid;
 }
 
-.toggle {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-column-gap: calc(var(--spacing-unit) * 1.5);
-  align-items: center;
-
-  min-height: var(--field-height);
-  padding: var(--field-padding);
-
-  box-sizing: border-box;
-
-  font-family: var(--primary-font);
-  font-size: var(--body-1);
-  font-weight: var(--regular);
-  color: rgba(var(--primary-black), 1);
-  text-align: left;
-
-  border: 1px solid rgba(var(--primary-black), 0.1);
-  border-radius: 0.875rem;
-
-  background-color: rgba(var(--primary-white), 1);
-
-  transition-timing-function: linear;
-  transition-duration: 250ms;
-  transition-property: border-color;
-
-  cursor: pointer;
-
-  &:hover,
-  &:focus,
-  &.focus {
-    border: 1px solid rgba(var(--primary-black), 0.4);
-  }
-}
-
-.placeholder {
-  color: rgba(var(--primary-black), 0.5);
-}
-
 .wrapper {
   position: relative;
   width: 100%;

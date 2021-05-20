@@ -1,7 +1,7 @@
 /* eslint-disable */
 import classNames from "classnames";
 
-import React, {FC, useEffect, useRef, useState} from "react";
+import React, {FC, useCallback, useEffect, useRef, useState} from "react";
 import {useCallbackState} from "use-callback-state";
 
 import {MaybeWithClassName} from "@app/helper/react/types";
@@ -18,6 +18,8 @@ import styles from "./DatePicker.module.scss";
 import {useOnClickOutside} from "@app/hooks/use-click-outside";
 import {CSSProperties} from "react";
 import {useResizeObserver} from "@app/hooks/use-resize-observer";
+import {useFocusTracker, useOpenControl} from "@app/hooks/use-field-control";
+import {FieldFrame} from "@app/ui/field-frame";
 
 const isFinite = (a: string) => !isNaN(+a);
 
@@ -116,6 +118,16 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
   const [calendarHeight, setCalendarHeight] = useState(0);
   useResizeObserver(calendarRef, (ref) => setCalendarHeight(ref.clientHeight));
 
+  const [on, open, close, toggle] = useOpenControl();
+  const [focused, onFocus, onBlur] = useFocusTracker();
+
+  //click outside: close
+  const closeByClickAway = useCallback(() => {
+    if (on) {
+      close();
+    }
+  }, [close, on]);
+
   const validateDate = (newValue?: Date) => {
     return !(
       newValue &&
@@ -132,15 +144,6 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 
     return newValue;
   });
-
-  const [focused, setFocused] = useState(0);
-
-  const [displayCalendar, setCalendarDisplay] = useState(true);
-
-  const close = () => setCalendarDisplay(false);
-
-  const onFocus = () => setFocused((f) => f + 1);
-  const onBlur = () => setTimeout(() => setFocused((f) => f - 1), 16);
 
   const maxDays = getMaxDay(value);
   const thisYear = new Date().getFullYear() - YEAR_OFFSET;
@@ -199,71 +202,57 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
     setValue(initialValue);
   }, [+initialValue!]);
 
-  const inputRefs = useRef<HTMLDivElement>(null);
-
-  const targetRef = inputRefs;
-
-  const shouldDisplayCalendar = !!focused && displayCalendar;
-
-  const innerDropdownRef = useRef<HTMLDivElement>(null);
-  useOnClickOutside([innerDropdownRef], close, shouldDisplayCalendar);
+  const topRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside([topRef], closeByClickAway, on);
 
   return (
-    <div className={classNames(className, styles.component)} onFocus={onFocus} onBlur={onBlur} tabIndex={0}>
+    <div className={classNames(className, styles.component)} tabIndex={0} ref={topRef}>
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
-      <div
-        className={classNames(
-          styles.field,
-          focused && styles.focus,
-          value && styles.value
-        )}
-        onClick={() => {
-          setCalendarDisplay(true);
-
-          if (!focused) {
-            setTimeout(() => targetRef.current && targetRef.current.focus(), 1);
-          }
-        }}
+      <input name={name} type="hidden" value={value ? dateToISODate(value) : ""} readOnly={readOnly}
+             required={required}/>
+      <FieldFrame
+        className={styles.toggle}
+        focus={on}
+        placeholder={!value}
+        onClick={toggle}
       >
-				<span>
-					{(focused || value) ? value ? `${to2DigitOrNothing(day)}.${to2DigitOrNothing(month)}.${to2DigitOrNothing(year)}` : "" : placeholder}
-				</span>
-        <input name={name} type="hidden" value={value ? dateToISODate(value) : ""} readOnly={readOnly}
-               required={required}/>
-        <Icon className={styles.icon}/>
-      </div>
+        {value ? `${to2DigitOrNothing(day)}.${to2DigitOrNothing(month)}.${to2DigitOrNothing(year)}` : placeholder}
+        <Icon/>
+      </FieldFrame>
       {/*put calendar first to allow forward-tabbing */}
       <div
         className={styles.wrapper}
-        ref={innerDropdownRef}
         style={{
           "--dropdown-width": dropdownWidth,
-          height: shouldDisplayCalendar ? `${calendarHeight}px` : 0
+          height: on ? `${calendarHeight}px` : 0
         } as CSSProperties}
       >
         <div
           className={classNames(
             styles.dropdown,
-            shouldDisplayCalendar && styles.visible,
+            on && styles.visible,
             dropdownPosition && styles[dropdownPosition]
           )}
-          tabIndex={-1}
+          onFocus={onFocus}
+          onBlur={onBlur}
           ref={setCalendarRef}
         >
-          <Calendar
-            className={styles.calendar}
-            label={label}
-            quickNav={quickNav}
-            disableEmptyDays={false}
-            value={value}
-            minDate={min ? new Date() : undefined}
-            maxDate={max ? new Date(max) : undefined}
-            dayFill={dayFill}
-            onChange={(date) => {
-              setValue(date);
-              close();
-            }}
-          />
+          {on && (
+            <Calendar
+              className={styles.calendar}
+              label={label}
+              quickNav={quickNav}
+              disableEmptyDays={false}
+              value={value}
+              minDate={min ? new Date() : undefined}
+              maxDate={max ? new Date(max) : undefined}
+              dayFill={dayFill}
+              onChange={(date) => {
+                setValue(date);
+                close();
+              }}
+            />
+          )}
         </div>
       </div>
     </div>

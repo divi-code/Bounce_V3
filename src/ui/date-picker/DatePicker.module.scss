@@ -2,41 +2,8 @@
   position: relative;
 }
 
-.field {
-  position: relative;
-
-  display: grid;
-  grid-auto-flow: column;
-  justify-content: space-between;
-  align-items: center;
-
-  box-sizing: border-box;
-
+.toggle {
   width: 100%;
-  height: var(--field-height);
-  padding: var(--field-padding);
-
-  font-family: var(--primary-font);
-  font-weight: var(--regular);
-  font-size: var(--body-1);
-  color: rgba(var(--primary-black), 0.5);
-
-  border: 1px solid rgba(var(--primary-black), 0.1);
-  border-radius: 0.5rem;
-
-  transition-timing-function: linear;
-  transition-duration: 250ms;
-  transition-property: color, border-color;
-
-  cursor: pointer;
-}
-
-.value {
-  color: rgba(var(--primary-black), 1);
-}
-
-.focus {
-  border: 1px solid rgba(var(--primary-black), 0.4);
 }
 
 .wrapper {

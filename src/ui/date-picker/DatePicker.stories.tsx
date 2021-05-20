@@ -52,6 +52,7 @@ export const FloatWidth = () => {
 					onChange={() => null}
 					dropdownWidth={`${blockWidth}px`}
 					dropdownPosition="right"
+					quickNav={["in-5-days", "in-7-days", "in-10-days"]}
 				/>
 			</div>
 		</div>

@@ -8,7 +8,6 @@ import { Label } from "@app/modules/label";
 import { RadioField } from "@app/modules/radio-field";
 import { SelectField } from "@app/modules/select-field";
 import { TextField } from "@app/modules/text-field";
-import { DatePicker } from "@app/ui/date-picker";
 import { RadioGroup } from "@app/ui/radio-group";
 
 const LIST = [
@@ -59,6 +58,7 @@ export const FinalFormIntegration = () => {
 								style={{
 									display: "grid",
 									gridTemplateColumns: "repeat(2, 1fr)",
+									alignItems: "start",
 									gridColumnGap: "20px",
 								}}
 							>

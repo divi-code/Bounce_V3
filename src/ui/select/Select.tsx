@@ -12,10 +12,11 @@ import {
 import { uid, useUID } from "react-uid";
 
 import { useOnClickOutside } from "@app/hooks/use-click-outside";
+import { useFocusTracker, useOpenControl } from "@app/hooks/use-field-control";
+
+import { FieldFrame } from "@app/ui/field-frame";
 
 import styles from "./Select.module.scss";
-
-import { useFocusTracker, useOpenControl } from "./hooks";
 
 const Arrow = (props: SVGAttributes<SVGElement>) => {
 	return (
@@ -222,22 +223,19 @@ export const Select = <P extends any>({
 				readOnly={readOnly}
 				required={required}
 			/>
-			<button
-				className={classNames(
-					styles.toggle,
-					on && styles.focus,
-					active.key === undefined && styles.placeholder
-				)}
+			<FieldFrame
+				focus={on}
+				placeholder={active.key === undefined}
 				onClick={toggle}
 				onKeyDown={handleControlKeyDown}
 				ref={controlButtonRef}
-				aria-owns={listBoxID}
-				aria-haspopup="listbox"
-				aria-expanded={on}
+				ariaOwns={listBoxID}
+				ariaHaspopup="listbox"
+				ariaExpanded={on}
 			>
 				{active && active.label}
 				<Arrow style={{ transform: !on ? "rotate(180deg)" : "rotate(0)" }} />
-			</button>
+			</FieldFrame>
 
 			<div className={styles.wrapper}>
 				{/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
