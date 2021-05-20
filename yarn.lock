@@ -11406,6 +11406,11 @@ react-syntax-highlighter@^13.5.3:
     prismjs "^1.21.0"
     refractor "^3.1.0"
 
+react-teleporter@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-teleporter/-/react-teleporter-2.2.0.tgz#2fb4b9d9ffbe441496a4bd04c5116644021c9b86"
+  integrity sha512-e4GO3izb5ykBS886lspXDMZC9hdUYVoAt+JxnxgzKM01Ru05BL3DkQMi0cx1VVbBiBBux5liGWZ4gmRiyGMKiA==
+
 react-textarea-autosize@^8.3.0:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-8.3.2.tgz#4f9374d357b0a6f6469956726722549124a1b2db"

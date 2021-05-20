@@ -25,6 +25,7 @@ export type ButtonComponentType = {
 	weight?: "regular" | "medium" | "bold";
 	hover?: boolean;
 	active?: boolean;
+	rainbowHover?: boolean;
 };
 
 type ButtonProps<T extends EmptyObject> = ButtonComponentType &
@@ -62,6 +63,7 @@ export const ButtonComponent: FC<ButtonProps<EmptyObject> & MaybeWithClassName &
 	hover,
 	active,
 	disabled,
+	rainbowHover,
 	onClick,
 	...props
 }) => (
@@ -78,6 +80,7 @@ export const ButtonComponent: FC<ButtonProps<EmptyObject> & MaybeWithClassName &
 			size && iconBefore && styles[`iconBefore-${size}`],
 			size && iconAfter && styles[`iconAfter-${size}`],
 			weight && styles[`weight-${weight}`],
+			rainbowHover && styles.rainbow,
 			hover && styles.hover,
 			active && styles.active,
 			disabled && styles.disabled

@@ -3,7 +3,7 @@ import { Field } from "react-final-form";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
-import { SelectToken } from "@app/ui/select-token";
+import { SelectToken } from "./SelectToken";
 
 type SelectTokenFieldType = {
 	className?: string;

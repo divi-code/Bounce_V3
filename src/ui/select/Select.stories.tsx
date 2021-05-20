@@ -46,3 +46,11 @@ export const InitialValueWithPlaceholder = () => {
 		</div>
 	);
 };
+
+export const ReadOnly = () => {
+	return (
+		<div>
+			<Select options={LIST} placeholder="Choose OTC offer" value="done" name="status" readOnly />
+		</div>
+	);
+};

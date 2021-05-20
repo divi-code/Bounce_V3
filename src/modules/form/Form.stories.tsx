@@ -5,10 +5,12 @@ import { useResizeObserver } from "@app/hooks/use-resize-observer";
 import { CheckboxField } from "@app/modules/checkbox-field";
 import { DateField } from "@app/modules/date-field";
 import { Label } from "@app/modules/label";
+import { PoolSearchField } from "@app/modules/pool-search-field";
 import { RadioField } from "@app/modules/radio-field";
 import { SelectField } from "@app/modules/select-field";
 import { SelectTokenField } from "@app/modules/select-token-field";
 import { TextField } from "@app/modules/text-field";
+import { PopupTeleporterTarget } from "@app/ui/pop-up-container";
 import { RadioGroup } from "@app/ui/radio-group";
 
 const LIST = [
@@ -56,6 +58,9 @@ export const FinalFormIntegration = () => {
 						</Label>
 						<Label Component="div" label="Select token" style={{ marginBottom: 40 }}>
 							<SelectTokenField name="token-type" placeholder="Status a token" />
+						</Label>
+						<Label Component="div" label="Pool Information" style={{ marginBottom: 40 }}>
+							<PoolSearchField placeholder="Pool Information (optional)" name="pool" />
 						</Label>
 						<div ref={setBlockRef} style={{ width: 540, marginBottom: 40 }}>
 							<div
@@ -108,6 +113,7 @@ export const FinalFormIntegration = () => {
 					</form>
 				)}
 			</Form>
+			<PopupTeleporterTarget />
 		</div>
 	);
 };

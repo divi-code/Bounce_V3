@@ -5,3 +5,7 @@ export const Default = () => <SelectToken placeholder="From" name="date" onChang
 export const InitialValue = () => (
 	<SelectToken placeholder="From" name="date" value="eth7" onChange={() => null} />
 );
+
+export const ReadOnly = () => (
+	<SelectToken placeholder="From" name="date" value="eth7" onChange={() => null} readOnly />
+);

@@ -2,12 +2,14 @@ import { useCallback, useState } from "react";
 
 import { ScatteredContinuousState, useScatteredContinuousState } from "./use-continuous-state";
 
-export const useControlPopUp = (): {
+export type PopupControlType = {
 	popUp: ScatteredContinuousState<boolean>;
 	open(): void;
 	close(): void;
 	toggle(): void;
-} => {
+};
+
+export const useControlPopUp = (): PopupControlType => {
 	const [popUpVisible, setPopUpVisible] = useState(false);
 	const popUp = useScatteredContinuousState(popUpVisible, {
 		timeout: 350,

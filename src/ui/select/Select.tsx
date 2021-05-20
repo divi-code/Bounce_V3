@@ -213,8 +213,8 @@ export const Select = <P extends any>({
 			<FieldFrame
 				focus={on}
 				placeholder={active.key === undefined}
-				onClick={toggle}
-				onKeyDown={handleControlKeyDown}
+				onClick={!readOnly ? toggle : () => null}
+				onKeyDown={!readOnly ? handleControlKeyDown : () => null}
 				ref={controlButtonRef}
 				ariaOwns={listBoxID}
 				ariaHaspopup="listbox"

@@ -210,7 +210,12 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 				readOnly={readOnly}
 				required={required}
 			/>
-			<FieldFrame className={styles.toggle} focus={on} placeholder={!value} onClick={toggle}>
+			<FieldFrame
+				className={styles.toggle}
+				focus={on}
+				placeholder={!value}
+				onClick={!readOnly ? toggle : () => null}
+			>
 				{value
 					? `${to2DigitOrNothing(day)}.${to2DigitOrNothing(month)}.${to2DigitOrNothing(year)}`
 					: placeholder}

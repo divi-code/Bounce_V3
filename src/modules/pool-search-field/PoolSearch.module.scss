@@ -1,0 +1,40 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  position: relative;
+}
+
+.toggle {
+  width: 100%;
+}
+
+.modal {
+  display: grid;
+
+  margin-top: calc(var(--spacing-unit) * 4.5);
+  padding: 0 calc(var(--spacing-unit) * 5);
+}
+
+.form {
+  display: grid;
+  grid-row-gap: calc(var(--spacing-unit) * 2.5);
+
+  padding-bottom: calc(var(--spacing-unit) * 5);
+}
+
+.checkbox {
+  display: grid;
+}
+
+.search {
+  margin-top: calc(var(--spacing-unit) * 1.5);
+}
+
+.navigation {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: calc(var(--spacing-unit) * 2);
+
+  margin-top: calc(var(--spacing-unit) * 3);
+}

@@ -24,8 +24,54 @@ type SelectTokenType = {
 	placeholder?: string;
 	readOnly?: boolean;
 	required?: boolean;
+	options?: Array<any>;
 	onChange(date: string): void;
 };
+
+const defaultOptions = [
+	{
+		currency: "ETH",
+		key: "eth1",
+		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
+		title: "ETH",
+	},
+	{
+		currency: "ETH2",
+		key: "eth2",
+		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
+		title: "ETH",
+	},
+	{
+		currency: "ETH3",
+		key: "eth3",
+		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
+		title: "ETH",
+	},
+	{
+		currency: "ETH4",
+		key: "eth4",
+		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
+		title: "ETH",
+	},
+	{
+		currency: "ETH5",
+		key: "eth5",
+		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
+		title: "ETH",
+	},
+	{
+		currency: "ETH6",
+		key: "eth6",
+		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
+		title: "ETH",
+	},
+	{
+		currency: "ETH7",
+		key: "eth7",
+		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
+		title: "ETH",
+	},
+];
 
 export const SelectToken: FC<SelectTokenType & MaybeWithClassName> = ({
 	name,
@@ -35,52 +81,8 @@ export const SelectToken: FC<SelectTokenType & MaybeWithClassName> = ({
 	className,
 	readOnly,
 	required,
+	options = defaultOptions,
 }) => {
-	const options = [
-		{
-			currency: "ETH",
-			key: "eth1",
-			img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-			title: "ETH",
-		},
-		{
-			currency: "ETH2",
-			key: "eth2",
-			img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-			title: "ETH",
-		},
-		{
-			currency: "ETH3",
-			key: "eth3",
-			img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-			title: "ETH",
-		},
-		{
-			currency: "ETH4",
-			key: "eth4",
-			img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-			title: "ETH",
-		},
-		{
-			currency: "ETH5",
-			key: "eth5",
-			img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-			title: "ETH",
-		},
-		{
-			currency: "ETH6",
-			key: "eth6",
-			img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-			title: "ETH",
-		},
-		{
-			currency: "ETH7",
-			key: "eth7",
-			img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-			title: "ETH",
-		},
-	];
-
 	const { popUp, close, open } = useControlPopUp();
 
 	const activeRef = useRef<HTMLInputElement>(null);
@@ -118,7 +120,7 @@ export const SelectToken: FC<SelectTokenType & MaybeWithClassName> = ({
 
 	return (
 		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-		<div className={classNames(className, styles.component)} tabIndex={0}>
+		<div className={classNames(className, styles.component)}>
 			{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
 			<input
 				name={name}
@@ -132,7 +134,7 @@ export const SelectToken: FC<SelectTokenType & MaybeWithClassName> = ({
 				className={styles.toggle}
 				focus={popUp.defined}
 				placeholder={active.key === undefined}
-				onClick={open}
+				onClick={!readOnly ? open : () => null}
 			>
 				{active && (
 					<span
@@ -156,6 +158,7 @@ export const SelectToken: FC<SelectTokenType & MaybeWithClassName> = ({
 					onClose={close}
 					maxWidth={640}
 					title="Select a token"
+					scrollable={false}
 				>
 					<div className={styles.modal}>
 						<div>
