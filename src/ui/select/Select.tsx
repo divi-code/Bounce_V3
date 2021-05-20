@@ -9,8 +9,9 @@ import {
 	ChangeEvent,
 	forwardRef,
 } from "react";
-import ClickAwayListener from "react-click-away-listener";
 import { uid, useUID } from "react-uid";
+
+import { useOnClickOutside } from "@app/hooks/use-click-outside";
 
 import styles from "./Select.module.scss";
 
@@ -208,77 +209,73 @@ export const Select = <P extends any>({
 	const groupName = useUID();
 	const listBoxID = useUID();
 
+	const topRef = useRef<HTMLDivElement>(null);
+	useOnClickOutside([topRef], closeByClickAway, on);
+
 	return (
-		<ClickAwayListener onClickAway={closeByClickAway}>
-			<div className={classNames(styles.component, className)}>
-				<input
-					type="hidden"
-					name={name}
-					value={active.key}
-					ref={valueContainerRef}
-					readOnly={readOnly}
-					required={required}
-				/>
-				<button
-					className={classNames(
-						styles.toggle,
-						on && styles.focus,
-						active.key === undefined && styles.placeholder
-					)}
-					onClick={toggle}
-					onKeyDown={handleControlKeyDown}
-					ref={controlButtonRef}
-					aria-owns={listBoxID}
-					aria-haspopup="listbox"
-					aria-expanded={on}
+		<div className={classNames(styles.component, className)} ref={topRef}>
+			<input
+				type="hidden"
+				name={name}
+				value={active.key}
+				ref={valueContainerRef}
+				readOnly={readOnly}
+				required={required}
+			/>
+			<button
+				className={classNames(
+					styles.toggle,
+					on && styles.focus,
+					active.key === undefined && styles.placeholder
+				)}
+				onClick={toggle}
+				onKeyDown={handleControlKeyDown}
+				ref={controlButtonRef}
+				aria-owns={listBoxID}
+				aria-haspopup="listbox"
+				aria-expanded={on}
+			>
+				{active && active.label}
+				<Arrow style={{ transform: !on ? "rotate(180deg)" : "rotate(0)" }} />
+			</button>
+
+			<div className={styles.wrapper}>
+				{/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+				<div
+					className={classNames(styles.dropdown, on && styles.visible)}
+					onFocus={onFocus}
+					onBlur={onBlur}
+					onKeyUp={handleDropKeyPress}
+					// not using onClick handler - it interferes with keyboard
+					onMouseDown={handleDropHold}
+					onTouchStart={handleDropHold}
+					onMouseUp={handleDropClick}
+					onTouchEnd={handleDropClick}
 				>
-					{active && active.label}
-					<Arrow style={{ transform: !on ? "rotate(180deg)" : "rotate(0)" }} />
-				</button>
+					{on && (
+						<ul className={styles.list} id={listBoxID} role="listbox">
+							{options.map((item, index) => {
+								const checked = item === active;
 
-				<div className={styles.wrapper}>
-					{/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-					<div
-						className={classNames(styles.dropdown, on && styles.visible)}
-						onFocus={onFocus}
-						onBlur={onBlur}
-						onKeyUp={handleDropKeyPress}
-						// not using onClick handler - it interferes with keyboard
-						onMouseDown={handleDropHold}
-						onTouchStart={handleDropHold}
-						onMouseUp={handleDropClick}
-						onTouchEnd={handleDropClick}
-					>
-						{on && (
-							<ul className={styles.list} id={listBoxID} role="listbox">
-								{options.map((item, index) => {
-									const checked = item === active;
-
-									return (
-										<li
-											className={styles.item}
-											key={uid(item)}
-											role="option"
-											aria-selected={checked}
-										>
-											<Item
-												ref={checked || (!active && index === 0) ? activeRef : undefined}
-												className={classNames(styles.input, checked && styles.active)}
-												onChange={handleChange}
-												reference={item}
-												label={item.label}
-												id={uid(item)}
-												name={groupName}
-												checked={checked}
-											/>
-										</li>
-									);
-								})}
-							</ul>
-						)}
-					</div>
+								return (
+									<li className={styles.item} key={uid(item)} role="option" aria-selected={checked}>
+										<Item
+											ref={checked || (!active && index === 0) ? activeRef : undefined}
+											className={classNames(styles.input, checked && styles.active)}
+											onChange={handleChange}
+											reference={item}
+											label={item.label}
+											id={uid(item)}
+											name={groupName}
+											checked={checked}
+										/>
+									</li>
+								);
+							})}
+						</ul>
+					)}
 				</div>
 			</div>
-		</ClickAwayListener>
+		</div>
 	);
 };

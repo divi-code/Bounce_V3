@@ -1,320 +1,271 @@
+/* eslint-disable */
 import classNames from "classnames";
 
-import { FC, ReactNode, useCallback, useEffect, useRef, useState } from "react";
-import { ComponentElement } from "react";
-import ClickAwayListener from "react-click-away-listener";
+import React, {FC, useEffect, useRef, useState} from "react";
+import {useCallbackState} from "use-callback-state";
 
-import { MaybeWithClassName } from "@app/helper/react/types";
+import {MaybeWithClassName} from "@app/helper/react/types";
 
 import {
-	dateToISODate,
-	endOfTheDay,
-	getDateOrder,
-	to2DigitOrNothing,
+  dateToISODate,
+  endOfTheDay,
+  to2DigitOrNothing,
 } from "@app/ui/utils/dateFormatter";
 
-import { Calendar } from "../calendar";
+import {Calendar, QuickNavType} from "../calendar";
 
 import styles from "./DatePicker.module.scss";
-
-type Dispatch<A> = (value: A, force?: boolean) => void;
-
-export function useCallbackState<S>(
-	initialState: S | (() => S),
-	changeCallback: (s: S, old: S) => S | undefined | void
-): [S, Dispatch<S>] {
-	const [state, setState] = useState(initialState);
-	const callbackRef = useRef(changeCallback);
-	callbackRef.current = changeCallback;
-
-	const updateState = useCallback((newState, forceUpdate?: boolean) => {
-		if (forceUpdate) {
-			setState(newState);
-		} else {
-			setState((oldState) => callbackRef.current(newState, oldState) || newState);
-		}
-	}, []);
-
-	return [state, updateState];
-}
+import {useOnClickOutside} from "@app/hooks/use-click-outside";
+import {CSSProperties} from "react";
+import {useResizeObserver} from "@app/hooks/use-resize-observer";
 
 const isFinite = (a: string) => !isNaN(+a);
 
 const getMaxDay = (date?: Date) =>
-	date ? new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate() : 31;
+  date ? new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate() : 31;
 
 const Icon = (props) => (
-	<svg viewBox="0 0 20 20" fill="none" {...props}>
-		<path d="M18.862 3.281a1.372 1.372 0 00-1.005-.424H16.43V1.786a1.72 1.72 0 00-.525-1.261A1.72 1.72 0 0014.643 0h-.714a1.72 1.72 0 00-1.261.525c-.35.35-.525.77-.525 1.26v1.072H7.857V1.786A1.72 1.72 0 007.333.525 1.72 1.72 0 006.072 0h-.715a1.72 1.72 0 00-1.26.525c-.35.35-.526.77-.526 1.26v1.072H2.143c-.387 0-.722.142-1.005.424a1.373 1.373 0 00-.424 1.005v14.286c0 .386.142.721.424 1.004.283.283.618.424 1.005.424h15.714c.387 0 .722-.141 1.004-.424.283-.283.424-.618.424-1.004V4.286c0-.387-.14-.722-.423-1.005zm-5.29-1.495c0-.104.033-.19.1-.257a.348.348 0 01.256-.1h.715c.104 0 .19.033.256.1.067.067.1.153.1.257V5c0 .104-.033.19-.1.257a.349.349 0 01-.256.1h-.715a.348.348 0 01-.256-.1.348.348 0 01-.1-.257V1.786zM5 1.786c0-.104.034-.19.1-.257a.348.348 0 01.257-.1h.715c.104 0 .19.033.256.1.067.067.1.153.1.257V5c0 .104-.033.19-.1.257a.348.348 0 01-.256.1h-.715a.347.347 0 01-.256-.1A.348.348 0 015 5V1.786zM17.857 18.57H2.143V7.143h15.714V18.57z" />
-	</svg>
+  <svg
+    width={20}
+    height={20}
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M17.367 2.753h-2.705V1.232a.701.701 0 00-1.401 0v1.521H6.739V1.232a.701.701 0 00-1.4 0v1.521H2.632A2.639 2.639 0 000 5.386v11.45a2.639 2.639 0 002.633 2.632h14.734A2.639 2.639 0 0020 16.836V5.386a2.64 2.64 0 00-2.633-2.633zM2.633 4.154h2.705v.484a.701.701 0 001.401 0v-.484h6.498v.484a.701.701 0 001.4 0v-.484h2.706c.676 0 1.232.556 1.232 1.232V7.73H1.4V5.386c0-.676.556-1.232 1.232-1.232zm14.734 13.913H2.633A1.237 1.237 0 011.4 16.836V9.154h17.198v7.682c0 .676-.555 1.232-1.232 1.232z"
+      fill="#000"
+    />
+  </svg>
 );
 
-interface Props {
-	initialValue?: Date;
-	min?: string;
-	max?: string;
-	name: string;
-	calenderLabel: string;
-	label: ReactNode;
-	dayFill?: Record<number, number | boolean>;
-	scattered?: boolean;
-	noIntervalValidate?: boolean;
+export type DropdownPositionType = "left" | "right";
 
-	onValueChange(date: Date): void;
+type DatePickerType = {
+  initialValue?: Date;
+  min?: string;
+  max?: string;
+  name: string;
+  placeholder?: string;
+  dayFill?: Record<number, number | boolean>;
+  noIntervalValidate?: boolean;
+  label: string;
+  dropdownWidth?: string;
+  quickNav?: Array<QuickNavType>;
+  dropdownPosition?: DropdownPositionType;
+  onChange(date: Date): void;
+  readOnly?: boolean;
+  required?: boolean;
 }
 
 const testMinMax = (value: string, min?: number, max?: number) =>
-	!value || !+value || ((!min || +value >= min) && (!max || +value <= max));
+  !value || !+value || ((!min || +value >= min) && (!max || +value <= max));
 
-export const DatePicker: FC<Props & MaybeWithClassName> = ({
-	initialValue,
-	min,
-	max,
-	dayFill,
-	onValueChange,
-	label,
-	noIntervalValidate,
-	className,
-	calenderLabel,
-}) => {
-	const validateDate = (newValue?: Date) => {
-		return !(
-			newValue &&
-			(isNaN(newValue.getTime()) ||
-				(!noIntervalValidate &&
-					((min && newValue < new Date(min)) || (max && newValue > endOfTheDay(new Date(max))))))
-		);
-	};
+const YEAR_OFFSET = 2000;
+const MONTH_OFFSET = -1;
 
-	const [value, setValue] = useCallbackState(initialValue, (newValue, oldValue) => {
-		if (!validateDate(newValue)) {
-			return oldValue;
-		}
+const useDateState = (
+  value: string,
+  min: number,
+  max: number,
+  dateParts: [string, string, string],
+  factorParts: [number, number, number],
+  set: (n: Date) => boolean
+) =>
+  useCallbackState(value, (newValue, oldValue) => {
+    if (testMinMax(newValue, min, max)) {
+      if (newValue && isFinite(newValue) && dateParts.every(Boolean)) {
+        const numeric = +newValue;
+        const newDate = new Date(
+          +dateParts[0] + factorParts[0] * numeric + YEAR_OFFSET,
+          +dateParts[1] + factorParts[1] * numeric + MONTH_OFFSET,
+          +dateParts[2] + factorParts[2] * numeric
+        );
 
-		return newValue;
-	});
+        if (!set(newDate)) {
+          return oldValue;
+        }
 
-	const [focused, setFocused] = useState(0);
-	const [displayCalendar, setCalendarDisplay] = useState(true);
+        return newValue ? String(+newValue) : newValue;
+      }
 
-	const close = () => setCalendarDisplay(false);
+      return oldValue;
+    }
+  });
 
-	const onFocus = () => setFocused((f) => f + 1);
-	const onBlur = () => setTimeout(() => setFocused((f) => f - 1), 16);
+export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
+                                                                      name,
+                                                                      initialValue,
+                                                                      min,
+                                                                      max,
+                                                                      dayFill,
+                                                                      onChange,
+                                                                      placeholder,
+                                                                      noIntervalValidate,
+                                                                      className,
+                                                                      label,
+                                                                      dropdownWidth = "100%",
+                                                                      dropdownPosition = "left",
+                                                                      quickNav,
+                                                                      readOnly,
+                                                                      required
+                                                                    }) => {
+  const [calendarRef, setCalendarRef] = useState<HTMLElement | null>(null);
 
-	const YEAR_OFFSET = 2000;
-	const MONTH_OFFSET = -1;
-	const minYear = min ? new Date(min).getFullYear() - YEAR_OFFSET : undefined;
-	const maxYear = max ? new Date(max).getFullYear() - YEAR_OFFSET : undefined;
-	const maxDays = getMaxDay(value);
-	const thisYear = new Date().getFullYear() - YEAR_OFFSET;
+  const [calendarHeight, setCalendarHeight] = useState(0);
+  useResizeObserver(calendarRef, (ref) => setCalendarHeight(ref.clientHeight));
 
-	const [year, setYear] = useCallbackState(
-		value ? String(value.getFullYear() - YEAR_OFFSET) : "",
-		(newValue, oldValue) => {
-			if (testMinMax(newValue, 0, thisYear)) {
-				if (newValue && isFinite(newValue) && month && day) {
-					const newDate = new Date(+newValue + YEAR_OFFSET, +month + MONTH_OFFSET, +day);
+  const validateDate = (newValue?: Date) => {
+    return !(
+      newValue &&
+      (isNaN(newValue.getTime()) ||
+        (!noIntervalValidate &&
+          ((min && newValue < new Date(min)) || (max && newValue > endOfTheDay(new Date(max))))))
+    );
+  };
 
-					if (validateDate(newDate)) {
-						setValue(newDate);
-					} else {
-						return oldValue;
-					}
-				}
+  const [value, setValue] = useCallbackState(initialValue, (newValue, oldValue) => {
+    if (!validateDate(newValue)) {
+      return oldValue;
+    }
 
-				return newValue ? String(+newValue) : newValue;
-			}
+    return newValue;
+  });
 
-			return oldValue;
-		}
-	);
-	const [month, setMonth] = useCallbackState(
-		value ? String(value.getMonth() - MONTH_OFFSET) : "",
-		(newValue, oldValue) => {
-			if (testMinMax(newValue, 1, 12)) {
-				if (newValue && isFinite(newValue) && year && day) {
-					const newDate = new Date(+year + YEAR_OFFSET, +newValue + MONTH_OFFSET, +day);
+  const [focused, setFocused] = useState(0);
 
-					if (validateDate(newDate)) {
-						setValue(newDate);
-					} else {
-						return oldValue;
-					}
-				}
+  const [displayCalendar, setCalendarDisplay] = useState(true);
 
-				return newValue ? String(+newValue) : newValue;
-			}
+  const close = () => setCalendarDisplay(false);
 
-			return oldValue;
-		}
-	);
-	const [day, setDay] = useCallbackState(
-		value ? String(value.getDate()) : "",
-		(newValue, oldValue) => {
-			if (testMinMax(newValue, 1, maxDays)) {
-				if (newValue && isFinite(newValue) && year && month) {
-					const newDate = new Date(+year + YEAR_OFFSET, +month + MONTH_OFFSET, +newValue);
+  const onFocus = () => setFocused((f) => f + 1);
+  const onBlur = () => setTimeout(() => setFocused((f) => f - 1), 16);
 
-					if (validateDate(newDate)) {
-						setValue(newDate);
-					} else {
-						return oldValue;
-					}
-				}
+  const maxDays = getMaxDay(value);
+  const thisYear = new Date().getFullYear() - YEAR_OFFSET;
 
-				return newValue ? String(+newValue) : newValue;
-			}
+  const validateAndSetDate = (newDate: Date) => {
+    if (validateDate(newDate)) {
+      setValue(newDate);
 
-			return oldValue;
-		}
-	);
+      return true;
+    } else {
+      return false;
+    }
+  };
 
-	useEffect(() => {
-		if (value) {
-			onValueChange(value);
-			setDay(String(value.getDate()), true);
-			setMonth(String(value.getMonth() - MONTH_OFFSET), true);
-			setYear(String(value.getFullYear() - YEAR_OFFSET), true);
-		}
-	}, [+value!]);
+  const [year, setYear] = useDateState(
+    value ? String(value.getFullYear() - YEAR_OFFSET) : "",
+    0,
+    thisYear,
+    ["", month, day],
+    [1, 0, 0],
+    validateAndSetDate
+  );
+  var [month, setMonth] = useDateState(
+    value ? String(value.getMonth() - MONTH_OFFSET) : "",
+    1,
+    12,
+    [year, "", day],
+    [0, 1, 0],
+    validateAndSetDate
+  );
+  var [day, setDay] = useDateState(
+    value ? String(value.getDate()) : "",
+    1,
+    maxDays,
+    [year, month, ""],
+    [0, 1, 0],
+    validateAndSetDate
+  );
 
-	useEffect(() => {
-		if (!value && year && month && day) {
-			setValue(new Date(+year + YEAR_OFFSET, +month + MONTH_OFFSET, +day));
-		}
-	}, [+value!, year, month, day]);
+  useEffect(() => {
+    if (value) {
+      onChange(value);
+      setDay(String(value.getDate()), true);
+      setMonth(String(value.getMonth() - MONTH_OFFSET), true);
+      setYear(String(value.getFullYear() - YEAR_OFFSET), true);
+    }
+  }, [+value!]);
 
-	useEffect(() => {
-		setValue(initialValue);
-	}, [+initialValue!]);
+  useEffect(() => {
+    if (!value && year && month && day) {
+      setValue(new Date(+year + YEAR_OFFSET, +month + MONTH_OFFSET, +day));
+    }
+  }, [+value!, year, month, day]);
 
-	const dateOrder = getDateOrder();
+  useEffect(() => {
+    setValue(initialValue);
+  }, [+initialValue!]);
 
-	const inputRefs = useRef<HTMLSpanElement>(null);
-	const firstInputRef = useRef<HTMLInputElement>(null);
-	const calendarRef = useRef<HTMLDivElement>(null);
+  const inputRefs = useRef<HTMLDivElement>(null);
 
-	const targetRef = firstInputRef;
+  const targetRef = inputRefs;
 
-	const shouldDisplayCalendar = !!focused && displayCalendar;
+  const shouldDisplayCalendar = !!focused && displayCalendar;
 
-	const processInputs = (inputs: Array<ComponentElement<any, any>>) => {
-		const sorted = inputs.sort((a, b) => dateOrder[a.key as any] - dateOrder[b.key as any]);
+  const innerDropdownRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside([innerDropdownRef], close, shouldDisplayCalendar);
 
-		sorted[0] = {
-			...sorted[0],
-			ref: firstInputRef,
-		};
+  return (
+    <div className={classNames(className, styles.component)} onFocus={onFocus} onBlur={onBlur} tabIndex={0}>
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
+      <div
+        className={classNames(
+          styles.field,
+          focused && styles.focus,
+          value && styles.value
+        )}
+        onClick={() => {
+          setCalendarDisplay(true);
 
-		return [
-			sorted[0],
-			<span className={styles.field__dot} key="dot1">
-				{to2DigitOrNothing(day) && "."}
-			</span>,
-			sorted[1],
-			<span className={styles.field__dot} key="dot2">
-				{to2DigitOrNothing(month) && "."}
-			</span>,
-			sorted[2],
-		];
-	};
-
-	return (
-		<div className={classNames(className, styles.field)} onFocus={onFocus} onBlur={onBlur}>
-			{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
-			<div
-				className={classNames(
-					styles.field__field,
-					shouldDisplayCalendar && styles["field__field--focused"]
-				)}
-				onClick={() => {
-					setCalendarDisplay(true);
-
-					if (!focused) {
-						setTimeout(() => targetRef.current && targetRef.current.focus(), 4);
-					}
-				}}
-			>
-				<label
-					className={classNames(
-						styles.field__label,
-						(focused || value) && styles["field__label--focused"]
-					)}
-				>
-					{label}
-				</label>
-				<span
-					className={classNames(
-						styles["field__input-wrapper"],
-						(focused || value) && styles["field__input-wrapper--focused"]
-					)}
-					ref={inputRefs}
-				>
-					{processInputs([
-						<input
-							className={styles.field__input}
-							key="day"
-							min={1}
-							max={maxDays}
-							type="number"
-							value={to2DigitOrNothing(day)}
-							onChange={(e) => setDay(e.target.value)}
-						/>,
-						<input
-							className={styles.field__input}
-							key="month"
-							min={1}
-							max={12}
-							type="number"
-							value={to2DigitOrNothing(month)}
-							onChange={(e) => setMonth(e.target.value)}
-						/>,
-						<input
-							className={styles.field__input}
-							key="year"
-							min={minYear}
-							max={maxYear}
-							type="number"
-							value={to2DigitOrNothing(year)}
-							onChange={(e) => setYear(e.target.value)}
-						/>,
-					])}
-					<input name={name} type="hidden" value={value ? dateToISODate(value) : ""} />
+          if (!focused) {
+            setTimeout(() => targetRef.current && targetRef.current.focus(), 1);
+          }
+        }}
+      >
+				<span>
+					{(focused || value) ? value ? `${to2DigitOrNothing(day)}.${to2DigitOrNothing(month)}.${to2DigitOrNothing(year)}` : "" : placeholder}
 				</span>
-				<Icon className={styles.field__icon} />
-			</div>
-			{/*put calendar first to allow forward-tabbing */}
-			<ClickAwayListener onClickAway={close}>
-				<div className={styles["field__dropdown-wrapper"]}>
-					<div
-						className={classNames(
-							styles.field__dropdown,
-							shouldDisplayCalendar && styles["field__dropdown--visible"]
-						)}
-						tabIndex={-1}
-						ref={calendarRef}
-					>
-						<Calendar
-							label={calenderLabel}
-							disableEmptyDays={false}
-							className={styles.field__calendar}
-							value={value}
-							minDate={min ? new Date(min) : undefined}
-							maxDate={max ? new Date(max) : undefined}
-							dayFill={dayFill}
-							onChange={(date) => {
-								setValue(date);
-								close();
-
-								if (targetRef === firstInputRef) {
-									firstInputRef.current && firstInputRef.current.focus();
-								}
-							}}
-						/>
-					</div>
-				</div>
-			</ClickAwayListener>
-		</div>
-	);
+        <input name={name} type="hidden" value={value ? dateToISODate(value) : ""} readOnly={readOnly}
+               required={required}/>
+        <Icon className={styles.icon}/>
+      </div>
+      {/*put calendar first to allow forward-tabbing */}
+      <div
+        className={styles.wrapper}
+        ref={innerDropdownRef}
+        style={{
+          "--dropdown-width": dropdownWidth,
+          height: shouldDisplayCalendar ? `${calendarHeight}px` : 0
+        } as CSSProperties}
+      >
+        <div
+          className={classNames(
+            styles.dropdown,
+            shouldDisplayCalendar && styles.visible,
+            dropdownPosition && styles[dropdownPosition]
+          )}
+          tabIndex={-1}
+          ref={setCalendarRef}
+        >
+          <Calendar
+            className={styles.calendar}
+            label={label}
+            quickNav={quickNav}
+            disableEmptyDays={false}
+            value={value}
+            minDate={min ? new Date() : undefined}
+            maxDate={max ? new Date(max) : undefined}
+            dayFill={dayFill}
+            onChange={(date) => {
+              setValue(date);
+              close();
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
 };

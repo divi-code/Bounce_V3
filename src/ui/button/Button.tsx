@@ -22,7 +22,7 @@ export type ButtonComponentType = {
 	variant?: "contained" | "text" | "outlined";
 	color?: "primary-white" | "primary-black" | "ocean-blue" | "dark-grey" | "light-grey";
 	size?: "large" | "medium";
-	weight?: "regular" | "medium";
+	weight?: "regular" | "medium" | "bold";
 	hover?: boolean;
 	active?: boolean;
 };

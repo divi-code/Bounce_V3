@@ -5,6 +5,9 @@ export const fillYears = (from: number, to: number) =>
 		.fill(1)
 		.map((x, index) => from + index);
 
+export const stripHours = (date: Date): Date =>
+	new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
 export const generateDays = (month: number, year: number): CalendarDay[] => {
 	const start = new Date(year, month, 1);
 	const end = new Date(year, month + 1, 0);

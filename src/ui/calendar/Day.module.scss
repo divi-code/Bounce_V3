@@ -2,11 +2,13 @@
 @use "../../helper/style/media";
 
 .component {
+  position: relative;
+
   display: grid;
   place-content: center;
 
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 2rem;
+  height: 2rem;
   padding: 0;
 
   box-sizing: border-box;
@@ -23,14 +25,83 @@
   background-color: transparent;
 
   cursor: pointer;
+
+  &::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: "";
+
+    display: block;
+
+    border-radius: 50%;
+
+    transition-timing-function: linear;
+    transition-duration: 250ms;
+    transition-property: box-shadow;
+  }
+
+  &:hover::before,
+  &:focus::before {
+    box-shadow: inset 0 0 0 1px rgba(var(--primary-black), 1);
+  }
+}
+
+.component span {
+  position: relative;
 }
 
 .disabled {
   opacity: 0;
+
+  cursor: initial;
+
+  &:hover::before,
+  &:focus::before {
+    box-shadow: none;
+  }
+}
+
+.intervalStart,
+.intervalEnd {
+  color: rgba(var(--primary-black), 1);
+
+  background-color: #ececec;
+}
+
+.intervalStart {
+  border-radius: 50% 0 0 50%;
+}
+
+.intervalBetween {
+  color: rgba(var(--primary-black), 1);
+
+  border-radius: 0;
+
+  background-color: #ececec;
+}
+
+.intervalEnd {
+  border-radius: 0 50% 50% 0;
+}
+
+.outOfInterval {
+  color: rgba(var(--primary-black), 0.4);
+
+  cursor: initial;
+
+  &:hover::before,
+  &:focus::before {
+    box-shadow: none;
+  }
 }
 
 .selected {
   color: rgba(var(--primary-white), 1);
+}
 
+.selected::before {
   background-color: rgba(var(--primary-black), 1);
 }

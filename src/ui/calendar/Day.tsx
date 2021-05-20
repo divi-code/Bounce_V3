@@ -18,9 +18,21 @@ type DayType = {
 	to?: Date;
 };
 
+const dateIsOutside = (date: Date, from: Date | undefined, to: Date | undefined): boolean => {
+	if (from && +date < +from - 1) {
+		return true;
+	}
+
+	if (to && +date < +to + 1) {
+		return true;
+	}
+
+	return false;
+};
+
 export const Day: FC<DayType & MaybeWithClassName> = ({
 	day,
-	selection,
+	selection = {},
 	selected,
 	empty,
 	disableEmptyDay,
@@ -30,25 +42,24 @@ export const Day: FC<DayType & MaybeWithClassName> = ({
 	className,
 }) => (
 	<button
-		className={classNames(
-			className,
-			styles.component,
+		className={classNames(className, styles.component, {
+			[styles.disabled]: day.disabled,
+			[styles.nonEmpty]: !empty,
 
-			day.disabled && styles.disabled,
-			!empty && styles.nonEmpty,
+			[styles.selected]: selected,
 
-			selected && styles.selected,
+			[styles.intervalDisabled]: disableEmptyDay && dateIsOutside(day.date, from, to),
 
-			disableEmptyDay &&
-				((from && day.date < from) || (to && day.date > to)) &&
-				styles.intervalDisabled,
+			[styles.outOfInterval]: dateIsOutside(day.date, from, to),
 
-			((from && day.date < from) || (to && day.date > to)) && styles.outOfInterval
-		)}
-		disabled={day.disabled || (empty && disableEmptyDay)}
+			[styles.intervalStart]: +day.date === +selection.start!,
+			[styles.intervalBetween]: day.date > selection.start! && day.date < selection.end!,
+			[styles.intervalEnd]: +day.date === +selection.end!,
+		})}
+		disabled={day.disabled || (empty && disableEmptyDay) || dateIsOutside(day.date, from, to)}
 		type="button"
 		onClick={() => onClick(day.date)}
 	>
-		{day.day}
+		<span>{day.day}</span>
 	</button>
 );

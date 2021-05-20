@@ -3,6 +3,10 @@ import { FC, SVGAttributes, useCallback, useEffect, useRef, useState } from "rea
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
+import { Button } from "@app/ui/button";
+
+import { Body1 } from "@app/ui/typography";
+
 import styles from "./Calendar.module.scss";
 import { DayPanelHead } from "./DayPanelHead";
 
@@ -13,7 +17,13 @@ import { getYMD } from "./utils";
 
 const minDateOfTwo = (d1: Date, d2: Date) => (d1 < d2 ? d1 : d2);
 
-type QuickNavType = "today" | "tomorrow" | "in-2-days" | "in-5-days" | "in-7-days" | "in-10-days";
+export type QuickNavType =
+	| "today"
+	| "tomorrow"
+	| "in-2-days"
+	| "in-5-days"
+	| "in-7-days"
+	| "in-10-days";
 
 interface Props {
 	quickNav?: Array<QuickNavType>;
@@ -30,12 +40,15 @@ interface Props {
 }
 
 const Switch = (props: SVGAttributes<SVGElement>) => (
-	<svg viewBox="0 0 7 12" fill="currentColor" {...props}>
-		<path
-			fillRule="evenodd"
-			clipRule="evenodd"
-			d="M7 10.59L2.673 6 7 1.41 5.668 0 0 6l5.668 6L7 10.59z"
-		/>
+	<svg
+		width={9}
+		height={14}
+		viewBox="0 0 9 14"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}
+	>
+		<path d="M8 1L2 7l6 6" stroke="currentColor" strokeWidth={2} />
 	</svg>
 );
 
@@ -115,9 +128,21 @@ export const Calendar: FC<Props & MaybeWithClassName> = ({
 		}
 	};
 
+	const [secondMonth, setSecondMonth] = useState(month + 1);
+	const [secondYear, setSecondYear] = useState(year);
+
+	useEffect(() => {
+		if (month < 11) {
+			setSecondMonth(month + 1);
+		} else {
+			setSecondMonth(0);
+			setSecondYear(year + 1);
+		}
+	}, [month, year]);
+
 	return (
 		<div className={classNames(className, styles.component)} style={{ ...style, "--gap": gap }}>
-			<div className={styles.navigation}>
+			<Body1 className={styles.header} Component="div">
 				{label}
 				{quickNav && quickNav.includes("today") && (
 					<button className={styles.control} onClick={setToday}>
@@ -149,26 +174,50 @@ export const Calendar: FC<Props & MaybeWithClassName> = ({
 						In 10 days
 					</button>
 				)}
-			</div>
-			<div className={styles.control}>
-				<button className={styles.switch} onClick={moveLeft}>
-					<span>Prev</span>
-					<Switch />
-				</button>
-				<button className={styles.toggle} onClick={toggleMonthPicker}>
+			</Body1>
+			<div className={styles.month}>
+				<Button
+					className={classNames(styles.switch, styles.prev)}
+					onClick={moveLeft}
+					icon={<Switch />}
+					color="primary-black"
+					variant="text"
+				>
+					Prev
+				</Button>
+				<Button
+					className={styles.monthDisplay}
+					color="primary-black"
+					variant="text"
+					size="large"
+					weight="bold"
+					onClick={toggleMonthPicker}
+				>
 					{MONTHS_NAMES[month]} {year}
-				</button>
-				<button className={styles.toggle} onClick={toggleMonthPicker}>
-					{MONTHS_NAMES[month + 1]} {year}
-				</button>
-				<button className={styles.switch} onClick={moveRight}>
-					<span>Next</span>
-					<Switch style={{ transform: "rotate(180deg)" }} />
-				</button>
+				</Button>
+				<Button
+					className={styles.monthDisplay}
+					color="primary-black"
+					variant="text"
+					size="large"
+					weight="bold"
+					onClick={toggleMonthPicker}
+				>
+					{MONTHS_NAMES[secondMonth]} {secondYear}
+				</Button>
+				<Button
+					className={classNames(styles.switch, styles.next)}
+					onClick={moveRight}
+					icon={<Switch style={{ transform: "rotate(180deg)" }} />}
+					color="primary-black"
+					variant="text"
+				>
+					Next
+				</Button>
 			</div>
 			<div className={styles.content} tabIndex={-1} ref={contentRef}>
 				<div>
-					<DayPanelHead className={styles.head} />
+					<DayPanelHead className={styles.titles} />
 					<DayPanel
 						day={day}
 						month={month}
@@ -182,10 +231,10 @@ export const Calendar: FC<Props & MaybeWithClassName> = ({
 					/>
 				</div>
 				<div>
-					<DayPanelHead className={styles.head} />
+					<DayPanelHead className={styles.titles} />
 					<DayPanel
-						month={month + 1}
-						year={year}
+						month={secondMonth}
+						year={secondYear}
 						selection={selection}
 						pickDate={pickDate}
 						from={minDate}
