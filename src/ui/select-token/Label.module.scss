@@ -1,0 +1,37 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  position: relative;
+}
+
+.input {
+  @include mixin.visuallyHidden();
+}
+
+.label {
+  display: grid;
+  grid-template-areas: "icon currency" "icon title";
+  grid-column-gap: calc(var(--spacing-unit) * 2);
+  grid-row-gap: calc(var(--spacing-unit) * 0.4);
+  justify-content: start;
+  align-items: center;
+}
+
+.label::before {
+  position: relative;
+  content: "";
+  grid-area: icon;
+
+  width: 2.25rem;
+  height: 2.25rem;
+
+  border-radius: 50%;
+
+  background-image: var(--icon);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  overflow: hidden;
+}

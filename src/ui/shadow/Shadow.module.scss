@@ -9,7 +9,7 @@
   right: 0;
   left: 0;
 
-  background-color: rgba(var(--bg), 0.7);
+  background-color: rgba(var(--primary-black), 0.7);
 
   opacity: 0;
 
@@ -32,6 +32,6 @@
 }
 
 .visible {
-  pointer-events: var(--events);
+  pointer-events: all;
   visibility: visible;
 }

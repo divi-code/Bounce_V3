@@ -2,19 +2,13 @@
 @use "../../helper/style/media";
 
 .component {
-  --removed-body-scroll-bar-size: 0;
-
   position: fixed;
   z-index: 100;
   top: 50%;
-  left: calc(50% - (var(--removed-body-scroll-bar-size) / 2));
+  left: 50%;
   right: auto;
 
-  display: grid;
-  grid-template-columns: repeat(14, 1fr);
-  grid-column-gap: 1.25rem;
-
-  width: calc(100% - (var(--removed-body-scroll-bar-size)) + 0px);
+  width: 100%;
   height: auto;
   max-width: var(--max-width);
   margin: 0 auto;
@@ -56,64 +50,39 @@
 .container {
   position: relative;
 
+  display: grid;
+
   width: 100%;
-  max-height: calc(86vh - 2.5rem);
+  max-height: 86vh;
   margin: 0 auto;
 
-  border: 1px solid rgba(var(--pink), 1);
-  border-radius: 3.0625rem;
+  border-radius: 1.375rem;
 
-  background-color: rgba(var(--bg), 1);
+  background-color: rgba(var(--primary-white), 1);
 
   box-shadow: 0 2px 14px rgba(6, 5, 44, 0.1);
 
   overflow: hidden;
-
-  @include mixin.until(media.$sm) {
-    height: 100%;
-    max-height: none;
-
-    border-radius: 0;
-  }
 }
 
-.sm {
-  grid-column: 5/11;
-}
-
-.lg {
-  grid-column: 3/13;
-}
-
-.header {
-  @include mixin.until(media.$sm) {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-
-    height: var(--header-height);
-    padding: 0 var(--gutters);
-
-    border-bottom: 1px solid rgba(var(--white), 0.4);
-  }
-
-  @include mixin.from(media.$sm) {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-  }
-}
-
-.logo {
-  width: 7.5rem;
-  height: auto;
-
-  @include mixin.from(media.$sm) {
-    display: none;
-  }
+.close {
+  position: absolute;
+  top: 1.875rem;
+  right: 2.5rem;
 }
 
 .content {
-  padding: 2.5rem;
+  display: grid;
+  grid-template-rows: var(--template);
+
+  height: 100%;
+  padding-top: 1.875rem;
+
+  box-sizing: border-box;
+}
+
+.title {
+  margin: 0;
+
+  text-align: center;
 }

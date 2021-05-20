@@ -40,6 +40,7 @@
     "react-final-form": "^6.5.3",
     "react-focus-on": "^3.5.1",
     "react-imported-component": "^6.4.1",
+    "react-stroller": "^1.8.0",
     "react-uid": "^2.3.1",
     "sass": "^1.32.8",
     "sass-loader": "^10.2.0",

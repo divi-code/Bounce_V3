@@ -1,0 +1,33 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.bar {
+  position: relative;
+  top: 0;
+  right: 0;
+
+  width: 4px;
+  height: 100%;
+
+  border-radius: 0.25rem;
+
+  background-color: rgba(var(--primary-black), 0.4);
+}
+
+.horizontal {
+  position: relative;
+  top: auto;
+  left: var(--bar-offset);
+  bottom: 0;
+
+  width: calc(100% - var(--bar-offset));
+  height: 4px;
+
+  border-radius: 0.25rem;
+
+  background-color: rgba(var(--primary-black), 0.4);
+}
+
+.transparent {
+  background-color: transparent;
+}

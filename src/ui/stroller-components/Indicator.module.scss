@@ -1,0 +1,58 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.indicator {
+  position: absolute;
+
+  display: inline-block;
+
+  opacity: 1;
+
+  transition-property: opacity;
+  transition-timing-function: linear;
+  transition-duration: 200ms;
+}
+
+.vertical {
+  left: 0;
+  right: 0;
+
+  height: 60px;
+}
+
+.hidden {
+  z-index: -1;
+
+  opacity: 0;
+}
+
+.top {
+  top: -5px;
+
+  background-image: linear-gradient(to top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+.bottom {
+  bottom: -5px;
+
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+.horizontal {
+  top: 0;
+  bottom: 0;
+
+  width: 60px;
+}
+
+.left {
+  left: 0;
+
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+.right {
+  right: 0;
+
+  background-image: linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+}

@@ -7,6 +7,7 @@ import { DateField } from "@app/modules/date-field";
 import { Label } from "@app/modules/label";
 import { RadioField } from "@app/modules/radio-field";
 import { SelectField } from "@app/modules/select-field";
+import { SelectTokenField } from "@app/modules/select-token-field";
 import { TextField } from "@app/modules/text-field";
 import { RadioGroup } from "@app/ui/radio-group";
 
@@ -52,6 +53,9 @@ export const FinalFormIntegration = () => {
 						</Label>
 						<Label Component="div" label="Select status" style={{ marginBottom: 40 }}>
 							<SelectField name="auction-status" placeholder="Status" options={LIST} />
+						</Label>
+						<Label Component="div" label="Select token" style={{ marginBottom: 40 }}>
+							<SelectTokenField name="token-type" placeholder="Status a token" />
 						</Label>
 						<div ref={setBlockRef} style={{ width: 540, marginBottom: 40 }}>
 							<div

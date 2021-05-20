@@ -1,0 +1,68 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  position: relative;
+}
+
+.toggle {
+  width: 100%;
+}
+
+.value {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  align-items: center;
+  grid-column-gap: var(--spacing-unit);
+}
+
+.value::before {
+  position: relative;
+  content: "";
+
+  display: var(--show-icon);
+
+  width: 1.5rem;
+  height: 1.5rem;
+
+  border-radius: 50%;
+
+  background-image: var(--icon);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  overflow: hidden;
+}
+
+.modal {
+  display: grid;
+  grid-template-rows: auto 1fr 3.75rem;
+
+  height: calc(100% - var(--spacing-unit) * 4.5);
+
+  margin-top: calc(var(--spacing-unit) * 4.5);
+  padding: 0 calc(var(--spacing-unit) * 5);
+}
+
+.scroll {
+  position: relative;
+
+  height: calc(100% - var(--spacing-unit) * 4.5 - var(--spacing-unit) * 3.75);
+  margin-top: calc(var(--spacing-unit) * 4.5);
+  margin-bottom: calc(var(--spacing-unit) * 3.75);
+
+  overflow: hidden;
+}
+
+.list {
+  display: grid;
+  grid-row-gap: calc(var(--spacing-unit) * 3);
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
