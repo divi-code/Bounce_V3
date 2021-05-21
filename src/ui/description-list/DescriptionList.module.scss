@@ -1,0 +1,30 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  display: grid;
+  grid-row-gap: calc(var(--spacing-unit) * 1.5);
+}
+
+.title {
+  margin: 0;
+}
+
+.list {
+  display: grid;
+  grid-gap: calc(var(--spacing-unit) * 1.5);
+  grid-template-columns: repeat(2, auto);
+  align-items: baseline;
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+
+  & *:nth-child(2n + 2) {
+    justify-self: flex-end;
+  }
+}
+
+.desc {
+  margin: 0;
+}

@@ -14,7 +14,7 @@ import { Button } from "@app/ui/button";
 import { GutterBox } from "@app/ui/gutter-box";
 import { PopupTeleporterTarget } from "@app/ui/pop-up-container";
 
-import styles from "./Auction.module.scss";
+import styles from "./OTC.module.scss";
 
 type AuctionType = {
 	result?: any;
