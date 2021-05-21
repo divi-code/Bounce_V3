@@ -1,0 +1,26 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+  grid-column-gap: var(--spacing-unit);
+
+  color: rgba(var(--color), 1);
+
+  &::before {
+    position: relative;
+    content: "";
+
+    display: block;
+    width: 9px;
+    height: 9px;
+    margin-top: -2px;
+
+    border-radius: 50%;
+
+    background-color: rgba(var(--color), 1);
+  }
+}

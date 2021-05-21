@@ -17,7 +17,7 @@ import type { CSSProperties, FC } from "react";
 export type TypographyType = {
 	Component: Exclude<keyof JSX.IntrinsicElements, "button" | "a">;
 	variant: "primary" | "secondary";
-	color?: ColorType;
+	color?: ColorType | "custom";
 	size?: FontSizeType;
 	weight?: WeightType;
 	lighten?: 100 | 90 | 80 | 70 | 60 | 50 | 40;
@@ -48,7 +48,7 @@ export const Typography: FC<TypographyType> = ({
 			//
 			getWeightClassName(weight, weightStyles),
 			//
-			getColorClassName(color, colorStyles)
+			color !== "custom" && getColorClassName(color, colorStyles)
 			//
 		)}
 		style={{ ...style, "--lighten": lighten / 100 } as CSSProperties}
