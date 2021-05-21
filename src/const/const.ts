@@ -2,6 +2,15 @@ export const MEDIUM_PATH = "";
 export const GITHUB_PATH = "";
 export const TELEGRAM_PATH = "";
 export const TWITTER_PATH = "";
+export const DOCS_PATH = "";
+export const AUDIT_PATH = "";
+export const COMMUNITY_PATH = "";
+
+export const AUCTION_PATH = "/";
+export const OTC_PATH = "/otc";
+export const FARM_PATH = "/farm";
+export const GOVERNANCE_PATH = "/governance";
+export const CREATE_PATH = "/create";
 
 export const SOCIAL = {
 	Github: GITHUB_PATH,
@@ -9,6 +18,30 @@ export const SOCIAL = {
 	Telegram: TELEGRAM_PATH,
 	Medium: MEDIUM_PATH,
 };
+
+export const ABOUT_LINKS = {
+	Docs: DOCS_PATH,
+	"Auditing Report": AUDIT_PATH,
+	Github: GITHUB_PATH,
+	Community: COMMUNITY_PATH,
+};
+
+export const HEADER_LINKS = {
+	Auction: AUCTION_PATH,
+	OTC: OTC_PATH,
+	Farm: FARM_PATH,
+	Governance: GOVERNANCE_PATH,
+	About: ABOUT_LINKS,
+};
+
+export const MOBILE_HEADER_LINKS = {
+	Auction: AUCTION_PATH,
+	OTC: OTC_PATH,
+	Farm: FARM_PATH,
+	Governance: GOVERNANCE_PATH,
+};
+
+export const LANGUAGE = "en-AU";
 
 // Rinkeby address
 export const TESTED_FIXED_SWAP_ADDRESS = "0x3f1091Cc60c83C208db4A660aB4804bB684E988A";
@@ -30,20 +63,3 @@ export const RPC_URLS = {
 	4: "https://eth-rinkeby.alchemyapi.io/v2/BOMvDIMuDKSqyJ6eGwOXRbUEVwtmP2yK",
 	56: "https://bsc-dataseed.binance.org",
 };
-
-export const HEADER_LINKS = {
-	Farms: "/",
-	Airdrop: "/",
-	Docs: "/",
-	Social: SOCIAL,
-	Testnet: "/",
-};
-
-export const MOBILE_HEADER_LINKS = {
-	Farms: "/",
-	Airdrop: "/",
-	Docs: "/",
-	Testnet: "/",
-};
-
-export const LANGUAGE = "en-AU";

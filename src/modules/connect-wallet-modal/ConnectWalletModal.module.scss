@@ -3,17 +3,18 @@
 
 .component {
   display: grid;
-  grid-row-gap: 2.25rem;
+  grid-row-gap: calc(var(--spacing-unit) * 5.5);
+  justify-items: center;
 
   width: 100%;
-  margin: 0 auto;
+  padding: calc(var(--spacing-unit) * 11.25) calc(var(--spacing-unit) * 10) calc(var(--spacing-unit) * 17.5);
+
+  box-sizing: border-box;
 }
 
 .title {
   margin: 0;
 
-  font-size: 1.5rem;
-  font-weight: var(--medium);
   text-align: center;
 }
 
@@ -37,20 +38,20 @@
   flex-direction: row;
   align-items: center;
 
-  min-height: 3rem;
-  min-width: 18.75rem;
-  padding-left: 0.5rem;
-  padding-right: 1.25rem;
+  min-height: 4.375rem;
+  min-width: 23.75rem;
+  padding-left: 1rem;
+  padding-right: 1.75rem;
 
-  font-family: inherit;
-  color: rgba(var(--text), 1);
-  font-size: 1rem;
-  font-weight: var(--medium);
+  font-family: var(--primary-font);
+  color: rgba(var(--primary-black), 1);
+  font-size: 1.125rem;
+  font-weight: var(--bold);
 
-  border: 1px solid rgba(var(--text), 0.2);
+  border: 1px solid rgba(var(--primary-black), 0.1);
   border-radius: 3.0625rem;
 
-  background-color: rgba(var(--bg), 1);
+  background-color: rgba(var(--primary-white), 1);
 
   transition-timing-function: linear;
   transition-property: border-color;
@@ -70,8 +71,4 @@
 
   width: 3.5rem;
   height: 100%;
-}
-
-.arrow {
-  margin-left: auto;
 }

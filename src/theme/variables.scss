@@ -28,7 +28,7 @@ html {
 
   --spacing-unit: 0.5rem;
   --max-width: 100rem;
-  --small-gutters: 2.75rem;
+  --small-gutters: 1rem;
   --gutters: 6rem;
   --grid: 100%;
 
@@ -54,7 +54,7 @@ html {
   --breakpoint-lg: 1200px;
   --breakpoint-xl: 1350px;
 
-  @media (min-width: 1350px) {
+  @media (min-width: 1024px) {
     --small-gutters: 2.75rem;
     --gutters: 6rem;
   }

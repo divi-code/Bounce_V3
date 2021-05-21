@@ -216,11 +216,7 @@ export const RightArrow = (props: SVGAttributes<SVGElement>) => {
 			xmlns="http://www.w3.org/2000/svg"
 			{...props}
 		>
-			<path
-				opacity={0.5}
-				d="M0 12l1.333 1.333L8 6.666 1.333 0 0 1.333l5.333 5.333L0 12z"
-				fill="#000"
-			/>
+			<path d="M0 12l1.333 1.333L8 6.666 1.333 0 0 1.333l5.333 5.333L0 12z" fill="#000" />
 		</svg>
 	);
 };

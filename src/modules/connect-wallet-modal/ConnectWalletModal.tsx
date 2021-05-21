@@ -1,23 +1,68 @@
-import { useWeb3React } from "@web3-react/core";
+import React, { useState } from "react";
 
-import React, { useEffect, useState } from "react";
+import { FC } from "react";
 
 import { RC } from "@app/helper/react/types";
 import { ScatteredContinuousState } from "@app/hooks/use-continuous-state";
-import { useControlPopUp } from "@app/hooks/use-control-popup";
 import { PopUpContainer } from "@app/ui/pop-up-container";
+import { Heading1 } from "@app/ui/typography";
 import { useWalletConnection } from "@app/web3/hooks/use-connection";
-
-import theme from "../../ui/styles/Theme.module.scss";
 
 import styles from "./ConnectWalletModal.module.scss";
 import { MetaIcon, RightArrow, WalletIcon } from "./icons";
 
-const ConnectWalletModalBase: RC<{
+type ConnectWallet = {
+	sideEffect?: any;
+	disable: boolean;
+	onMetamask(): void;
+	onWalletConnect(): void;
+};
+
+export const ConnectWallet: FC<ConnectWallet> = ({
+	sideEffect,
+	disable,
+	onMetamask,
+	onWalletConnect,
+}) => {
+	return (
+		<div className={styles.component}>
+			<Heading1 Component="h2" className={styles.title}>
+				Connect your wallet
+			</Heading1>
+			<ul className={styles.list}>
+				<li className={styles.item}>
+					<button className={styles.button} type="button" onClick={onMetamask} disabled={disable}>
+						<span className={styles.icon}>
+							<MetaIcon />
+						</span>
+						Metamask
+						<RightArrow style={{ width: 8, marginLeft: "auto" }} />
+					</button>
+				</li>
+				<li className={styles.item}>
+					<button
+						className={styles.button}
+						type="button"
+						onClick={onWalletConnect}
+						disabled={disable}
+					>
+						<span className={styles.icon}>
+							<WalletIcon />
+						</span>
+						WalletConnect
+						<RightArrow style={{ width: 8, marginLeft: "auto" }} />
+					</button>
+				</li>
+			</ul>
+			{sideEffect}
+		</div>
+	);
+};
+
+export const ConnectWalletModal: RC<{
 	control: ScatteredContinuousState<boolean>;
-	withoutClose?: boolean;
 	close(): void;
-}> = ({ close, control, withoutClose }) => {
+}> = ({ close, control }) => {
 	const [connecting, setConnectionStatus] = useState(false);
 	const connectWallet = useWalletConnection();
 
@@ -29,6 +74,7 @@ const ConnectWalletModalBase: RC<{
 			console.error(e);
 		} finally {
 			setConnectionStatus(false);
+			close();
 		}
 	};
 
@@ -40,70 +86,24 @@ const ConnectWalletModalBase: RC<{
 			console.error(e);
 		} finally {
 			setConnectionStatus(false);
+			close();
 		}
 	};
 
 	return (
 		<PopUpContainer
-			className={theme.light}
 			animated={control.present}
 			visible={control.defined}
-			size="sm"
 			onClose={connecting ? undefined : close}
-			withoutClose={withoutClose}
-			focusLock={false}
+			maxWidth={640}
+			scrollable={false}
 		>
-			<div className={styles.component}>
-				<h2 className={styles.title}>Connect to a wallet</h2>
-				<ul className={styles.list}>
-					<li className={styles.item}>
-						<button
-							className={styles.button}
-							type="button"
-							onClick={connectMetamask}
-							disabled={connecting}
-						>
-							<span className={styles.icon}>
-								<MetaIcon />
-							</span>
-							Metamask
-							<RightArrow className={styles.arrow} />
-						</button>
-					</li>
-					<li className={styles.item}>
-						<button
-							className={styles.button}
-							type="button"
-							onClick={connectWalletConnect}
-							disabled={connecting}
-						>
-							<span className={styles.icon}>
-								<WalletIcon />
-							</span>
-							WalletConnect
-							<RightArrow className={styles.arrow} />
-						</button>
-					</li>
-				</ul>
-				<control.DefinePresent />
-			</div>
+			<ConnectWallet
+				disable={connecting}
+				onMetamask={connectMetamask}
+				onWalletConnect={connectWalletConnect}
+				sideEffect={<control.DefinePresent />}
+			/>
 		</PopUpContainer>
 	);
-};
-
-export const ConnectWalletModal = () => {
-	const { active } = useWeb3React();
-	const { popUp, close, open } = useControlPopUp();
-
-	useEffect(() => {
-		if (active) {
-			close();
-		} else {
-			open();
-		}
-	}, [active]);
-
-	return popUp.defined ? (
-		<ConnectWalletModalBase control={popUp} close={close} withoutClose={true} />
-	) : null;
 };

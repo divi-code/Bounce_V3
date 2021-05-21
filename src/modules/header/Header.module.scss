@@ -1,0 +1,112 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  border-bottom: 1px solid rgba(var(--primary-black), 0.1);
+}
+
+.wrapper {
+  position: relative;
+  z-index: 10;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  max-width: var(--max-width);
+  height: var(--header-height);
+  padding: 0 var(--small-gutters);
+  margin: 0 auto;
+
+  box-sizing: border-box;
+
+  background-color: rgba(var(--primary-white), 1);
+
+  @include mixin.until(media.$md) {
+    justify-content: space-between;
+  }
+}
+
+.logo {
+  margin-right: calc(var(--spacing-unit) * 6);
+}
+
+.logo svg {
+  height: auto;
+}
+
+.navigation {
+  margin-right: auto;
+
+  @include mixin.until(media.$md) {
+    display: none;
+  }
+}
+
+.buttons {
+  display: grid;
+  grid-auto-flow: column;
+  grid-column-gap: calc(var(--spacing-unit) * 2.5);
+
+  @include mixin.until(media.$md) {
+    display: none;
+  }
+}
+
+.toggle {
+  position: relative;
+
+  padding: 0;
+  margin: 0;
+
+  color: rgba(var(--primary-black), 1);
+
+  border: 0;
+
+  background-color: transparent;
+
+  transition-timing-function: linear;
+  transition-duration: 250ms;
+  transition-property: color;
+
+  @include mixin.from(media.$md) {
+    display: none;
+  }
+
+  &:hover,
+  &:focus {
+    color: rgba(var(--primary-black), 0.4);
+  }
+}
+
+.toggle span {
+  @include mixin.visuallyHidden();
+}
+
+.dropdown {
+  position: absolute;
+  z-index: 5;
+
+  width: 100%;
+
+  transform: translateY(-100%);
+  pointer-events: none;
+  visibility: hidden;
+
+  transition-timing-function: linear;
+  transition-duration: 350ms;
+  transition-property: transform;
+
+  @include mixin.from(media.$md) {
+    display: none;
+  }
+}
+
+.animation {
+  transform: translateY(0);
+}
+
+.visible {
+  pointer-events: all;
+  visibility: visible;
+}
