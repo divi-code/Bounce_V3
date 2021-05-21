@@ -2,5 +2,27 @@
 @use "../../helper/style/media";
 
 .component {
+  display: flex;
+  flex-direction: column;
 
+  min-height: calc(100vh - var(--header-height) - 1px);
+}
+
+.search {
+  height: auto;
+}
+
+.fullscreen {
+  flex-grow: 1;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 14.5rem;
+  grid-column-gap: calc(var(--spacing-unit) * 0.5);
+}
+
+.submit {
+  width: calc(100% - var(--spacing-unit) * 1.5);
+  margin-left: calc(var(--spacing-unit) * 1.5);
 }
