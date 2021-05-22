@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { ScatteredContinuousState, useScatteredContinuousState } from "./use-continuous-state";
 
@@ -18,10 +18,13 @@ export const useControlPopUp = (): PopupControlType => {
 	const close = useCallback(() => setPopUpVisible(false), []);
 	const toggle = useCallback(() => setPopUpVisible((visible) => !visible), []);
 
-	return {
-		popUp,
-		open,
-		close,
-		toggle,
-	};
+	return useMemo(
+		() => ({
+			popUp,
+			open,
+			close,
+			toggle,
+		}),
+		[close, open, popUp, toggle]
+	);
 };

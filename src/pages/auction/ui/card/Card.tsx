@@ -8,18 +8,19 @@ import { NavLink } from "@app/ui/button";
 import { DescriptionList } from "@app/ui/description-list";
 import { ProgressBar } from "@app/ui/progress-bar";
 import { Status } from "@app/ui/status";
-import { StatusType } from "@app/ui/status";
 import { Caption, Heading2 } from "@app/ui/typography";
 
 import { walletConversion } from "@app/utils/convertWallet";
 
+import { POOL_STATUS } from "@app/utils/pool";
+
 import styles from "./Card.module.scss";
 
-type CardType = {
+export type CardType = {
 	href?: string;
-	status: StatusType;
+	status: POOL_STATUS;
 	time: string;
-	id: string;
+	id: string | number;
 	name: string;
 	address: string;
 	type: string;
@@ -27,7 +28,7 @@ type CardType = {
 	tokenSymbol: string;
 	auctionAmount: string;
 	auctionCurrency: string;
-	auctionPrice: string;
+	auctionPrice: string | number;
 	fillInPercentage: number;
 };
 
@@ -47,10 +48,11 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 	auctionPrice,
 	fillInPercentage,
 }) => {
-	const STATUS = {
+	const STATUS: Record<POOL_STATUS, string> = {
 		live: time,
 		filled: "Filled",
 		closed: "Closed",
+		error: "Error",
 	};
 
 	const TOKEN_INFORMATION = {

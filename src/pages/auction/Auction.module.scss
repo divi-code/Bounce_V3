@@ -9,11 +9,15 @@
 }
 
 .search {
-  height: auto;
+  height: 8.75rem;
+
+  transition-timing-function: linear;
+  transition-duration: 350ms;
+  transition-property: height;
 }
 
 .fullscreen {
-  flex-grow: 1;
+  height: calc(100vh - var(--header-height) - 1px);
 }
 
 .form {
@@ -26,3 +30,20 @@
   width: calc(100% - var(--spacing-unit) * 1.5);
   margin-left: calc(var(--spacing-unit) * 1.5);
 }
+
+.result {
+  padding: calc(var(--spacing-unit) * 6);
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: calc(var(--spacing-unit) * 3);
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+

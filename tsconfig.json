@@ -18,7 +18,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": ".",
-    "incremental": true,
     "paths": {
       "@app/*": ["src/*"]
     }
@@ -30,7 +29,8 @@
   ],
   "files": [
     "node_modules/next-images/index.d.ts",
-    "node_modules/next-videos/index.d.ts"
+    "node_modules/next-videos/index.d.ts",
+    "types/abi.d.ts"
   ],
   "exclude": [
     "node_modules"

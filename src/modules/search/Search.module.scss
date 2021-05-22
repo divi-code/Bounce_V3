@@ -3,10 +3,12 @@
 
 .component {
   display: grid;
-  place-content: center;
+  align-content: center;
 
   padding-top: calc(var(--spacing-unit) * 6);
   padding-bottom: calc(var(--spacing-unit) * 4);
+
+  box-sizing: border-box;
 
   background-color: rgba(var(--primary-black), 1);
 }

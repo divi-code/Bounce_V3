@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export type ContinuousState<T> = {
 	defined: boolean;
@@ -109,11 +109,14 @@ export const useScatteredContinuousState = <T>(
 		return () => clearTimeout(tm);
 	}, [present, timeout]);
 
-	return {
-		defined: Boolean(past) || Boolean(present) || Boolean(future),
-		past,
-		present,
-		future,
-		DefinePresent,
-	};
+	return useMemo(
+		() => ({
+			defined: Boolean(past) || Boolean(present) || Boolean(future),
+			past,
+			present,
+			future,
+			DefinePresent,
+		}),
+		[DefinePresent, future, past, present]
+	);
 };

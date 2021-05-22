@@ -57,7 +57,7 @@ export interface ListItemProps<P> {
 	label: ReactNode;
 }
 
-interface SelectProps<P> {
+interface SelectProps<P extends string> {
 	className?: string;
 	options: ListItemProps<P>[];
 	value?: P;
@@ -68,7 +68,7 @@ interface SelectProps<P> {
 	onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const Select = <P extends any>({
+export const Select = <P extends string>({
 	className,
 	options,
 	value,

@@ -2,6 +2,7 @@ import classNames from "classnames";
 import Head from "next/head";
 import { FC, ReactNode } from "react";
 
+import { ConnectWalletProvider } from "@app/modules/connect-wallet-modal/ConnectWalletProvider";
 import { Header } from "@app/modules/header";
 
 import { Web3ProviderRoot } from "../web3/provider/Web3Provider";
@@ -16,6 +17,14 @@ type LayoutType = {
 	className?: string;
 };
 
+const Providers: FC = ({ children }) => {
+	return (
+		<Web3ProviderRoot>
+			<ConnectWalletProvider>{children}</ConnectWalletProvider>
+		</Web3ProviderRoot>
+	);
+};
+
 export const Layout: FC<LayoutType> = ({
 	children,
 	className,
@@ -24,7 +33,7 @@ export const Layout: FC<LayoutType> = ({
 	keywords,
 }) => {
 	return (
-		<Web3ProviderRoot>
+		<Providers>
 			<div className={classNames(styles.component, className)}>
 				<Head>
 					<title>{title}</title>
@@ -41,6 +50,6 @@ export const Layout: FC<LayoutType> = ({
 				</main>
 				<footer />
 			</div>
-		</Web3ProviderRoot>
+		</Providers>
 	);
 };

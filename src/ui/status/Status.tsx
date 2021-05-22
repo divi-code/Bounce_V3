@@ -5,13 +5,13 @@ import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { Caption } from "@app/ui/typography";
 
+import { POOL_STATUS } from "@app/utils/pool";
+
 import styles from "./Status.module.scss";
 
-export type StatusType = "live" | "filled" | "closed";
-
 type StatusProps = {
-	status: StatusType;
-	captions: Record<StatusType, ReactNode>;
+	status: POOL_STATUS;
+	captions: Record<POOL_STATUS, ReactNode>;
 };
 
 export const Status: FC<StatusProps & MaybeWithClassName> = ({ className, status, captions }) => {
@@ -19,6 +19,7 @@ export const Status: FC<StatusProps & MaybeWithClassName> = ({ className, status
 		live: "var(--success)",
 		filled: "var(--process)",
 		closed: "var(--error)",
+		error: "var(--error)",
 	};
 
 	return (

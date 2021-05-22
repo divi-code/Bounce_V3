@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 
-import { getDeltaTime, toDeltaTimer } from "../../utils/page/time";
+import { getDeltaTime, toDeltaTimer } from "@app/utils/time";
 
 export const Timer: FC<{ timer: number; onZero: () => void }> = ({ timer, onZero }) => {
 	const [time, setTime] = useState(getDeltaTime(timer));

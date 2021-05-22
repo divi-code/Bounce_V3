@@ -1,3 +1,4 @@
+/* eslint-disable no-var */
 import classNames from "classnames";
 
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
@@ -153,7 +154,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 		}
 	};
 
-	const [year, setYear] = useDateState(
+	var [year, setYear] = useDateState(
 		value ? String(value.getFullYear() - YEAR_OFFSET) : "",
 		0,
 		thisYear,
@@ -161,7 +162,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 		[1, 0, 0],
 		validateAndSetDate
 	);
-	const [month, setMonth] = useDateState(
+	var [month, setMonth] = useDateState(
 		value ? String(value.getMonth() - MONTH_OFFSET) : "",
 		1,
 		12,
@@ -169,7 +170,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 		[0, 1, 0],
 		validateAndSetDate
 	);
-	const [day, setDay] = useDateState(
+	var [day, setDay] = useDateState(
 		value ? String(value.getDate()) : "",
 		1,
 		maxDays,

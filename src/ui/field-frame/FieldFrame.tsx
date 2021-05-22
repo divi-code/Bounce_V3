@@ -40,6 +40,7 @@ export const FieldFrame = forwardRef<HTMLButtonElement, FieldType>(
 					focus && styles.focus,
 					placeholder && styles.placeholder
 				)}
+				type="button"
 				onClick={onClick}
 				onKeyDown={onKeyDown}
 				ref={ref}

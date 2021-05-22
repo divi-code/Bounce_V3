@@ -6,15 +6,14 @@ import { FocusOn } from "react-focus-on";
 import { CREATE_PATH } from "@app/const/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { useScatteredContinuousState } from "@app/hooks/use-continuous-state";
-import { useControlPopUp } from "@app/hooks/use-control-popup";
 import { UserInfo } from "@app/modules/header/ui/user-info";
 import { Button, NavLink } from "@app/ui/button";
-import { ExtendedLogo } from "@app/ui/icons/logo";
+import { ExtendedLogo } from "@app/ui/icons/extend-logo";
 import { Toggle } from "@app/ui/icons/toggle";
 
-import { useConnected } from "@app/web3/hooks/use-connected";
+import { useConnected } from "@app/web3/hooks/use-web3";
 
-import { ConnectWalletModal } from "../connect-wallet-modal";
+import { useConnectWalletControl } from "../connect-wallet-modal";
 
 import styles from "./Header.module.scss";
 import { MobileNavigation } from "./ui/mobile-navigation";
@@ -43,7 +42,7 @@ export const HeaderView: FC<HeaderType & MaybeWithClassName> = ({ className, act
 
 	const toggleRef = useRef<HTMLButtonElement>(null);
 
-	const { popUp, close, open } = useControlPopUp();
+	const { open } = useConnectWalletControl();
 
 	return (
 		<>
@@ -109,7 +108,6 @@ export const HeaderView: FC<HeaderType & MaybeWithClassName> = ({ className, act
 					</FocusOn>
 				)}
 			</header>
-			{popUp.defined ? <ConnectWalletModal control={popUp} close={close} /> : null}
 		</>
 	);
 };

@@ -8,7 +8,7 @@ import { NavLink } from "@app/ui/button";
 import { DescriptionList } from "@app/ui/description-list";
 import { ProgressBar } from "@app/ui/progress-bar";
 import { Status } from "@app/ui/status";
-import { Heading2 } from "@app/ui/typography";
+import { Caption, Heading2 } from "@app/ui/typography";
 
 import { walletConversion } from "@app/utils/convertWallet";
 
@@ -66,7 +66,9 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 	return (
 		<NavLink className={classNames(className, styles.component)} href={href}>
 			<Status className={styles.status} status={status} captions={STATUS} />
-			<span className={styles.id}>#{id}</span>
+			<Caption Component="span" className={styles.id} lighten={50}>
+				#{id}
+			</Caption>
 			<Heading2 className={styles.title} Component="h3">
 				<span>{name}</span>
 			</Heading2>

@@ -1,51 +1,62 @@
 import classNames from "classnames";
-import { FC } from "react";
+import { FORM_ERROR } from "final-form";
+import { FC, useEffect, useState } from "react";
 
 import { Form } from "react-final-form";
 
+import { uid } from "react-uid";
+
+import { fetchPoolSearch, METHODS } from "@app/api/pool/api";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
+import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 import { PoolSearchField } from "@app/modules/pool-search-field";
 import { Search } from "@app/modules/search";
 
 import { SelectField } from "@app/modules/select-field";
 import { SelectTokenField } from "@app/modules/select-token-field";
 import { Button } from "@app/ui/button";
+import { FoldableSection } from "@app/ui/foldable-section";
 import { GutterBox } from "@app/ui/gutter-box";
 import { PopupTeleporterTarget } from "@app/ui/pop-up-container";
 
+import { PoolInfoType, queryPoolInformation } from "@app/web3/api/bounce/pool-search";
+import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
+import { ADDRESS_MAPPING } from "@app/web3/networks/mapping";
+
 import styles from "./Auction.module.scss";
+import { Card, CardType } from "./ui/card";
 
 type AuctionType = {
-	result?: any;
-	onSubmit?(): void;
+	result?: CardType[];
+	onSubmit?(values: any): any;
 };
 
 const LIST = [
-	{
-		label: "All Auctions Types",
-		key: "all",
-	},
+	// {
+	// 	label: "All Auctions Types",
+	// 	key: METHODS.all,
+	// },
 	{
 		label: "Fixed Swap Auction",
-		key: "fixed",
+		key: METHODS.fixed,
 	},
-	{
-		label: "Sealed-Bid Auction",
-		key: "sealed-bid",
-	},
-	{
-		label: "English Auction",
-		key: "english",
-	},
-	{
-		label: "Dutch Auction",
-		key: "dutch",
-	},
-	{
-		label: "Lottery Auction",
-		key: "lottery",
-	},
+	// {
+	// 	label: "Sealed-Bid Auction",
+	// 	key: METHODS.sealed_bid,
+	// },
+	// {
+	// 	label: "English Auction",
+	// 	key: METHODS.english,
+	// },
+	// {
+	// 	label: "Dutch Auction",
+	// 	key: METHODS.dutch,
+	// },
+	// {
+	// 	label: "Lottery Auction",
+	// 	key: METHODS.dutch,
+	// },
 ];
 
 export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
@@ -67,7 +78,8 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 							<form onSubmit={sub.handleSubmit} className={styles.form}>
 								<SelectTokenField name="token-type" placeholder="Select a token" />
 								<SelectField
-									name="auction-status"
+									required
+									name="auctionType"
 									placeholder="Choose Auction Type"
 									options={LIST}
 								/>
@@ -85,15 +97,115 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 						)}
 					</Form>
 				</Search>
-				{result && (
-					<section>
-						<GutterBox>{result}</GutterBox>
+				<FoldableSection open={!!result} timeout={300} ssr>
+					<section className={styles.result}>
+						<GutterBox>
+							{result && (
+								<ul className={styles.list}>
+									{result.map((auction) => (
+										<li key={uid(auction)} className={styles.item}>
+											<Card
+												href={auction.href}
+												id={auction.id}
+												status={auction.status}
+												name={auction.name}
+												address={auction.address}
+												type={auction.type}
+												tokenSymbol={auction.tokenSymbol}
+												tokenCurrency={auction.tokenCurrency}
+												auctionAmount={auction.auctionAmount}
+												auctionCurrency={auction.auctionCurrency}
+												auctionPrice={auction.auctionPrice}
+												time={auction.time}
+												fillInPercentage={auction.fillInPercentage}
+											/>
+										</li>
+									))}
+								</ul>
+							)}
+						</GutterBox>
 					</section>
-				)}
+				</FoldableSection>
 			</div>
 			<PopupTeleporterTarget />
 		</>
 	);
 };
 
-export const Auction = () => <AuctionView onSubmit={() => null} result={undefined} />;
+const WINDOW_SIZE = 10;
+
+export const Auction = () => {
+	const provider = useWeb3Provider();
+	const chainId = useChainId();
+
+	const [poolList, setPoolList] = useState<number[]>([]);
+	const walletControl = useConnectWalletControl();
+
+	const onSubmit = async (values: any) => {
+		if (!provider) {
+			if (!(await walletControl.requestAuthorization())) {
+				return {
+					[FORM_ERROR]: "Please connect web3",
+				};
+			}
+		}
+
+		const { auctionType, ...params } = values;
+
+		const pools = await fetchPoolSearch(chainId, auctionType, params);
+		setPoolList(pools);
+	};
+
+	const [poolInformation, setPoolInformation] = useState<PoolInfoType[]>([]);
+
+	const [searchWindow, setSearchWindow] = useState<number[]>([]);
+
+	useEffect(() => {
+		const page = 10;
+		setSearchWindow(poolList.slice(page * WINDOW_SIZE, (page + 1) * WINDOW_SIZE));
+	}, [poolList]);
+
+	useEffect(() => {
+		(async () => {
+			if (searchWindow.length === 0) {
+				setPoolInformation([]);
+
+				return;
+			}
+
+			const pools = await queryPoolInformation(
+				provider,
+				ADDRESS_MAPPING.FIX_SWAP,
+				chainId,
+				searchWindow
+			);
+			setPoolInformation(pools);
+			console.log(pools);
+		})();
+	}, [chainId, searchWindow, provider]);
+
+	const convertedPoolInformation: CardType[] = poolInformation.map((pool) => {
+		return {
+			href: "",
+			status: pool.status,
+			time: pool.closeTime,
+			id: pool.poolID,
+			name: pool.poolName,
+			address: pool.creator,
+			type: "Fixed Swap Auction",
+			tokenCurrency: pool.fromToken.symbol,
+			tokenSymbol: "",
+			auctionAmount: pool.toBidAmount,
+			auctionCurrency: pool.toToken.symbol,
+			auctionPrice: pool.currentPrice,
+			fillInPercentage: pool.progress,
+		};
+	});
+
+	return (
+		<AuctionView
+			onSubmit={onSubmit}
+			result={poolInformation.length ? convertedPoolInformation : undefined}
+		/>
+	);
+};

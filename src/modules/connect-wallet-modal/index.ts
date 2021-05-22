@@ -1,1 +1,1 @@
-export { ConnectWalletModal } from "./ConnectWalletModal";
+export { useConnectWalletControl } from "./hooks";

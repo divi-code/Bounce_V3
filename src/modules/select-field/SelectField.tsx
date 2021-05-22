@@ -4,6 +4,7 @@ import { Field } from "react-final-form";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { Select } from "@app/ui/select";
+import { isRequired } from "@app/utils/validation";
 
 type SelectFieldType = {
 	className?: string;
@@ -25,7 +26,7 @@ export const SelectField: FC<SelectFieldType & MaybeWithClassName> = ({
 	required,
 }) => {
 	return (
-		<Field name={name} value={value}>
+		<Field name={name} value={value} validate={required ? isRequired : undefined}>
 			{({ input }) => (
 				<Select
 					className={className}
