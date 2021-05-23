@@ -2,6 +2,8 @@ import { postJson } from "@app/api/network/json";
 import { getAPIByNetwork } from "@app/api/pool/utils";
 import { WEB3_NETWORKS } from "@app/web3/networks/const";
 
+import { POOL_TYPE } from "./const";
+
 type APIResponse<T> = {
 	code: 200 | 500;
 	error_msg: string;
@@ -17,23 +19,23 @@ const fetchInformation = async <T = any>(
 	return postJson(undefined, url, params);
 };
 
-export enum METHODS {
-	all = "query_all_pools",
-	fixed = "query_fixed_pools",
-	sealed_bid = "query_sealed_bid_pools",
-	english = "query_english_pools",
-	dutch = "query_dutch_auction_pools",
-	lottery = "query_lottery_pools",
-}
+const METHODS_MAPPING = {
+	all: "query_all_pools",
+	[POOL_TYPE.fixed]: "query_fixed_pools",
+	[POOL_TYPE.sealed_bid]: "query_sealed_bid_pools",
+	[POOL_TYPE.english]: "query_english_pools",
+	[POOL_TYPE.dutch]: "query_dutch_auction_pools",
+	[POOL_TYPE.lottery]: "query_lottery_pools",
+};
 
 export const fetchPoolSearch = async (
 	chainId: WEB3_NETWORKS,
-	method: METHODS,
+	poolType: POOL_TYPE,
 	params
 ): Promise<number[]> => {
 	const res = await fetchInformation<{ pool_ids: number[] }>(chainId, {
 		...params,
-		method: method,
+		method: METHODS_MAPPING[poolType],
 	});
 
 	if (res.code !== 200) {

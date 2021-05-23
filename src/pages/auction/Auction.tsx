@@ -6,7 +6,8 @@ import { Form } from "react-final-form";
 
 import { uid } from "react-uid";
 
-import { fetchPoolSearch, METHODS } from "@app/api/pool/api";
+import { fetchPoolSearch } from "@app/api/pool/api";
+import { POOL_NAME_MAPPING, POOL_TYPE } from "@app/api/pool/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
@@ -39,7 +40,7 @@ const LIST = [
 	// },
 	{
 		label: "Fixed Swap Auction",
-		key: METHODS.fixed,
+		key: POOL_TYPE.fixed,
 	},
 	// {
 	// 	label: "Sealed-Bid Auction",
@@ -141,6 +142,8 @@ export const Auction = () => {
 	const [poolList, setPoolList] = useState<number[]>([]);
 	const walletControl = useConnectWalletControl();
 
+	const [searchFilters, setSearchFilters] = useState<any>({});
+
 	const onSubmit = async (values: any) => {
 		if (!provider) {
 			if (!(await walletControl.requestAuthorization())) {
@@ -149,6 +152,8 @@ export const Auction = () => {
 				};
 			}
 		}
+
+		setSearchFilters(values);
 
 		const { auctionType, ...params } = values;
 
@@ -192,7 +197,7 @@ export const Auction = () => {
 			id: pool.poolID,
 			name: pool.poolName,
 			address: pool.creator,
-			type: "Fixed Swap Auction",
+			type: POOL_NAME_MAPPING[searchFilters.auctionType],
 			tokenCurrency: pool.fromToken.symbol,
 			tokenSymbol: "",
 			auctionAmount: pool.toBidAmount,
