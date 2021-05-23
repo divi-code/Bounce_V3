@@ -13,7 +13,7 @@
 
   border-radius: 2rem;
 
-  background-color: #F3F3F3;
+  background-color: #f3f3f3;
 }
 
 .balance {
@@ -72,7 +72,7 @@
 
   border-radius: 50%;
 
-  background: linear-gradient(360deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 50%), #000000;
+  background: linear-gradient(360deg, #fff 0%, rgba(255, 255, 255, 0) 50%), #000;
 }
 
 .dropdown {
@@ -85,7 +85,7 @@
 
   box-sizing: border-box;
 
-  border: 1px solid #E6E6E6;
+  border: 1px solid #e6e6e6;
   border-radius: 0.5rem;
 
   background-color: rgba(var(--primary-white), 1);
@@ -180,8 +180,6 @@
 
   &:hover,
   &:focus {
-    background-color: #EDEDED;
+    background-color: #ededed;
   }
 }
-
-

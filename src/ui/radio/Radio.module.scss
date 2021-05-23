@@ -33,9 +33,9 @@
     border-radius: 50%;
     border: 0;
 
-    background-color: #ECECEC;
+    background-color: #ececec;
 
-    box-shadow: 0 0 0 0.5rem #ECECEC;
+    box-shadow: 0 0 0 0.5rem #ececec;
 
     transition-timing-function: linear;
     transition-duration: 200ms;
@@ -44,7 +44,7 @@
 
   &:hover::before,
   &:focus::before {
-    box-shadow: 0 0 0 calc(0.5rem - 1px) #ECECEC, 0 0 0 0.5rem rgba(var(--primary-black), 1);
+    box-shadow: 0 0 0 calc(0.5rem - 1px) #ececec, 0 0 0 0.5rem rgba(var(--primary-black), 1);
   }
 }
 

@@ -91,7 +91,7 @@
       "eslint --fix"
     ],
     "*.{scss}": [
-      "stylelint --write"
+      "stylelint --fix"
     ]
   }
 }
