@@ -90,7 +90,7 @@
     "*.{ts,tsx,js}": [
       "eslint --fix"
     ],
-    "*.{css}": [
+    "*.{scss}": [
       "stylelint --write"
     ]
   }
