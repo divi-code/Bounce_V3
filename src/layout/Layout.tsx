@@ -2,6 +2,7 @@ import classNames from "classnames";
 import Head from "next/head";
 import { FC, ReactNode } from "react";
 
+import { ApplicationWrappers } from "@app/layout/ApplicationWrappers";
 import { ConnectWalletProvider } from "@app/modules/connect-wallet-modal/ConnectWalletProvider";
 import { Header } from "@app/modules/header";
 
@@ -20,7 +21,9 @@ type LayoutType = {
 const Providers: FC = ({ children }) => {
 	return (
 		<Web3ProviderRoot>
-			<ConnectWalletProvider>{children}</ConnectWalletProvider>
+			<ConnectWalletProvider>
+				<ApplicationWrappers>{children}</ApplicationWrappers>
+			</ConnectWalletProvider>
 		</Web3ProviderRoot>
 	);
 };
