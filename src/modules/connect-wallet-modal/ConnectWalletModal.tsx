@@ -64,7 +64,7 @@ export const ConnectWalletModal: RC<{
 	close(): void;
 }> = ({ close, control }) => {
 	const [connecting, setConnectionStatus] = useState(false);
-	const connectWallet = useWalletConnection();
+	const { connect: connectWallet } = useWalletConnection();
 
 	const connectMetamask = async () => {
 		try {

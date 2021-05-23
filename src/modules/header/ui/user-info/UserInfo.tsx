@@ -13,6 +13,7 @@ import { Exit } from "@app/ui/icons/exit";
 import { ShortLogo } from "@app/ui/icons/short-logo";
 import { walletConversion } from "@app/utils/convertWallet";
 
+import { useWalletConnection } from "@app/web3/hooks/use-connection";
 import { useWeb3 } from "@app/web3/hooks/use-web3";
 import { getMyBalance } from "@app/web3/utils/get-balance";
 
@@ -25,6 +26,7 @@ type UserInfoType = {
 	address: string;
 	ethBalance: string;
 	name: string;
+	onLogout(): void;
 };
 
 type ComponentType = UserInfoType & MaybeWithClassName;
@@ -35,6 +37,7 @@ export const UserInfoView: FC<ComponentType> = ({
 	address,
 	name,
 	ethBalance,
+	onLogout,
 }) => {
 	const convertedBalance = balance === undefined ? 0 : parseFloat(balance);
 
@@ -70,6 +73,7 @@ export const UserInfoView: FC<ComponentType> = ({
 					<Button
 						className={styles.logout}
 						iconBefore={<Exit style={{ width: 18, marginRight: 8 }} />}
+						onClick={onLogout}
 					>
 						Log out
 					</Button>
@@ -108,5 +112,14 @@ export const UserInfo = () => {
 		}
 	}, [active, updateData]);
 
-	return <UserInfoView address={account} ethBalance={fromWei(ethBalance)} name={name} />;
+	const { disconnect: disconnectWallet } = useWalletConnection();
+
+	return (
+		<UserInfoView
+			address={account}
+			ethBalance={fromWei(ethBalance)}
+			name={name}
+			onLogout={disconnectWallet}
+		/>
+	);
 };
