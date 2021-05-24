@@ -1,0 +1,28 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  padding: calc(var(--spacing-unit) * 9) 0;
+}
+
+.form {
+  display: grid;
+  grid-row-gap: calc(var(--spacing-unit) * 5);
+
+  width: 100%;
+  max-width: 33.75rem;
+  margin: 0 auto;
+  padding: calc(var(--spacing-unit) * 5.5) calc(var(--spacing-unit) * 7.5);
+
+  border-radius: 0.5rem;
+
+  background-color: rgba(var(--primary-white), 1);
+}
+
+.title {
+  margin: 0;
+}
+
+.button {
+  margin-top: calc(var(--spacing-unit) * 0.5);
+}

@@ -8,10 +8,10 @@ export enum POOL_TYPE {
 }
 
 export const POOL_NAME_MAPPING = {
-	all: "all",
-	[POOL_TYPE.fixed]: "fixed pools",
-	[POOL_TYPE.sealed_bid]: "sealed bid_pools",
-	[POOL_TYPE.english]: "english pools",
-	[POOL_TYPE.dutch]: "dutch auction_pools",
-	[POOL_TYPE.lottery]: "lottery pools",
+	all: "All",
+	[POOL_TYPE.fixed]: "Fixed Swap Auction",
+	[POOL_TYPE.sealed_bid]: "Sealed-Bid Auction",
+	[POOL_TYPE.english]: "English Auction",
+	[POOL_TYPE.dutch]: "Dutch Auction",
+	[POOL_TYPE.lottery]: "Lottery Auction",
 };

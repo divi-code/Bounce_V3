@@ -1,4 +1,4 @@
-import { AuctionView } from "./Auction";
+import { AuctionView } from "./AuctionView";
 
 const nothing = () => null;
 
