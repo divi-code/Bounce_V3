@@ -1,0 +1,1 @@
+export { ConnectWalletBlock } from "./ConnectWalletBlock";
