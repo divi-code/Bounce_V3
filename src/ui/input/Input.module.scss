@@ -85,15 +85,17 @@
   box-shadow: none;
 }
 
+.errorState {
+  border: 1px solid rgba(var(--error), 1);
+}
+
 .error {
   position: relative;
 }
 
 .error span {
-  --lighten: 1;
-
   position: absolute;
-  top: 0.25rem;
+  top: calc(var(--spacing-unit) * 1.5);
 
-  font-size: 0.75rem;
+  color: rgba(var(--error), 1);
 }

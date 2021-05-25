@@ -31,6 +31,7 @@ type PopUpContainerType = {
 	onClose(): void;
 	scattered?: boolean;
 	scrollable?: boolean;
+	onBlur?(): void;
 };
 
 type ComponentType = PopUpContainerType & MaybeWithClassName & WithChildren;
@@ -65,6 +66,7 @@ export const PopUpContainer: FC<ComponentType & MaybeWithClassName> = ({
 	title,
 	scattered,
 	scrollable = true,
+	onBlur,
 }) => {
 	const windowHeight = useWindowSize()[1];
 
@@ -88,6 +90,7 @@ export const PopUpContainer: FC<ComponentType & MaybeWithClassName> = ({
 						role="dialog"
 						onClick={onClose}
 						style={{ "--window-height": `${windowHeight}px` } as CSSProperties}
+						onBlur={onBlur}
 					>
 						<div
 							className={classNames(styles.container)}

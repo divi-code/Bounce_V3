@@ -249,7 +249,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 							quickNav={quickNav}
 							disableEmptyDays={false}
 							value={value}
-							minDate={min ? new Date() : undefined}
+							minDate={min ? new Date(min) : undefined}
 							maxDate={max ? new Date(max) : undefined}
 							dayFill={dayFill}
 							onChange={(date) => {

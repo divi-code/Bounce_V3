@@ -1,11 +1,9 @@
 import classNames from "classnames";
 import { FC } from "react";
-
-import { Form } from "react-final-form";
-
 import { uid } from "react-uid";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
+import { Form } from "@app/modules/form";
 import { PoolSearchField } from "@app/modules/pool-search-field";
 import { Search } from "@app/modules/search";
 import { SelectAuction } from "@app/modules/select-auction";
@@ -38,23 +36,19 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 					text="Fill in the fields optional below to easily find the auction that suits you"
 					visibleText={result === undefined}
 				>
-					<Form onSubmit={onSubmit}>
-						{(sub) => (
-							<form onSubmit={sub.handleSubmit} className={styles.form}>
-								<SelectTokenField name="token-type" placeholder="Select a token" />
-								<SelectAuction required name="auctionType" />
-								<PoolSearchField placeholder="Pool Information (Optional)" name="pool" />
-								<Button
-									className={styles.submit}
-									size="large"
-									color="ocean-blue"
-									variant="contained"
-									submit
-								>
-									Search
-								</Button>
-							</form>
-						)}
+					<Form className={styles.form} onSubmit={onSubmit}>
+						<SelectTokenField name="token-type" placeholder="Select a token" />
+						<SelectAuction required name="auctionType" />
+						<PoolSearchField placeholder="Pool Information (Optional)" name="pool" />
+						<Button
+							className={styles.submit}
+							size="large"
+							color="ocean-blue"
+							variant="contained"
+							submit
+						>
+							Search
+						</Button>
 					</Form>
 				</Search>
 				<FoldableSection open={!!result} timeout={300} ssr>

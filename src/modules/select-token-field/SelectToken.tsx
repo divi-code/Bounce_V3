@@ -25,6 +25,8 @@ type SelectTokenType = {
 	readOnly?: boolean;
 	required?: boolean;
 	options?: Array<any>;
+	error?: string;
+	onBlur?(): void;
 	onChange(date: string): void;
 };
 
@@ -82,6 +84,8 @@ export const SelectToken: FC<SelectTokenType & MaybeWithClassName> = ({
 	readOnly,
 	required,
 	options = defaultOptions,
+	onBlur,
+	error,
 }) => {
 	const { popUp, close, open } = useControlPopUp();
 
@@ -120,37 +124,40 @@ export const SelectToken: FC<SelectTokenType & MaybeWithClassName> = ({
 
 	return (
 		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-		<div className={classNames(className, styles.component)}>
-			{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
-			<input
-				name={name}
-				type="hidden"
-				value={active ? active.key : ""}
-				readOnly={readOnly}
-				required={required}
-				ref={valueContainerRef}
-			/>
-			<FieldFrame
-				className={styles.toggle}
-				focus={popUp.defined}
-				placeholder={active.key === undefined}
-				onClick={!readOnly ? open : () => null}
-			>
-				{active && (
-					<span
-						className={styles.value}
-						style={
-							{
-								"--icon": `url("${active.img}")`,
-								"--show-icon": active.img !== undefined ? "block" : "none",
-							} as CSSProperties
-						}
-					>
-						{active.currency}
-					</span>
-				)}
-				<Arrow style={{ transform: !popUp.defined ? "rotate(180deg)" : "rotate(0)" }} />
-			</FieldFrame>
+		<>
+			<div className={classNames(className, styles.component)}>
+				{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
+				<input
+					name={name}
+					type="hidden"
+					value={active ? active.key : ""}
+					readOnly={readOnly}
+					required={required}
+					ref={valueContainerRef}
+				/>
+				<FieldFrame
+					className={styles.toggle}
+					focus={popUp.defined}
+					placeholder={active.key === undefined}
+					error={error}
+					onClick={!readOnly ? open : () => null}
+				>
+					{active && (
+						<span
+							className={styles.value}
+							style={
+								{
+									"--icon": `url("${active.img}")`,
+									"--show-icon": active.img !== undefined ? "block" : "none",
+								} as CSSProperties
+							}
+						>
+							{active.currency}
+						</span>
+					)}
+					<Arrow style={{ transform: !popUp.defined ? "rotate(180deg)" : "rotate(0)" }} />
+				</FieldFrame>
+			</div>
 			{popUp.defined ? (
 				<PopUpContainer
 					animated={popUp.present}
@@ -159,6 +166,7 @@ export const SelectToken: FC<SelectTokenType & MaybeWithClassName> = ({
 					maxWidth={640}
 					title="Select a token"
 					scrollable={false}
+					onBlur={onBlur}
 				>
 					<div className={styles.modal}>
 						<div>
@@ -203,6 +211,6 @@ export const SelectToken: FC<SelectTokenType & MaybeWithClassName> = ({
 					<popUp.DefinePresent />
 				</PopUpContainer>
 			) : null}
-		</div>
+		</>
 	);
 };

@@ -3,6 +3,8 @@ import React, { FC, ReactNode, useCallback, useState } from "react";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
+import { Caption } from "@app/ui/typography";
+
 import styles from "./Input.module.scss";
 
 type InputType = {
@@ -54,12 +56,12 @@ export const Input: FC<InputType & MaybeWithClassName> = ({
 	);
 
 	return (
-		<>
+		<div className={className}>
 			<div
 				className={classNames(
-					className,
 					styles.component,
 					inputFocused && styles.focus,
+					error && styles.errorState,
 					before && styles.before,
 					after && styles.after,
 					before && after && styles.beforeAndAfter
@@ -80,7 +82,7 @@ export const Input: FC<InputType & MaybeWithClassName> = ({
 				/>
 				{after}
 			</div>
-			<div className={styles.error}>{error && <span>{error}</span>}</div>
-		</>
+			<div className={styles.error}>{error && <Caption Component="span">{error}</Caption>}</div>
+		</div>
 	);
 };

@@ -1,0 +1,1 @@
+export { Fixed } from "./Fixed";

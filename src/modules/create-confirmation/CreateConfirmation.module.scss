@@ -1,0 +1,42 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.content {
+  position: relative;
+
+  display: grid;
+
+  width: 100%;
+  max-width: 33.75rem;
+  margin: 0 auto;
+  padding: calc(var(--spacing-unit) * 5.5) calc(var(--spacing-unit) * 7.5);
+
+  box-sizing: border-box;
+
+  border-radius: 0.5rem;
+
+  background-color: rgba(var(--primary-white), 1);
+}
+
+.close {
+  --button-position: absolute;
+
+  top: calc(var(--spacing-unit) * 3);
+  right: calc(var(--spacing-unit) * 3);
+}
+
+.title {
+  margin: 0;
+}
+
+.body {
+  margin-top: calc(var(--spacing-unit) * 3.5);
+  padding: calc(var(--spacing-unit) * 3.5) calc(var(--spacing-unit) * 4.5);
+
+  border: 1px solid rgba(var(--primary-black), 0.1);
+  border-radius: 0.5rem;
+}
+
+.submit {
+  margin-top: calc(var(--spacing-unit) * 5.5);
+}

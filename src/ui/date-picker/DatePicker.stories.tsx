@@ -5,6 +5,10 @@ import { useResizeObserver } from "@app/hooks/use-resize-observer";
 import { DatePicker } from "./DatePicker";
 
 export const Default = () => (
+	<DatePicker label="Start" placeholder="From" name="date" onChange={() => null} />
+);
+
+export const Min = () => (
 	<DatePicker
 		label="Start"
 		placeholder="From"
@@ -48,7 +52,7 @@ export const FloatWidth = () => {
 					label="Start"
 					placeholder="From"
 					name="date"
-					min={new Date().toString()}
+					min={new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toString()}
 					onChange={() => null}
 					dropdownWidth={`${blockWidth}px`}
 					dropdownPosition="right"

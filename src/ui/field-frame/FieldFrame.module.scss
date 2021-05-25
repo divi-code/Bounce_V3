@@ -36,6 +36,21 @@
   }
 }
 
+.errorState {
+  border: 1px solid rgba(var(--error), 1);
+}
+
 .placeholder {
   color: rgba(var(--primary-black), 0.5);
+}
+
+.error {
+  position: relative;
+}
+
+.error span {
+  position: absolute;
+  top: calc(var(--spacing-unit) * 1.5);
+
+  color: rgba(var(--error), 1);
 }

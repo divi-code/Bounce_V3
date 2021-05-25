@@ -1,0 +1,23 @@
+@use "../../../../helper/style/mixin";
+@use "../../../../helper/style/media";
+
+.form {
+  display: grid;
+  grid-row-gap: calc(var(--spacing-unit) * 5);
+}
+
+.group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: calc(var(--spacing-unit) * 2.5);
+}
+
+.swap {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+.submit {
+  margin-top: calc(var(--spacing-unit) * 0.5);
+}

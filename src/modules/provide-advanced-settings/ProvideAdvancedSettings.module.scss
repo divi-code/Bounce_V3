@@ -1,0 +1,11 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.form {
+  display: grid;
+  grid-row-gap: calc(var(--spacing-unit) * 5);
+}
+
+.submit {
+  margin-top: calc(var(--spacing-unit) * 0.5);
+}

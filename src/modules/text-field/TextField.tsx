@@ -4,6 +4,7 @@ import { Field } from "react-final-form";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { Input } from "@app/ui/input";
+import { isRequired } from "@app/utils/validation";
 
 type TextFieldType = {
 	name: string;
@@ -31,7 +32,12 @@ export const TextField: FC<TextFieldType & MaybeWithClassName> = ({
 	value,
 }) => {
 	return (
-		<Field name={name} initialValue={initialValue} validate={validate} value={value}>
+		<Field
+			name={name}
+			initialValue={initialValue}
+			validate={required ? isRequired : validate}
+			value={value}
+		>
 			{({ input, meta }) => (
 				<Input
 					className={className}
@@ -46,7 +52,7 @@ export const TextField: FC<TextFieldType & MaybeWithClassName> = ({
 					required={required}
 					before={before}
 					after={after}
-					error={meta.error || meta.submitError}
+					error={(meta.error && meta.touched ? meta.error : undefined) || meta.submitError}
 				/>
 			)}
 		</Field>

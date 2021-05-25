@@ -124,3 +124,13 @@ export const NavLink: FC<CommonType & { href: string; as?: string }> = ({ href, 
 		)}
 	</>
 );
+
+export type PrimaryType = Omit<CommonType, "variant" | "color">;
+
+export const PrimaryButton: FC<PrimaryType & { submit?: boolean }> = ({ ...rest }) => (
+	<Button variant="contained" color="primary-black" {...rest} />
+);
+
+export const PrimaryLink: FC<PrimaryType & { href: string; as?: string }> = ({ ...rest }) => (
+	<NavLink variant="contained" color="primary-black" {...rest} />
+);
