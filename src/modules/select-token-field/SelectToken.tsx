@@ -2,20 +2,22 @@ import classNames from "classnames";
 
 import React, { CSSProperties, FC, useCallback, useEffect, useRef, useState } from "react";
 
-import { StrollableContainer } from "react-stroller";
-import { uid, useUID } from "react-uid";
+import { useUID } from "react-uid";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { useControlPopUp } from "@app/hooks/use-control-popup";
+import { Manage } from "@app/modules/select-token-field/Manage";
 import { FieldFrame } from "@app/ui/field-frame";
 import { Arrow } from "@app/ui/icons/arrow-down";
-import { Search } from "@app/ui/icons/search";
-import { Input } from "@app/ui/input";
 import { PopUpContainer } from "@app/ui/pop-up-container";
-import { ScrollBar, VerticalScrollIndicator } from "@app/ui/stroller-components";
 
-import { Label } from "./Label";
+import { useTokenList } from "@app/web3/api/tokens";
+import { useDefaultTokens } from "@app/web3/api/tokens/use-default-token-list";
+
+import { useConnected } from "@app/web3/hooks/use-web3";
+
+import { ListOfTokens } from "./ListOfTokens";
 import styles from "./SelectToken.module.scss";
 
 type SelectTokenType = {
@@ -25,57 +27,13 @@ type SelectTokenType = {
 	readOnly?: boolean;
 	required?: boolean;
 	options?: Array<any>;
+	tokens?: Array<any>;
 	error?: string;
 	onBlur?(): void;
 	onChange(date: string): void;
 };
 
-const defaultOptions = [
-	{
-		currency: "ETH",
-		key: "eth1",
-		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-		title: "ETH",
-	},
-	{
-		currency: "ETH2",
-		key: "eth2",
-		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-		title: "ETH",
-	},
-	{
-		currency: "ETH3",
-		key: "eth3",
-		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-		title: "ETH",
-	},
-	{
-		currency: "ETH4",
-		key: "eth4",
-		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-		title: "ETH",
-	},
-	{
-		currency: "ETH5",
-		key: "eth5",
-		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-		title: "ETH",
-	},
-	{
-		currency: "ETH6",
-		key: "eth6",
-		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-		title: "ETH",
-	},
-	{
-		currency: "ETH7",
-		key: "eth7",
-		img: "https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110",
-		title: "ETH",
-	},
-];
-
-export const SelectToken: FC<SelectTokenType & MaybeWithClassName> = ({
+export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 	name,
 	value,
 	onChange,
@@ -83,13 +41,13 @@ export const SelectToken: FC<SelectTokenType & MaybeWithClassName> = ({
 	className,
 	readOnly,
 	required,
-	options = defaultOptions,
+	options,
+	tokens,
 	onBlur,
 	error,
 }) => {
 	const { popUp, close, open } = useControlPopUp();
 
-	const activeRef = useRef<HTMLInputElement>(null);
 	const valueContainerRef = useRef<HTMLInputElement>(null);
 
 	const initialActive = options.find((item) => item.key === value);
@@ -121,6 +79,8 @@ export const SelectToken: FC<SelectTokenType & MaybeWithClassName> = ({
 			onChange({ target: valueContainerRef.current } as any);
 		}
 	}, [active, changed, onChange, popUp]);
+
+	const [manageOn, setManageOn] = useState(false);
 
 	return (
 		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
@@ -164,53 +124,57 @@ export const SelectToken: FC<SelectTokenType & MaybeWithClassName> = ({
 					visible={popUp.defined}
 					onClose={close}
 					maxWidth={640}
-					title="Select a token"
+					title={!manageOn ? "Select a token" : "Manage"}
 					scrollable={false}
 					onBlur={onBlur}
+					onBack={() => setManageOn(false)}
+					withBack={manageOn}
+					fixedHeight={true}
 				>
-					<div className={styles.modal}>
-						<div>
-							<Input
-								name="search"
-								type="text"
-								placeholder="Search by name or paste address"
-								before={<Search style={{ width: 19 }} />}
-							/>
-						</div>
-						<div className={styles.scroll}>
-							<StrollableContainer
-								bar={ScrollBar}
-								draggable
-								inBetween={<VerticalScrollIndicator />}
-							>
-								<ul className={styles.list}>
-									{options.map((option, index) => {
-										const checked = option === active;
-
-										return (
-											<li key={option.key}>
-												<Label
-													className={classNames(styles.input, checked && styles.active)}
-													ref={checked || (!active && index === 0) ? activeRef : undefined}
-													onChange={handleChange}
-													reference={option}
-													title={option.title}
-													currency={option.currency}
-													img={option.img}
-													id={uid(option)}
-													name={groupName}
-													checked={checked}
-												/>
-											</li>
-										);
-									})}
-								</ul>
-							</StrollableContainer>
-						</div>
-					</div>
+					{!manageOn ? (
+						<ListOfTokens
+							active={active}
+							onChange={handleChange}
+							onManage={() => setManageOn(true)}
+							name={groupName}
+							options={options}
+						/>
+					) : (
+						<Manage tokens={tokens} onChange={() => null} />
+					)}
 					<popUp.DefinePresent />
 				</PopUpContainer>
 			) : null}
 		</>
 	);
+};
+
+export const SelectToken: FC<Omit<SelectTokenType, "options">> = (props) => {
+	const active = useConnected();
+	const tokens = useDefaultTokens();
+	const allTokens = useTokenList();
+
+	const options = !active
+		? []
+		: tokens.map((token) => {
+				return {
+					key: token.address,
+					title: token.name,
+					currency: token.symbol,
+					img: token.logoURI,
+				};
+		  });
+
+	const convertedTokens = Object.values(allTokens).map((value) => {
+		return {
+			key: value.name,
+			name: value.name,
+			img: value.logoURI,
+			count: value.tokens.length,
+		};
+	});
+
+	console.log(convertedTokens);
+
+	return <SelectTokenView options={options} tokens={convertedTokens} {...props} />;
 };

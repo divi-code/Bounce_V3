@@ -3,24 +3,23 @@ import React, { CSSProperties, forwardRef, useCallback, useEffect, useState } fr
 
 import { Body1, Caption } from "@app/ui/typography";
 
-import styles from "./Label.module.scss";
+import styles from "./Toggle.module.scss";
 
-interface LabelProps<T> {
+interface ToggleProps<T> {
 	className?: string;
 	id: string;
-	currency: string;
-	title: string;
+	count: number;
 	img: string;
 	name: string;
 	checked: boolean;
 	disabled?: boolean;
 	reference: T;
-	onChange: (e: T) => void;
+	onChange: (e: T, checked: boolean) => void;
 }
 
-export const Label = forwardRef<HTMLInputElement, LabelProps<any>>(
-	({ className, id, currency, title, img, name, checked, disabled, reference, onChange }, ref) => {
-		const handleOnChange = useCallback(() => onChange(reference), [onChange, reference]);
+export const Toggle = forwardRef<HTMLInputElement, ToggleProps<any>>(
+	({ className, id, count, img, name, checked, disabled, reference, onChange }, ref) => {
+		const handleOnChange = useCallback(() => onChange(reference, !checked), [onChange, reference]);
 		const [imageIsOk, setImageIsOk] = useState(true);
 
 		useEffect(() => {
@@ -35,7 +34,7 @@ export const Label = forwardRef<HTMLInputElement, LabelProps<any>>(
 					className={styles.input}
 					ref={ref}
 					id={id}
-					type="radio"
+					type="checkbox"
 					name={name}
 					onChange={handleOnChange}
 					checked={checked}
@@ -46,10 +45,13 @@ export const Label = forwardRef<HTMLInputElement, LabelProps<any>>(
 					className={styles.label}
 					style={imageIsOk ? ({ "--icon": `url(${img})` } as CSSProperties) : {}}
 				>
-					<Body1 Component="span">{currency}</Body1>
-					<Caption Component="span" lighten={80}>
-						{title}
+					<Body1 Component="span" className={styles.name}>
+						{name}
+					</Body1>
+					<Caption className={styles.count} Component="span" lighten={60}>
+						{count} tokens
 					</Caption>
+					<span className={styles.toggle}>{checked ? "on" : "off"}</span>
 				</label>
 			</div>
 		);

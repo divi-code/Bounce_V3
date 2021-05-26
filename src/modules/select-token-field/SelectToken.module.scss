@@ -28,44 +28,11 @@
 
   border-radius: 50%;
 
+  background-color: rgba(var(--primary-black), 0.1);
   background-image: var(--icon);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 
   overflow: hidden;
-}
-
-.modal {
-  display: grid;
-  grid-template-rows: auto 1fr 3.75rem;
-
-  height: calc(100% - var(--spacing-unit) * 4.5);
-
-  margin-top: calc(var(--spacing-unit) * 4.5);
-  padding: 0 calc(var(--spacing-unit) * 5);
-}
-
-.scroll {
-  position: relative;
-
-  height: calc(100% - var(--spacing-unit) * 4.5 - var(--spacing-unit) * 3.75);
-  margin-top: calc(var(--spacing-unit) * 4.5);
-  margin-bottom: calc(var(--spacing-unit) * 3.75);
-
-  overflow: hidden;
-}
-
-.list {
-  display: grid;
-  grid-row-gap: calc(var(--spacing-unit) * 3);
-
-  margin: 0;
-  padding: 0;
-
-  list-style: none;
-}
-
-.error {
-  position: relative;
 }

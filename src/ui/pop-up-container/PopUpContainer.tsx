@@ -1,6 +1,6 @@
 import classNames from "classnames";
 
-import { Fragment } from "react";
+import { Fragment, useRef, MouseEvent } from "react";
 import { FocusOn } from "react-focus-on";
 
 import { StrollableContainer } from "react-stroller";
@@ -9,6 +9,7 @@ import { MaybeWithClassName, WithChildren } from "@app/helper/react/types";
 
 import { useWindowSize } from "@app/hooks/use-window-size";
 
+import { ArrowBack } from "@app/ui/icons/arrow-back";
 import { Close } from "@app/ui/icons/close";
 
 import { ScrollBar } from "@app/ui/stroller-components";
@@ -32,6 +33,9 @@ type PopUpContainerType = {
 	scattered?: boolean;
 	scrollable?: boolean;
 	onBlur?(): void;
+	onBack(): void;
+	withBack?: boolean;
+	fixedHeight?: boolean;
 };
 
 type ComponentType = PopUpContainerType & MaybeWithClassName & WithChildren;
@@ -43,7 +47,7 @@ const Content: FC<WithChildren & { title?: string }> = ({ title, children }) => 
 		className={styles.content}
 		style={
 			{
-				"--template": title ? "3.25rem calc(100% - 3.25rem - 1.875rem)" : "calc(100% - 1.875rem)",
+				"--template": title ? "3.25rem calc(100% - 3.25rem)" : "100%",
 			} as CSSProperties
 		}
 	>
@@ -67,10 +71,20 @@ export const PopUpContainer: FC<ComponentType & MaybeWithClassName> = ({
 	scattered,
 	scrollable = true,
 	onBlur,
+	withBack,
+	onBack,
+	fixedHeight,
 }) => {
 	const windowHeight = useWindowSize()[1];
 
 	const Wrapper = scattered ? PopupTeleporterSource : Fragment;
+	const shadowRef = useRef<HTMLDivElement>(null);
+
+	const onShadowClick = (e: MouseEvent<HTMLDivElement>) => {
+		if (e.target === shadowRef.current) {
+			onClose();
+		}
+	};
 
 	return (
 		<Wrapper>
@@ -88,12 +102,13 @@ export const PopUpContainer: FC<ComponentType & MaybeWithClassName> = ({
 						)}
 						tabIndex={-1}
 						role="dialog"
-						onClick={onClose}
+						onClick={onShadowClick}
 						style={{ "--window-height": `${windowHeight}px` } as CSSProperties}
 						onBlur={onBlur}
+						ref={shadowRef}
 					>
 						<div
-							className={classNames(styles.container)}
+							className={classNames(styles.container, fixedHeight && styles.fixedHeight)}
 							style={{ maxWidth: maxWidth ? `${maxWidth / 16}rem` : "none" }}
 						>
 							<Button
@@ -105,6 +120,17 @@ export const PopUpContainer: FC<ComponentType & MaybeWithClassName> = ({
 							>
 								Close
 							</Button>
+							{withBack && (
+								<Button
+									className={styles.back}
+									icon={<ArrowBack style={{ width: 26 }} />}
+									color="primary-black"
+									variant="text"
+									onClick={onBack}
+								>
+									Back
+								</Button>
+							)}
 							{scrollable ? (
 								<StrollableContainer bar={ScrollBar} draggable>
 									<Content title={title}>{children}</Content>
