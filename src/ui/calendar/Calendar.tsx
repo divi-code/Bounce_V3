@@ -134,6 +134,7 @@ export const Calendar: FC<Props & MaybeWithClassName> = ({
 	useEffect(() => {
 		if (month < 11) {
 			setSecondMonth(month + 1);
+			setSecondYear(year);
 		} else {
 			setSecondMonth(0);
 			setSecondYear(year + 1);
