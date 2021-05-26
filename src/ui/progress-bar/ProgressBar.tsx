@@ -3,12 +3,12 @@ import { CSSProperties, FC } from "react";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
-import { StatusType } from "@app/ui/status";
+import { POOL_STATUS } from "@app/utils/pool";
 
 import styles from "./ProgressBar.module.scss";
 
 type ProgressBarType = {
-	status: StatusType;
+	status: POOL_STATUS;
 	fillInPercentage: number;
 };
 

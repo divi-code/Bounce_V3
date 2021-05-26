@@ -1,3 +1,5 @@
+import { POOL_STATUS } from "@app/utils/pool";
+
 import { Card } from "./Card";
 
 const settings = {
@@ -18,7 +20,7 @@ export const Default = () => {
 	return (
 		<div style={{ backgroundColor: "#E5E5E5", padding: 40 }}>
 			<div style={{ width: 400 }}>
-				<Card {...settings} status="live" fillInPercentage={40} />
+				<Card {...settings} status={POOL_STATUS.LIVE} fillInPercentage={40} />
 			</div>
 		</div>
 	);
@@ -28,7 +30,7 @@ export const Filled = () => {
 	return (
 		<div style={{ backgroundColor: "#E5E5E5", padding: 40 }}>
 			<div style={{ width: 400 }}>
-				<Card {...settings} status="filled" fillInPercentage={100} />
+				<Card {...settings} status={POOL_STATUS.FILLED} fillInPercentage={100} />
 			</div>
 		</div>
 	);
@@ -38,7 +40,7 @@ export const Closed = () => {
 	return (
 		<div style={{ backgroundColor: "#E5E5E5", padding: 40 }}>
 			<div style={{ width: 400 }}>
-				<Card {...settings} status="closed" fillInPercentage={40} />
+				<Card {...settings} status={POOL_STATUS.CLOSED} fillInPercentage={40} />
 			</div>
 		</div>
 	);

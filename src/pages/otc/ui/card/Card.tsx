@@ -12,13 +12,13 @@ import { Caption, Heading2 } from "@app/ui/typography";
 
 import { walletConversion } from "@app/utils/convertWallet";
 
-import styles from "./Card.module.scss";
+import { POOL_STATUS } from "@app/utils/pool";
 
-type StatusType = "live" | "filled" | "closed";
+import styles from "./Card.module.scss";
 
 type CardType = {
 	href?: string;
-	status: StatusType;
+	status: POOL_STATUS;
 	id: string;
 	name: string;
 	address: string;
@@ -48,6 +48,7 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 		live: "Live",
 		filled: "Filled",
 		closed: "Closed",
+		error: "Error",
 	};
 
 	const TOKEN_INFORMATION = {

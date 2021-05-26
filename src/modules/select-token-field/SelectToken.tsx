@@ -14,14 +14,7 @@ import { FieldFrame } from "@app/ui/field-frame";
 import { Arrow } from "@app/ui/icons/arrow-down";
 import { PopUpContainer } from "@app/ui/pop-up-container";
 
-import { getEtherChain } from "@app/web3/api/eth/token/token";
 import { useAllTokens, useTokenList } from "@app/web3/api/tokens";
-import {
-	getDefaultTokens,
-	useFilterApplicableTokens,
-} from "@app/web3/api/tokens/use-default-token-list";
-
-import { useChainId } from "@app/web3/hooks/use-web3";
 
 import { ListOfTokens } from "./ListOfTokens";
 import styles from "./SelectToken.module.scss";
@@ -157,7 +150,9 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 	);
 };
 
-export const SelectToken: FC<Omit<SelectTokenType, "options">> = (props) => {
+export const SelectToken: FC<
+	Omit<SelectTokenType, "options" | "tokenListControl" | "tokenList"> & MaybeWithClassName
+> = (props) => {
 	const tokenList = useTokenList();
 
 	const tokenListControl = useTokenListControl();

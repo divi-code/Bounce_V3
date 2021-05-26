@@ -33,7 +33,7 @@ type PopUpContainerType = {
 	scattered?: boolean;
 	scrollable?: boolean;
 	onBlur?(): void;
-	onBack(): void;
+	onBack?(): void;
 	withBack?: boolean;
 	fixedHeight?: boolean;
 };

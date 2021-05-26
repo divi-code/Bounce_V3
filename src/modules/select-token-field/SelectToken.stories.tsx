@@ -46,7 +46,14 @@ const defaultOptions = [
 ];
 
 export const Default = () => (
-	<SelectTokenView placeholder="From" name="date" onChange={() => null} options={defaultOptions} />
+	<SelectTokenView
+		placeholder="From"
+		name="date"
+		onChange={() => null}
+		options={defaultOptions}
+		tokenList={[]}
+		tokenListControl={{ activeLists: [], change: (listKey: string, change: boolean) => null }}
+	/>
 );
 
 export const InitialValue = () => (
@@ -56,6 +63,8 @@ export const InitialValue = () => (
 		value="eth7"
 		onChange={() => null}
 		options={defaultOptions}
+		tokenList={[]}
+		tokenListControl={{ activeLists: [], change: (listKey: string, change: boolean) => null }}
 	/>
 );
 
@@ -67,5 +76,7 @@ export const ReadOnly = () => (
 		onChange={() => null}
 		readOnly
 		options={defaultOptions}
+		tokenList={[]}
+		tokenListControl={{ activeLists: [], change: (listKey: string, change: boolean) => null }}
 	/>
 );
