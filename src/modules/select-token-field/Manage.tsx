@@ -1,9 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { FC, useRef, useState } from "react";
 
 import { StrollableContainer } from "react-stroller";
 
 import { uid } from "react-uid";
 
+import { ShortTokenListInfo, TokenListControl } from "@app/modules/select-token-field/types";
 import { Button } from "@app/ui/button";
 
 import { Search } from "@app/ui/icons/search";
@@ -18,12 +19,11 @@ enum TOGGLES {
 	tokens = "tokens",
 }
 
-export const Manage = ({ tokens, onChange }) => {
+export const Manage: FC<{
+	tokenLists: ShortTokenListInfo[];
+	tokenListControl: TokenListControl;
+}> = ({ tokenLists, tokenListControl }) => {
 	const [toggle, setToggle] = useState(TOGGLES.list);
-
-	const checked = false;
-
-	const activeRef = useRef<HTMLInputElement>(null);
 
 	return (
 		<div className={styles.component}>
@@ -64,16 +64,16 @@ export const Manage = ({ tokens, onChange }) => {
 				<div className={styles.scroll}>
 					<StrollableContainer bar={ScrollBar} draggable inBetween={<VerticalScrollIndicator />}>
 						<ul className={styles.list}>
-							{tokens.map((item) => (
+							{tokenLists.map((item) => (
 								<li key={item.key}>
 									<Toggle
 										id={uid(item)}
 										count={item.count}
 										img={item.img}
 										name={item.name}
-										checked={checked}
-										reference={checked ? activeRef : undefined}
-										onChange={onChange}
+										checked={tokenListControl.activeLists.includes(item.key)}
+										reference={item.key}
+										onChange={tokenListControl.change}
 									/>
 								</li>
 							))}

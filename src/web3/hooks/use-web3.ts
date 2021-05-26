@@ -1,5 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
-import { useMemo } from "react";
+import { useDebugValue, useMemo } from "react";
 import Web3 from "web3";
 
 import { WEB3_NETWORKS } from "@app/web3/networks/const";
@@ -17,9 +17,10 @@ export const useWeb3 = (): Web3 => {
 };
 
 export const useChainId = (): WEB3_NETWORKS => {
-	const { chainId } = useWeb3React();
+	const { chainId = WEB3_NETWORKS.MAIN } = useWeb3React();
+	useDebugValue(chainId);
 
-	return chainId || WEB3_NETWORKS.MAIN;
+	return chainId;
 };
 
 export const hexifyMessage = (msg: string): string =>

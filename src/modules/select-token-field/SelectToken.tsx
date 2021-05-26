@@ -1,6 +1,6 @@
 import classNames from "classnames";
 
-import React, { CSSProperties, FC, useCallback, useEffect, useRef, useState } from "react";
+import React, { CSSProperties, FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useUID } from "react-uid";
 
@@ -8,14 +8,20 @@ import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { useControlPopUp } from "@app/hooks/use-control-popup";
 import { Manage } from "@app/modules/select-token-field/Manage";
+import { useTokenListControl } from "@app/modules/select-token-field/tokenControl";
+import { ShortTokenListInfo, TokenListControl } from "@app/modules/select-token-field/types";
 import { FieldFrame } from "@app/ui/field-frame";
 import { Arrow } from "@app/ui/icons/arrow-down";
 import { PopUpContainer } from "@app/ui/pop-up-container";
 
+import { getEtherChain } from "@app/web3/api/eth/token/token";
 import { useTokenList } from "@app/web3/api/tokens";
-import { useDefaultTokens } from "@app/web3/api/tokens/use-default-token-list";
+import {
+	getDefaultTokens,
+	useFilterApplicableTokens,
+} from "@app/web3/api/tokens/use-default-token-list";
 
-import { useConnected } from "@app/web3/hooks/use-web3";
+import { useChainId } from "@app/web3/hooks/use-web3";
 
 import { ListOfTokens } from "./ListOfTokens";
 import styles from "./SelectToken.module.scss";
@@ -27,7 +33,8 @@ type SelectTokenType = {
 	readOnly?: boolean;
 	required?: boolean;
 	options?: Array<any>;
-	tokens?: Array<any>;
+	tokenList?: ShortTokenListInfo[];
+	tokenListControl: TokenListControl;
 	error?: string;
 	onBlur?(): void;
 	onChange(date: string): void;
@@ -42,7 +49,8 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 	readOnly,
 	required,
 	options,
-	tokens,
+	tokenList,
+	tokenListControl,
 	onBlur,
 	error,
 }) => {
@@ -140,7 +148,7 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 							options={options}
 						/>
 					) : (
-						<Manage tokens={tokens} onChange={() => null} />
+						<Manage tokenLists={tokenList} tokenListControl={tokenListControl} />
 					)}
 					<popUp.DefinePresent />
 				</PopUpContainer>
@@ -150,22 +158,41 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 };
 
 export const SelectToken: FC<Omit<SelectTokenType, "options">> = (props) => {
-	const active = useConnected();
-	const tokens = useDefaultTokens();
-	const allTokens = useTokenList();
+	const tokenList = useTokenList();
+	const tokenListControl = useTokenListControl();
+	const chainId = useChainId();
+	const ether = getEtherChain(chainId);
 
-	const options = !active
-		? []
-		: tokens.map((token) => {
+	const { activeLists } = tokenListControl;
+
+	const allTokens = useMemo(() => {
+		return [
+			[ether],
+			getDefaultTokens(),
+			...tokenList.filter((list) => activeLists.includes(list.name)).map((list) => list.tokens),
+		].reduce((acc, item) => {
+			acc.push(...item);
+
+			return acc;
+		}, []);
+	}, [tokenList, activeLists]);
+
+	const tokens = useFilterApplicableTokens(allTokens, chainId);
+
+	const options = useMemo(
+		() =>
+			tokens.map((token) => {
 				return {
-					key: token.address,
+					key: token.symbol,
 					title: token.name,
 					currency: token.symbol,
 					img: token.logoURI,
 				};
-		  });
+			}),
+		[tokens]
+	);
 
-	const convertedTokens = Object.values(allTokens).map((value) => {
+	const convertedTokensList: ShortTokenListInfo[] = tokenList.map((value) => {
 		return {
 			key: value.name,
 			name: value.name,
@@ -174,7 +201,12 @@ export const SelectToken: FC<Omit<SelectTokenType, "options">> = (props) => {
 		};
 	});
 
-	console.log(convertedTokens);
-
-	return <SelectTokenView options={options} tokens={convertedTokens} {...props} />;
+	return (
+		<SelectTokenView
+			options={options}
+			tokenList={convertedTokensList}
+			tokenListControl={tokenListControl}
+			{...props}
+		/>
+	);
 };

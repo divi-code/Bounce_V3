@@ -5,12 +5,12 @@ import { useChainId } from "@app/web3/hooks/use-web3";
 
 import defaultList from "./defaultList.json";
 
-export const useDefaultTokens = (): TokenInfo[] => {
-	const chainId = useChainId();
+export const getDefaultTokens = (): TokenInfo[] => {
+	return (defaultList as any).tokens as TokenInfo[];
+};
 
+export const useFilterApplicableTokens = (tokenList: TokenInfo[], chainId: number): TokenInfo[] => {
 	return useMemo(() => {
-		return ((defaultList as any).tokens as TokenInfo[]).filter(
-			(token) => token.chainId === chainId
-		);
-	}, [chainId]);
+		return tokenList.filter((token) => token.chainId === chainId);
+	}, [tokenList, chainId]);
 };
