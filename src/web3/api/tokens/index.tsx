@@ -1,9 +1,17 @@
-import { TokenList } from "@uniswap/token-lists";
+import { TokenInfo, TokenList } from "@uniswap/token-lists";
 import { useWeb3React } from "@web3-react/core";
-import { createContext, FC, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, FC, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
+import { useTokenListControl } from "@app/modules/select-token-field/tokenControl";
+import { getEtherChain } from "@app/web3/api/eth/token/token";
 import getTokenList from "@app/web3/api/tokens/get-token-list";
 import { DEFAULT_LIST_OF_LISTS } from "@app/web3/api/tokens/lists";
+
+import {
+	getDefaultTokens,
+	useFilterApplicableTokens,
+} from "@app/web3/api/tokens/use-default-token-list";
+import { useChainId } from "@app/web3/hooks/use-web3";
 
 import resolveENSContentHash from "./ens/ens";
 
@@ -51,4 +59,32 @@ export const TokenListProvider: FC = ({ children }) => {
 	}, [ensResolver, active]);
 
 	return <tokenListContent.Provider value={tokens}>{children}</tokenListContent.Provider>;
+};
+
+export const useAllTokens = (filter: (list: TokenList) => boolean) => {
+	const tokenList = useTokenList();
+	const chainId = useChainId();
+	const ether = getEtherChain(chainId);
+
+	const allTokens = useMemo(() => {
+		return [
+			[ether],
+			getDefaultTokens(),
+			...tokenList.filter(filter).map((list) => list.tokens),
+		].reduce((acc, item) => {
+			acc.push(...item);
+
+			return acc;
+		}, []);
+	}, [ether, tokenList, filter]);
+
+	return useFilterApplicableTokens(allTokens, chainId);
+};
+
+const passAll = () => true;
+
+export const useTokenSearch = () => {
+	const tokens = useAllTokens(passAll);
+
+	return (symbol: string): TokenInfo | undefined => tokens.find((token) => token.symbol === symbol);
 };

@@ -15,7 +15,7 @@ import { Arrow } from "@app/ui/icons/arrow-down";
 import { PopUpContainer } from "@app/ui/pop-up-container";
 
 import { getEtherChain } from "@app/web3/api/eth/token/token";
-import { useTokenList } from "@app/web3/api/tokens";
+import { useAllTokens, useTokenList } from "@app/web3/api/tokens";
 import {
 	getDefaultTokens,
 	useFilterApplicableTokens,
@@ -159,25 +159,13 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 
 export const SelectToken: FC<Omit<SelectTokenType, "options">> = (props) => {
 	const tokenList = useTokenList();
-	const tokenListControl = useTokenListControl();
-	const chainId = useChainId();
-	const ether = getEtherChain(chainId);
 
+	const tokenListControl = useTokenListControl();
 	const { activeLists } = tokenListControl;
 
-	const allTokens = useMemo(() => {
-		return [
-			[ether],
-			getDefaultTokens(),
-			...tokenList.filter((list) => activeLists.includes(list.name)).map((list) => list.tokens),
-		].reduce((acc, item) => {
-			acc.push(...item);
-
-			return acc;
-		}, []);
-	}, [tokenList, activeLists]);
-
-	const tokens = useFilterApplicableTokens(allTokens, chainId);
+	const tokens = useAllTokens(
+		useCallback((list) => activeLists.includes(list.name), [activeLists])
+	);
 
 	const options = useMemo(
 		() =>

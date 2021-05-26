@@ -13,7 +13,7 @@ import styles from "./ProvideTokenInformation.module.scss";
 
 type EffectorType = {
 	address?: string;
-	decimal?: string;
+	decimal?: number;
 	onTokenChange(token: string): void;
 };
 
@@ -49,7 +49,7 @@ export const ProvideTokenInformation: FC<ProvideTokenInformationType> = ({
 }) => {
 	return (
 		<Form onSubmit={onSubmit} className={styles.form} initialValues={{ address, decimal }}>
-			<Effector decimal={decimal} address={decimal} onTokenChange={onTokenChange} />
+			<Effector decimal={decimal} address={address} onTokenChange={onTokenChange} />
 			<Label Component="div" label="Token">
 				<SelectTokenField name="tokenFrom" placeholder="Select a token" required />
 			</Label>

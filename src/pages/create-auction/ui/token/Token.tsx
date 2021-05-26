@@ -4,6 +4,7 @@ import { defineFlowStep } from "@app/modules/flow/definition";
 import { useFlowControl } from "@app/modules/flow/hooks";
 
 import { ProvideTokenInformation } from "@app/modules/provide-token-information";
+import { useTokenSearch } from "@app/web3/api/tokens";
 
 type TokenOutType = {
 	tokenFrom: string;
@@ -19,21 +20,19 @@ const TokenImp = () => {
 		moveForward();
 	};
 
-	const [decimal, setDecimal] = useState<string | undefined>();
+	const [decimal, setDecimal] = useState<number | undefined>();
 	const [address, setAddress] = useState<string | undefined>();
 
-	const getAddressByToken = (e: string) => {
-		return "0x00A9b7ED8C71C6910Fb4A9bc41de2391b74c3333";
-	};
-
-	const getDecimalByToken = (e: string) => {
-		return "2";
-	};
+	const findToken = useTokenSearch();
 
 	const onTokenChange = (token: string) => {
 		if (token) {
-			setDecimal(getDecimalByToken(token));
-			setAddress(getAddressByToken(token));
+			const record = findToken(token);
+
+			if (record) {
+				setDecimal(record.decimals);
+				setAddress(record.address);
+			}
 		}
 	};
 
