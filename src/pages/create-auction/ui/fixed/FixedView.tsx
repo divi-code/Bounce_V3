@@ -3,6 +3,7 @@ import { FC } from "react";
 import { FormSpy } from "react-final-form";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
+import { Currency } from "@app/modules/currency/Currency";
 import { Form } from "@app/modules/form";
 import { Label } from "@app/modules/label";
 import { RadioField } from "@app/modules/radio-field";
@@ -50,18 +51,24 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 								type="text"
 								name="swapRatio"
 								placeholder="0.00"
-								after={props.values.tokenTo}
+								after={<Currency token={props.values.tokenTo} />}
 								required
 							/>
 						</Body1>
 					</Label>
 				)}
 			</FormSpy>
-			<Label Component="label" label="Amount">
-				<TextField type="text" name="amount" placeholder="0.00" after={tokenFrom} required />
+			<Label Component="label" label="Amount" tooltip="Create new item">
+				<TextField
+					type="text"
+					name="amount"
+					placeholder="0.00"
+					after={<Currency token={tokenFrom} />}
+					required
+				/>
 			</Label>
 			<Label Component="div" label="Allocation per Wallet" tooltip="Create new item">
-				<RadioGroup count={2}>
+				<RadioGroup count={2} fixed={true}>
 					<RadioField name="allocation" label="No Limits" value="no-limits" />
 					<RadioField name="allocation" label="Limited" value="limited" />
 				</RadioGroup>
@@ -70,7 +77,13 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 				{(props) =>
 					props.values.allocation === "limited" && (
 						<Label Component="label" label="Limit">
-							<TextField type="text" name="limit" placeholder="0.00" after={tokenFrom} required />
+							<TextField
+								type="text"
+								name="limit"
+								placeholder="0.00"
+								after={<Currency token={tokenFrom} />}
+								required
+							/>
 						</Label>
 					)
 				}

@@ -9,3 +9,7 @@
 
   padding-top: var(--spacing-unit);
 }
+
+.fixed {
+  grid-template-columns: 15rem auto;
+}

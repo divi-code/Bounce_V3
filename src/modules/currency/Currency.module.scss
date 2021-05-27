@@ -1,0 +1,25 @@
+.component {
+  display: grid;
+  grid-auto-flow: column;
+  grid-column-gap: calc(var(--spacing-unit) * 1);
+  justify-content: start;
+  align-items: center;
+}
+
+.component::before {
+  position: relative;
+  content: "";
+
+  width: 1.5em;
+  height: 1.5rem;
+
+  border-radius: 50%;
+
+  background-color: rgba(var(--primary-black), 0.1);
+  background-image: var(--icon);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  overflow: hidden;
+}
