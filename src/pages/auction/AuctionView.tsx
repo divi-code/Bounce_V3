@@ -37,9 +37,15 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 					visibleText={result === undefined}
 				>
 					<Form className={styles.form} onSubmit={onSubmit}>
-						<SelectTokenField name="token-type" placeholder="Select a token" />
-						<SelectAuction required name="auctionType" />
-						<PoolSearchField placeholder="Pool Information (Optional)" name="pool" />
+						<div>
+							<SelectTokenField name="token-type" placeholder="Select a token" />
+						</div>
+						<div>
+							<SelectAuction required name="auctionType" />
+						</div>
+						<div>
+							<PoolSearchField placeholder="Pool Information (Optional)" name="pool" />
+						</div>
 						<Button
 							className={styles.submit}
 							size="large"

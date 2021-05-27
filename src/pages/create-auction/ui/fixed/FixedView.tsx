@@ -3,7 +3,7 @@ import { FC } from "react";
 import { FormSpy } from "react-final-form";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
-import { Currency } from "@app/modules/currency/Currency";
+import { Currency } from "@app/modules/currency";
 import { Form } from "@app/modules/form";
 import { Label } from "@app/modules/label";
 import { RadioField } from "@app/modules/radio-field";
@@ -22,6 +22,11 @@ type FixedViewType = {
 	tokenFrom: string;
 	balance: string;
 };
+
+export enum ALLOCATION_TYPE {
+	noLimits = "no-limits",
+	limited = "limited",
+}
 
 export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 	onSubmit,
@@ -69,8 +74,8 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 			</Label>
 			<Label Component="div" label="Allocation per Wallet" tooltip="Create new item">
 				<RadioGroup count={2} fixed={true}>
-					<RadioField name="allocation" label="No Limits" value="no-limits" />
-					<RadioField name="allocation" label="Limited" value="limited" />
+					<RadioField name="allocation" label="No Limits" value={ALLOCATION_TYPE.noLimits} />
+					<RadioField name="allocation" label="Limited" value={ALLOCATION_TYPE.limited} />
 				</RadioGroup>
 			</Label>
 			<FormSpy subscription={{ values: true }}>

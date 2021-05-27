@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { Fragment } from "react";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
-import { Caption, Heading3 } from "@app/ui/typography";
+import { Caption } from "@app/ui/typography";
 
 import styles from "./DescriptionList.module.scss";
 
@@ -20,9 +20,9 @@ export const DescriptionList: FC<DescriptionListType & MaybeWithClassName> = ({
 }) => {
 	return (
 		<div className={classNames(className, styles.component)}>
-			<Heading3 Component="h3" className={styles.title}>
+			<Caption Component="h3" className={styles.title} weight="medium">
 				{title}
-			</Heading3>
+			</Caption>
 			<dl className={styles.list}>
 				{Object.keys(data).map((key) => (
 					<Fragment key={key}>

@@ -19,6 +19,11 @@ type ProvideAdvancedSettingsType = {
 	onSubmit(values): void;
 };
 
+export enum WHITELIST_TYPE {
+	yes = "yes",
+	no = "no",
+}
+
 export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSettingsType> = ({
 	onSubmit,
 }) => {
@@ -33,14 +38,7 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 				<TextField type="text" name="poolName" required />
 			</Label>
 			<div ref={setBlockRef}>
-				<div
-					style={{
-						display: "grid",
-						gridTemplateColumns: "repeat(2, 1fr)",
-						alignItems: "start",
-						gridColumnGap: "20px",
-					}}
-				>
+				<div className={styles.period}>
 					<Label Component="div" label="Start Time">
 						<DateField
 							placeholder="10.01.2021"
@@ -70,10 +68,25 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 					</FormSpy>
 				</div>
 			</div>
+			<FormSpy subscription={{ values: true }}>
+				{(props) => (
+					<>
+						<Label Component="label" label="Delay Unlocking Token" tooltip="Create new item">
+							<DateField
+								placeholder="10.01.2021"
+								name="claimStart"
+								min={new Date(props.values.startPool).toString()}
+								label="Choose date"
+								quickNav={["in-5-days", "in-7-days", "in-10-days"]}
+							/>
+						</Label>
+					</>
+				)}
+			</FormSpy>
 			<Label Component="div" label="Whitelist" tooltip="Create new item">
 				<RadioGroup count={2}>
-					<RadioField name="whitelist" label="No" value="no" />
-					<RadioField name="whitelist" label="Yes" value="yes" />
+					<RadioField name="whitelist" label="No" value={WHITELIST_TYPE.no} />
+					<RadioField name="whitelist" label="Yes" value={WHITELIST_TYPE.yes} />
 				</RadioGroup>
 			</Label>
 			<PrimaryButton className={styles.submit} size="large" submit>

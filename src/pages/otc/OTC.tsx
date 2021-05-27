@@ -63,13 +63,19 @@ export const OTCView: FC<AuctionType & MaybeWithClassName> = ({ className, resul
 					<Form onSubmit={onSubmit}>
 						{(sub) => (
 							<form onSubmit={sub.handleSubmit} className={styles.form}>
-								<SelectTokenField name="token-type" placeholder="Select a token" />
-								<SelectField
-									name="auction-status"
-									placeholder="Choose Auction Type"
-									options={LIST}
-								/>
-								<PoolSearchField placeholder="Pool Information (Optional)" name="pool" />
+								<div>
+									<SelectTokenField name="token-type" placeholder="Select a token" />
+								</div>
+								<div>
+									<SelectField
+										name="auction-status"
+										placeholder="Choose Auction Type"
+										options={LIST}
+									/>
+								</div>
+								<div>
+									<PoolSearchField placeholder="Pool Information (Optional)" name="pool" />
+								</div>
 								<Button
 									className={styles.submit}
 									size="large"

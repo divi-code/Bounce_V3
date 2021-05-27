@@ -3,17 +3,17 @@ import { useState } from "react";
 import { defineFlowStep } from "@app/modules/flow/definition";
 import { useFlowControl, useFlowData } from "@app/modules/flow/hooks";
 
-import { FixedView } from "./FixedView";
+import { ALLOCATION_TYPE, FixedView } from "./FixedView";
 
 type FixedInType = {
 	tokenFrom: string;
 };
 
-type FixedOutType = {
+export type FixedOutType = {
 	tokenTo: string;
 	swapRatio: string;
 	amount: string;
-	allocation: string;
+	allocation: ALLOCATION_TYPE;
 	limit: string;
 };
 

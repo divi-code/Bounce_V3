@@ -34,6 +34,7 @@ export const CreateFlow: FC<CreateFlowType & MaybeWithClassName> = ({
 			onComplete={onComplete}
 			className={styles.step}
 			innerClassName={styles.innerStep}
+			type={type}
 		>
 			{(body, { currentStep, isLastStep, moveBack, moveForward }) => {
 				return (

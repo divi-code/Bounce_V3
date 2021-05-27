@@ -6,17 +6,22 @@ import { useFlowControl } from "@app/modules/flow/hooks";
 import { ProvideTokenInformation } from "@app/modules/provide-token-information";
 import { useTokenSearch } from "@app/web3/api/tokens";
 
-type TokenOutType = {
+export type TokenOutType = {
 	tokenFrom: string;
-	address: string;
-	decimal: string;
+	tokenAddress: string;
+	tokenDecimal: string;
 };
 
 const TokenImp = () => {
 	const { moveForward, addData } = useFlowControl<TokenOutType>();
 
 	const onSubmit = async (values: any) => {
-		addData({ tokenFrom: values.tokenFrom, address: values.address, decimal: values.decimal });
+		addData({
+			tokenFrom: values.tokenFrom,
+			tokenAddress: values.address,
+			tokenDecimal: values.decimal,
+		});
+
 		moveForward();
 	};
 

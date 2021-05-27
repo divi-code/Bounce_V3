@@ -1,1 +1,1 @@
-export { ProvideAdvancedSettings } from "./ProvideAdvancedSettings";
+export { ProvideAdvancedSettings, WHITELIST_TYPE } from "./ProvideAdvancedSettings";

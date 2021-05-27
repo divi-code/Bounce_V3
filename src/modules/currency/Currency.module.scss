@@ -3,14 +3,14 @@
   grid-auto-flow: column;
   grid-column-gap: calc(var(--spacing-unit) * 1);
   justify-content: start;
-  align-items: center;
+  align-content: center;
 }
 
 .component::before {
   position: relative;
   content: "";
 
-  width: 1.5em;
+  width: 1.5rem;
   height: 1.5rem;
 
   border-radius: 50%;
@@ -22,4 +22,13 @@
   background-size: cover;
 
   overflow: hidden;
+}
+
+.small {
+  grid-column-gap: calc(var(--spacing-unit) * 0.75);
+}
+
+.small::before {
+  width: 0.875rem;
+  height: 0.875rem;
 }

@@ -3,10 +3,12 @@ import { useFlowControl } from "@app/modules/flow/hooks";
 
 import { ProvideAdvancedSettings } from "@app/modules/provide-advanced-settings";
 
-type SettingsOutType = {
+export type SettingsOutType = {
 	poolName: string;
 	startPool: string;
 	endPool: string;
+	delayClaim: boolean;
+	claimStart: string;
 	whitelist: string;
 };
 
@@ -18,6 +20,8 @@ const SettingsImp = () => {
 			poolName: values.poolName,
 			startPool: values.startPool,
 			endPool: values.endPool,
+			delayClaim: true,
+			claimStart: values.claimStart,
 			whitelist: values.whitelist,
 		});
 
