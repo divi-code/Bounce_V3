@@ -1,7 +1,6 @@
 import Web3 from "web3";
 import { AbstractProvider } from "web3-core";
 import { Contract } from "web3-eth-contract";
-import { AbiItem } from "web3-utils";
 
 export function getContract(provider: AbstractProvider, abi: any, address: string): Contract {
 	const web3 = new Web3(provider);

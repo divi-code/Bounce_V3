@@ -1,3 +1,5 @@
+import { ADDRESS_MAPPING } from "@app/web3/networks/mapping";
+
 export enum POOL_TYPE {
 	any = "any",
 	fixed = "fixed",
@@ -14,4 +16,8 @@ export const POOL_NAME_MAPPING = {
 	[POOL_TYPE.english]: "English Auction",
 	[POOL_TYPE.dutch]: "Dutch Auction",
 	[POOL_TYPE.lottery]: "Lottery Auction",
+};
+
+export const POOL_ADDRESS_MAPPING = {
+	[POOL_TYPE.fixed]: ADDRESS_MAPPING.FIX_SWAP,
 };

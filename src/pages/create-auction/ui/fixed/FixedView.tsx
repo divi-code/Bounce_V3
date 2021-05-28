@@ -53,7 +53,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 						<Body1 Component="div" className={styles.swap}>
 							1 {tokenFrom} ={"\u00a0"}
 							<TextField
-								type="text"
+								type="number"
 								name="swapRatio"
 								placeholder="0.00"
 								after={<Currency token={props.values.tokenTo} />}
@@ -65,7 +65,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 			</FormSpy>
 			<Label Component="label" label="Amount" tooltip="Create new item">
 				<TextField
-					type="text"
+					type="number"
 					name="amount"
 					placeholder="0.00"
 					after={<Currency token={tokenFrom} />}

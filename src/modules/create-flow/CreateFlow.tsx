@@ -13,7 +13,7 @@ import styles from "./CreateFlow.module.scss";
 type CreateFlowType = {
 	type: string;
 	steps: any;
-	onComplete(): void;
+	onComplete(data: unknown): void;
 };
 
 const CAPTIONS = {
@@ -51,7 +51,7 @@ export const CreateFlow: FC<CreateFlowType & MaybeWithClassName> = ({
 								{body}
 							</CreateSteps>
 						) : (
-							<CreateConfirmation onComplete={onComplete} moveBack={moveBack}>
+							<CreateConfirmation onComplete={moveForward} moveBack={moveBack}>
 								{body}
 							</CreateConfirmation>
 						)}

@@ -11,8 +11,8 @@ type FixedInType = {
 
 export type FixedOutType = {
 	tokenTo: string;
-	swapRatio: string;
-	amount: string;
+	swapRatio: number;
+	amount: number;
 	allocation: ALLOCATION_TYPE;
 	limit: string;
 };
@@ -24,8 +24,8 @@ const FixedImp = () => {
 	const onSubmit = async (values: any) => {
 		addData({
 			tokenTo: values.tokenTo,
-			swapRatio: values.swapRatio,
-			amount: values.amount,
+			swapRatio: parseInt(values.swapRatio),
+			amount: parseInt(values.amount),
 			allocation: values.allocation,
 			limit: values.limit ? values.limit : "",
 		});

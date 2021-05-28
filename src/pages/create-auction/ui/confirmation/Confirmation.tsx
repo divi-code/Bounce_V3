@@ -27,7 +27,7 @@ type ConfirmationType = {
 	declaim: string;
 	tokenTo: ReactNode;
 	swapRatio: string;
-	amount: string;
+	amount: number;
 	allocation: string;
 	whitelist: string;
 	duration: string;
@@ -82,12 +82,12 @@ export const ConfirmationView: FC<MaybeWithClassName & ConfirmationType> = ({
 	);
 };
 
-type ConfirmationInType = TokenOutType & SettingsOutType & FixedOutType;
+export type ConfirmationInType = TokenOutType & SettingsOutType & FixedOutType;
 
 export const ConfirmationImp: FC<{ type: POOL_TYPE }> = ({ type }) => {
 	const {
 		poolName,
-		tokenAddress,
+		tokenFromAddress,
 		tokenFrom,
 		tokenDecimal,
 		tokenTo,
@@ -107,7 +107,7 @@ export const ConfirmationImp: FC<{ type: POOL_TYPE }> = ({ type }) => {
 	return (
 		<ConfirmationView
 			name={poolName}
-			address={walletConversion(tokenAddress)}
+			address={walletConversion(tokenFromAddress)}
 			tokenFrom={<Currency token={tokenFrom} small={true} />}
 			declaim={tokenDecimal}
 			tokenTo={<Currency token={tokenTo} small={true} />}

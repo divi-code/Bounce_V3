@@ -8,7 +8,7 @@ import { useTokenSearch } from "@app/web3/api/tokens";
 
 export type TokenOutType = {
 	tokenFrom: string;
-	tokenAddress: string;
+	tokenFromAddress: string;
 	tokenDecimal: string;
 };
 
@@ -18,7 +18,7 @@ const TokenImp = () => {
 	const onSubmit = async (values: any) => {
 		addData({
 			tokenFrom: values.tokenFrom,
-			tokenAddress: values.address,
+			tokenFromAddress: values.address,
 			tokenDecimal: values.decimal,
 		});
 

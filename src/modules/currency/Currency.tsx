@@ -52,7 +52,7 @@ export const Currency: FC<MaybeWithClassName & { token: string; small?: boolean 
 }) => {
 	const findToken = useTokenSearch();
 
-	const record = findToken(token);
-
-	return token ? <CurrencyView symbol={token} img={record.logoURI} small={small} /> : null;
+	return token ? (
+		<CurrencyView symbol={token} img={findToken(token).logoURI} small={small} />
+	) : null;
 };

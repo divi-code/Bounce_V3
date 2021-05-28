@@ -8,7 +8,7 @@ import { isRequired } from "@app/utils/validation";
 
 type TextFieldType = {
 	name: string;
-	type: "text" | "email";
+	type: "text" | "email" | "number";
 	placeholder?: string;
 	readOnly?: boolean;
 	initialValue?: any;
