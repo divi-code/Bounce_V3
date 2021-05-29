@@ -66,3 +66,7 @@ export const createAuctionPool = (
 export const getBalance = async (contract: ContractType, account: string) => {
 	return contract.methods.balanceOf(account).call();
 };
+
+export const getPools = async (contract: ContractType, poolID: number) => {
+	return contract.methods.pools(poolID).call();
+};

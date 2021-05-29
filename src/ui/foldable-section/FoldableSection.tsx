@@ -15,7 +15,7 @@ type FoldableType = {
 	keepMaximum?: boolean;
 	useHeight?: boolean;
 	timeout: number;
-	ssr: boolean;
+	ssr?: boolean;
 	duration?: number;
 };
 
@@ -95,7 +95,7 @@ export const FoldableSection: FC<ComponentType> = ({
 					setIdle(true);
 				}, timeout);
 
-				return () => clearTimeout(tm);
+				// return () => clearTimeout(tm);
 			}
 		}
 

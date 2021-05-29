@@ -6,15 +6,32 @@ import { POOL_NAME_MAPPING } from "@app/api/pool/const";
 
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
+import { divide } from "@app/utils/bn";
+import { weiToNum } from "@app/utils/bn/wei";
+import { POOL_STATUS } from "@app/utils/pool";
 import { PoolInfoType, queryPoolInformation } from "@app/web3/api/bounce/pool-search";
+import { queryERC20Token } from "@app/web3/api/eth/api";
+import { useTokenSearch } from "@app/web3/api/tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 import { ADDRESS_MAPPING } from "@app/web3/networks/mapping";
 
 import { AuctionView } from "./AuctionView";
 
-import { CardType } from "./ui/card";
-
 const WINDOW_SIZE = 10;
+
+const getProgress = (amount, totalAmount) => +divide(amount, totalAmount, 0);
+
+const getSwapRatio = (
+	fromAmount: string,
+	toAmount: string,
+	fromDecimals: number,
+	toDecimals: number
+): string => {
+	const from = weiToNum(fromAmount, fromDecimals);
+	const to = weiToNum(toAmount, toDecimals);
+
+	return divide(from, to, 2);
+};
 
 export const Auction = () => {
 	const provider = useWeb3Provider();
@@ -47,8 +64,8 @@ export const Auction = () => {
 	const [searchWindow, setSearchWindow] = useState<number[]>([]);
 
 	useEffect(() => {
-		const page = 10;
-		setSearchWindow(poolList.slice(page * WINDOW_SIZE, (page + 1) * WINDOW_SIZE));
+		const page = 0;
+		setSearchWindow(poolList.filter(Boolean).slice(page * WINDOW_SIZE, (page + 1) * WINDOW_SIZE));
 	}, [poolList]);
 
 	useEffect(() => {
@@ -65,28 +82,54 @@ export const Auction = () => {
 				chainId,
 				searchWindow
 			);
-			setPoolInformation(pools);
+			setPoolInformation(pools.filter(Boolean));
 			console.log(pools);
 		})();
 	}, [chainId, searchWindow, provider]);
 
-	const convertedPoolInformation: CardType[] = poolInformation.map((pool) => {
-		return {
-			href: "",
-			status: pool.status,
-			time: pool.closeTime,
-			id: pool.poolID,
-			name: pool.poolName,
-			address: pool.creator,
-			type: POOL_NAME_MAPPING[searchFilters.auctionType],
-			tokenCurrency: pool.fromToken.symbol,
-			tokenSymbol: "",
-			auctionAmount: pool.toBidAmount,
-			auctionCurrency: pool.toToken.symbol,
-			auctionPrice: pool.currentPrice,
-			fillInPercentage: pool.progress,
-		};
-	});
+	const findToken = useTokenSearch();
+
+	const [convertedPoolInformation, setConvertedPoolInformation] = useState<PoolInfoType[]>([]);
+
+	useEffect(() => {
+		Promise.all(
+			poolInformation.map(async (pool) => {
+				const fromSymbol = await queryERC20Token(provider, pool.token0, chainId);
+				const toSymbol = await queryERC20Token(provider, pool.token1, chainId);
+
+				const from = findToken(fromSymbol.symbol);
+				const to = findToken(toSymbol.symbol);
+
+				return {
+					href: "",
+					status: POOL_STATUS.LIVE,
+					time: pool.openAt,
+					id: pool.poolID,
+					name: pool.name,
+					address: pool.token0,
+					type: POOL_NAME_MAPPING[searchFilters.auctionType],
+					tokenCurrency: from.symbol,
+					tokenLogo: from.logoURI,
+					auctionAmount: pool.amountTotal0,
+					auctionCurrency: to.symbol,
+					auctionPrice: getSwapRatio(
+						pool.amountTotal0,
+						pool.amountTotal1,
+						from.decimals,
+						to.decimals
+					),
+					fillInPercentage: pool.amountSwap0 ? getProgress(pool.amountSwap0, pool.amountTotal0) : 0,
+				};
+			})
+		).then((info) => setConvertedPoolInformation(info));
+	}, [
+		chainId,
+		findToken,
+		poolInformation,
+		provider,
+		searchFilters.auctionType,
+		setConvertedPoolInformation,
+	]);
 
 	return (
 		<AuctionView

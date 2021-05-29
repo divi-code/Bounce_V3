@@ -25,7 +25,7 @@ export type CardType = {
 	address: string;
 	type: string;
 	tokenCurrency: string;
-	tokenSymbol: string;
+	tokenLogo: string;
 	auctionAmount: string;
 	auctionCurrency: string;
 	auctionPrice: string | number;
@@ -41,7 +41,7 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 	name,
 	address,
 	type,
-	tokenSymbol,
+	tokenLogo,
 	tokenCurrency,
 	auctionAmount,
 	auctionCurrency,
@@ -59,7 +59,7 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 		"Contact address": walletConversion(address),
 		"Pool type": type,
 		"Token symbol": (
-			<span style={{ "--icon": `url("${tokenSymbol}")` } as CSSProperties}>{tokenCurrency}</span>
+			<span style={{ "--icon": `url("${tokenLogo}")` } as CSSProperties}>{tokenCurrency}</span>
 		),
 	};
 

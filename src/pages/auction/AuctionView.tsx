@@ -57,7 +57,7 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 						</Button>
 					</Form>
 				</Search>
-				<FoldableSection open={!!result} timeout={300} ssr>
+				<FoldableSection open={result && result.length > 0} timeout={300} ssr={false}>
 					<section className={styles.result}>
 						<GutterBox>
 							{result && (
@@ -71,7 +71,7 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 												name={auction.name}
 												address={auction.address}
 												type={auction.type}
-												tokenSymbol={auction.tokenSymbol}
+												tokenLogo={auction.tokenLogo}
 												tokenCurrency={auction.tokenCurrency}
 												auctionAmount={auction.auctionAmount}
 												auctionCurrency={auction.auctionCurrency}

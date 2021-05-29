@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { ReactNode, SVGAttributes } from "react";
+import { ReactNode } from "react";
 import {
 	useCallback,
 	useState,
@@ -158,11 +158,11 @@ export const Select = <P extends string>({
 
 	//click on drop: accept, close, refocus
 	const handleDropClick = useCallback((e: any) => {
-		setImmediate(() => {
+		setTimeout(() => {
 			setPendingOperation((counter) => counter - 1);
 			setChanged(true);
 			controlButtonRef.current?.focus();
-		});
+		}, 0);
 	}, []);
 
 	//click outside: close

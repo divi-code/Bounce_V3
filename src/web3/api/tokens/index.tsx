@@ -92,5 +92,8 @@ const passAll = () => true;
 export const useTokenSearch = () => {
 	const tokens = useAllTokens(passAll);
 
-	return (symbol: string): TokenInfo | undefined => tokens.find((token) => token.symbol === symbol);
+	return useCallback(
+		(symbol: string): TokenInfo | undefined => tokens.find((token) => token.symbol === symbol),
+		[tokens]
+	);
 };
