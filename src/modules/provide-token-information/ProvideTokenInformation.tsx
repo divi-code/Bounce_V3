@@ -1,4 +1,5 @@
-import { FC, useEffect } from "react";
+import { TokenInfo } from "@uniswap/token-lists";
+import { FC, useCallback, useEffect } from "react";
 import { useForm, useFormState } from "react-final-form";
 
 import { Form } from "@app/modules/form";
@@ -49,6 +50,8 @@ export const ProvideTokenInformation: FC<ProvideTokenInformationType> = ({
 	address,
 	href,
 }) => {
+	const notEtherium = useCallback((token: TokenInfo) => token.symbol !== "ETH", []);
+
 	return (
 		<Form onSubmit={onSubmit} className={styles.form} initialValues={{ address, decimal }}>
 			<Effector decimal={decimal} address={address} onTokenChange={onTokenChange} />
@@ -63,7 +66,12 @@ export const ProvideTokenInformation: FC<ProvideTokenInformationType> = ({
 					</>
 				}
 			>
-				<SelectTokenField name="tokenFrom" placeholder="Select a token" required />
+				<SelectTokenField
+					name="tokenFrom"
+					placeholder="Select a token"
+					filter={notEtherium}
+					required
+				/>
 			</Label>
 			<Label Component="label" className={styles.label} label="Token contact address">
 				<TextField

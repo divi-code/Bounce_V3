@@ -1,3 +1,4 @@
+import { TokenInfo } from "@uniswap/token-lists";
 import classNames from "classnames";
 import React, { FC } from "react";
 import { Field } from "react-final-form";
@@ -15,6 +16,7 @@ type SelectTokenFieldType = {
 	placeholder?: string;
 	readOnly?: boolean;
 	required?: boolean;
+	filter?(token: TokenInfo): boolean;
 };
 
 export const SelectTokenField: FC<SelectTokenFieldType & MaybeWithClassName> = ({
@@ -24,6 +26,7 @@ export const SelectTokenField: FC<SelectTokenFieldType & MaybeWithClassName> = (
 	readOnly,
 	value,
 	required,
+	filter,
 }) => {
 	return (
 		<Field name={name} value={value} validate={required ? isRequired : undefined}>
@@ -34,6 +37,7 @@ export const SelectTokenField: FC<SelectTokenFieldType & MaybeWithClassName> = (
 					value={input.value}
 					onChange={input.onChange}
 					onBlur={input.onBlur}
+					filter={filter}
 					placeholder={placeholder}
 					readOnly={readOnly}
 					required={required}

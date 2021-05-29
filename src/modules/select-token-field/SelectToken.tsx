@@ -1,3 +1,4 @@
+import { TokenInfo } from "@uniswap/token-lists";
 import classNames from "classnames";
 
 import React, { CSSProperties, FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -150,9 +151,14 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 	);
 };
 
+const passAll = () => true;
+
 export const SelectToken: FC<
-	Omit<SelectTokenType, "options" | "tokenListControl" | "tokenList"> & MaybeWithClassName
-> = (props) => {
+	Omit<SelectTokenType, "options" | "tokenListControl" | "tokenList"> &
+		MaybeWithClassName & {
+			filter?(token: TokenInfo): boolean;
+		}
+> = ({ filter = passAll, ...props }) => {
 	const tokenList = useTokenList();
 
 	const tokenListControl = useTokenListControl();
@@ -164,7 +170,7 @@ export const SelectToken: FC<
 
 	const options = useMemo(
 		() =>
-			tokens.map((token) => {
+			tokens.filter(filter).map((token) => {
 				return {
 					key: token.symbol,
 					title: token.name,
@@ -172,7 +178,7 @@ export const SelectToken: FC<
 					img: token.logoURI,
 				};
 			}),
-		[tokens]
+		[filter, tokens]
 	);
 
 	const convertedTokensList: ShortTokenListInfo[] = tokenList.map((value) => {
