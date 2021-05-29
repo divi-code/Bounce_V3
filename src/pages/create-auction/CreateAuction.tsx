@@ -46,6 +46,38 @@ enum OPERATION {
 	cancel = "cancel",
 }
 
+const getAlertMessageByStatus = (status: OPERATION) => {
+	switch (status) {
+		case OPERATION.approval:
+			return "Approving...";
+		case OPERATION.pending:
+			return "Transaction pending....";
+		case OPERATION.error:
+			return "Something went wrong";
+		case OPERATION.cancel:
+			return "Operation has been canceled";
+		case OPERATION.success:
+			return "Congratulations";
+	}
+};
+
+const getAlertTypeByStatus = (status: OPERATION) => {
+	switch (status) {
+		case OPERATION.approval:
+			return ALERT_TYPE.default;
+		case OPERATION.pending:
+			return ALERT_TYPE.default;
+		case OPERATION.error:
+			return ALERT_TYPE.error;
+		case OPERATION.cancel:
+			return ALERT_TYPE.error;
+		case OPERATION.success:
+			return ALERT_TYPE.success;
+	}
+};
+
+``;
+
 export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ type }) => {
 	const getStepsByType = (pool: POOL_TYPE) => {
 		switch (pool) {
@@ -131,36 +163,6 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 			console.log("err", e);
 		} finally {
 			// close modal
-		}
-	};
-
-	const getAlertMessageByStatus = (status: OPERATION) => {
-		switch (status) {
-			case OPERATION.approval:
-				return "Approving";
-			case OPERATION.pending:
-				return "Pending";
-			case OPERATION.error:
-				return "Something went wrong";
-			case OPERATION.cancel:
-				return "Cancel operation";
-			case OPERATION.success:
-				return "Congratulations";
-		}
-	};
-
-	const getAlertTypeByStatus = (status: OPERATION) => {
-		switch (status) {
-			case OPERATION.approval:
-				return ALERT_TYPE.default;
-			case OPERATION.pending:
-				return ALERT_TYPE.default;
-			case OPERATION.error:
-				return ALERT_TYPE.error;
-			case OPERATION.cancel:
-				return ALERT_TYPE.error;
-			case OPERATION.success:
-				return ALERT_TYPE.success;
 		}
 	};
 

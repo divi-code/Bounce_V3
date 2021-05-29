@@ -37,7 +37,6 @@ export const CreateFlow: FC<CreateFlowType & MaybeWithClassName> = ({
 			className={styles.step}
 			innerClassName={styles.innerStep}
 			type={type}
-			alert={alert}
 		>
 			{(body, { currentStep, isLastStep, moveBack, moveForward }) => {
 				return (
@@ -54,7 +53,7 @@ export const CreateFlow: FC<CreateFlowType & MaybeWithClassName> = ({
 								{body}
 							</CreateSteps>
 						) : (
-							<CreateConfirmation onComplete={moveForward} moveBack={moveBack}>
+							<CreateConfirmation onComplete={moveForward} alert={alert} moveBack={moveBack}>
 								{body}
 							</CreateConfirmation>
 						)}

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, ReactNode, useState } from "react";
 
 import { MaybeWithClassName, WithChildren } from "@app/helper/react/types";
 import { Button, PrimaryButton } from "@app/ui/button";
@@ -10,16 +10,30 @@ import { Heading2 } from "@app/ui/typography";
 import styles from "./CreateConfirmation.module.scss";
 
 type CreateConfirmationType = {
+	alert?: ReactNode;
 	moveBack(): void;
 	onComplete(): void;
 };
 
 export const CreateConfirmation: FC<CreateConfirmationType & MaybeWithClassName & WithChildren> = ({
 	className,
+	alert,
 	moveBack,
 	onComplete,
 	children,
 }) => {
+	const [loading, setLoading] = useState(false);
+
+	const handleOnComplete = async () => {
+		setLoading(true);
+
+		try {
+			await onComplete();
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	return (
 		<section className={className}>
 			<GutterBox>
@@ -37,7 +51,13 @@ export const CreateConfirmation: FC<CreateConfirmationType & MaybeWithClassName 
 						Close
 					</Button>
 					<div className={styles.body}>{children}</div>
-					<PrimaryButton className={styles.submit} onClick={onComplete} size="large">
+					{alert && <div>{alert}</div>}
+					<PrimaryButton
+						className={styles.submit}
+						onClick={handleOnComplete}
+						disabled={loading}
+						size="large"
+					>
 						Confirm
 					</PrimaryButton>
 				</div>

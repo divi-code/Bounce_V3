@@ -35,7 +35,6 @@ type ConfirmationType = {
 
 type CommonType = {
 	type: string;
-	alert?: ReactNode;
 };
 
 export const ConfirmationView: FC<MaybeWithClassName & ConfirmationType & CommonType> = ({
@@ -52,7 +51,6 @@ export const ConfirmationView: FC<MaybeWithClassName & ConfirmationType & Common
 	whitelist,
 	duration,
 	delay,
-	alert,
 }) => {
 	const TOKEN_DATA = {
 		"Pool type": type,
@@ -83,14 +81,13 @@ export const ConfirmationView: FC<MaybeWithClassName & ConfirmationType & Common
 			<DescriptionList title="Token Information" data={TOKEN_DATA} />
 			<DescriptionList title="Auction Parameters" data={PARAMETERS_DATA} />
 			<DescriptionList title="Advanced Setting" data={SETTINGS_DATA} />
-			{alert && <div>{alert}</div>}
 		</div>
 	);
 };
 
 export type ConfirmationInType = TokenOutType & SettingsOutType & FixedOutType;
 
-export const ConfirmationImp: FC<CommonType> = ({ type, alert }) => {
+export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 	const {
 		poolName,
 		tokenFromAddress,
@@ -133,7 +130,6 @@ export const ConfirmationImp: FC<CommonType> = ({ type, alert }) => {
 					: convertDate(new Date(startPool), "long")
 			}
 			type={type}
-			alert={alert}
 		/>
 	);
 };
