@@ -58,7 +58,7 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 					<FormSpy subscription={{ values: true }}>
 						{(props) => (
 							<>
-								<Label Component="label" label="End Time">
+								<Label Component="div" label="End Time">
 									<DateField
 										placeholder="10.01.2021"
 										name="endPool"

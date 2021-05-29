@@ -8,7 +8,7 @@ import { useCallbackState } from "use-callback-state";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { useOnClickOutside } from "@app/hooks/use-click-outside";
-import { useFocusTracker, useOpenControl } from "@app/hooks/use-field-control";
+import { useOpenControl } from "@app/hooks/use-field-control";
 import { useResizeObserver } from "@app/hooks/use-resize-observer";
 import { FieldFrame } from "@app/ui/field-frame";
 import { dateToISODate, endOfTheDay, to2DigitOrNothing } from "@app/ui/utils/dateFormatter";
@@ -115,7 +115,6 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 	useResizeObserver(calendarRef, (ref) => setCalendarHeight(ref.clientHeight));
 
 	const [on, open, close, toggle] = useOpenControl();
-	const [focused, onFocus, onBlur] = useFocusTracker();
 
 	//click outside: close
 	const closeByClickAway = useCallback(() => {
@@ -201,6 +200,14 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 	const topRef = useRef<HTMLDivElement>(null);
 	useOnClickOutside([topRef], closeByClickAway, on);
 
+	const onCalendarValueSet = useCallback(
+		(date: Date) => {
+			setValue(date);
+			close();
+		},
+		[close, setValue]
+	);
+
 	return (
 		<div className={classNames(className, styles.component)} ref={topRef}>
 			{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
@@ -238,8 +245,8 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 						on && styles.visible,
 						dropdownPosition && styles[dropdownPosition]
 					)}
-					onFocus={onFocus}
-					onBlur={onBlur}
+					// onFocus={onFocus}
+					// onBlur={onBlur}
 					ref={setCalendarRef}
 				>
 					{on && (
@@ -252,10 +259,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 							minDate={min ? new Date(min) : undefined}
 							maxDate={max ? new Date(max) : undefined}
 							dayFill={dayFill}
-							onChange={(date) => {
-								setValue(date);
-								close();
-							}}
+							onChange={onCalendarValueSet}
 						/>
 					)}
 				</div>
