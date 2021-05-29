@@ -2,18 +2,15 @@ import { TokenInfo, TokenList } from "@uniswap/token-lists";
 import { useWeb3React } from "@web3-react/core";
 import { createContext, FC, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-import { useTokenListControl } from "@app/modules/select-token-field/tokenControl";
-import { getEtherChain } from "@app/web3/api/eth/token/token";
-import getTokenList from "@app/web3/api/tokens/get-token-list";
-import { DEFAULT_LIST_OF_LISTS } from "@app/web3/api/tokens/lists";
-
-import {
-	getDefaultTokens,
-	useFilterApplicableTokens,
-} from "@app/web3/api/tokens/use-default-token-list";
+import { useLocallyDefinedTokens } from "@app/web3/api/tokens/local-tokens";
 import { useChainId } from "@app/web3/hooks/use-web3";
 
+import { getEtherChain } from "../eth/token/token";
+
 import resolveENSContentHash from "./ens/ens";
+import getTokenList from "./get-token-list";
+import { DEFAULT_LIST_OF_LISTS } from "./lists";
+import { getDefaultTokens, useFilterApplicableTokens } from "./use-default-token-list";
 
 const tokenListContent = createContext<TokenList[]>([]);
 
@@ -65,18 +62,20 @@ export const useAllTokens = (filter: (list: TokenList) => boolean) => {
 	const tokenList = useTokenList();
 	const chainId = useChainId();
 	const ether = getEtherChain(chainId);
+	const [customTokenList] = useLocallyDefinedTokens();
 
 	const allTokens = useMemo(() => {
 		return [
 			[ether],
+			customTokenList,
 			getDefaultTokens(),
 			...tokenList.filter(filter).map((list) => list.tokens),
 		].reduce((acc, item) => {
 			acc.push(...item);
 
 			return acc;
-		}, []);
-	}, [ether, tokenList, filter]);
+		}, [] as TokenInfo[]);
+	}, [ether, customTokenList, tokenList, filter]);
 
 	return useFilterApplicableTokens(allTokens, chainId);
 };

@@ -1,4 +1,5 @@
-import React, { FC, useRef, useState } from "react";
+import { TokenInfo } from "@uniswap/token-lists";
+import React, { ChangeEvent, FC, useRef, useState } from "react";
 
 import { StrollableContainer } from "react-stroller";
 
@@ -10,6 +11,11 @@ import { Button } from "@app/ui/button";
 import { Search } from "@app/ui/icons/search";
 import { Input } from "@app/ui/input";
 import { ScrollBar, VerticalScrollIndicator } from "@app/ui/stroller-components";
+
+import { queryERC20Token } from "@app/web3/api/eth/api";
+import { useLocallyDefinedTokens } from "@app/web3/api/tokens/local-tokens";
+
+import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
 import styles from "./Manage.module.scss";
 import { Toggle } from "./Toggle";
@@ -24,6 +30,22 @@ export const Manage: FC<{
 	tokenListControl: TokenListControl;
 }> = ({ tokenLists, tokenListControl }) => {
 	const [toggle, setToggle] = useState(TOGGLES.list);
+	const [localTokens, setLocalTokens] = useLocallyDefinedTokens();
+	const provider = useWeb3Provider();
+	const chainId = useChainId();
+
+	const addTokenByAddress = async (e: ChangeEvent<HTMLInputElement>) => {
+		e.preventDefault();
+
+		const address = e.target.value;
+
+		const newToken: TokenInfo = {
+			chainId,
+			name: `custom token`,
+			...(await queryERC20Token(provider, address, chainId)),
+		};
+		setLocalTokens([...localTokens, newToken]);
+	};
 
 	return (
 		<div className={styles.component}>
@@ -41,7 +63,6 @@ export const Manage: FC<{
 					onClick={() => setToggle(TOGGLES.tokens)}
 					color={toggle === TOGGLES.tokens ? "primary-black" : "primary-white"}
 					variant={toggle === TOGGLES.tokens ? "contained" : "outlined"}
-					disabled
 				>
 					Tokens
 				</Button>
@@ -53,9 +74,10 @@ export const Manage: FC<{
 							toggle === TOGGLES.list
 								? "https: // or ipfs:// or ENS name"
 								: toggle === TOGGLES.tokens
-								? "0*0000"
+								? "0x0000 address"
 								: undefined
 						}
+						onChange={toggle === TOGGLES.tokens ? addTokenByAddress : undefined}
 						before={toggle === TOGGLES.list ? <Search style={{ width: 19 }} /> : undefined}
 					/>
 				</div>

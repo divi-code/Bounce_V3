@@ -71,14 +71,17 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 
 			console.log(result);
 
+			const tokenFrom = findToken(data.tokenFrom);
+			const tokenTo = findToken(data.tokenTo);
+
 			if (result.status) {
 				const createAuctionResult = await createAuctionPool(contract, account, {
 					name: data.poolName,
 					creator: account,
-					token0: findToken(data.tokenFrom).address,
-					token1: findToken(data.tokenTo).address,
-					amountTotal0: numToWei(data.amount, findToken(data.tokenFrom).decimals, 0),
-					amountTotal1: numToWei(data.swapRatio * data.amount, findToken(data.tokenTo).decimals, 0),
+					token0: tokenFrom.address,
+					token1: tokenTo.address,
+					amountTotal0: numToWei(data.amount, tokenFrom.decimals, 0),
+					amountTotal1: numToWei(data.swapRatio * data.amount, tokenTo.decimals, 0),
 					openAt: +data.startPool,
 					closeAt: +data.endPool,
 					claimAt: +data.claimStart,

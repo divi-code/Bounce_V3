@@ -1,10 +1,12 @@
+import { TokenInfo } from "@uniswap/token-lists";
+
 import { makeToken } from "./utils";
 
 import { WETH9 } from "./weth9";
 
-const tokenCache = {};
+const tokenCache: Record<number, TokenInfo> = {};
 
-export const getEtherChain = (chainId: number) => {
+export const getEtherChain = (chainId: number): TokenInfo => {
 	if (!tokenCache[chainId]) {
 		tokenCache[chainId] = makeToken(
 			chainId,
