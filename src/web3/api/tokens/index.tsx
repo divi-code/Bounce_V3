@@ -58,6 +58,11 @@ export const TokenListProvider: FC = ({ children }) => {
 	return <tokenListContent.Provider value={tokens}>{children}</tokenListContent.Provider>;
 };
 
+const markAs = (tokenList: TokenInfo[], name: string) =>
+	tokenList.map((token) => ({ ...token, source: name }));
+
+type ExtendedTokenInfo = TokenInfo & { source: string };
+
 export const useAllTokens = (filter: (list: TokenList) => boolean) => {
 	const tokenList = useTokenList();
 	const chainId = useChainId();
@@ -65,16 +70,18 @@ export const useAllTokens = (filter: (list: TokenList) => boolean) => {
 	const [customTokenList] = useLocallyDefinedTokens();
 
 	const allTokens = useMemo(() => {
-		return [
-			[ether],
-			customTokenList,
-			getDefaultTokens(),
-			...tokenList.filter(filter).map((list) => list.tokens),
+		const m = [
+			markAs([ether], "native"),
+			markAs(customTokenList, "custom"),
+			markAs(getDefaultTokens(), "default"),
+			...tokenList.filter(filter).map((list) => markAs(list.tokens, list.name)),
 		].reduce((acc, item) => {
-			acc.push(...item);
+			item.forEach((token) => acc.set(`${token.symbol}-${token.chainId}`, token));
 
 			return acc;
-		}, [] as TokenInfo[]);
+		}, new Map<string, ExtendedTokenInfo>());
+
+		return Array.from(m.values());
 	}, [ether, customTokenList, tokenList, filter]);
 
 	return useFilterApplicableTokens(allTokens, chainId);

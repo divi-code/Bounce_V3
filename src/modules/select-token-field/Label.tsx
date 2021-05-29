@@ -3,6 +3,8 @@ import React, { CSSProperties, forwardRef, useCallback, useEffect, useState } fr
 
 import { Body1, Caption } from "@app/ui/typography";
 
+import { uriToHttp } from "@app/web3/api/tokens/ens/helpers";
+
 import styles from "./Label.module.scss";
 
 interface LabelProps<T> {
@@ -10,7 +12,7 @@ interface LabelProps<T> {
 	id: string;
 	currency: string;
 	title: string;
-	img: string;
+	img: string | undefined;
 	name: string;
 	checked: boolean;
 	disabled?: boolean;
@@ -20,14 +22,17 @@ interface LabelProps<T> {
 
 export const Label = forwardRef<HTMLInputElement, LabelProps<any>>(
 	({ className, id, currency, title, img, name, checked, disabled, reference, onChange }, ref) => {
+		const realImage = img ? uriToHttp(img)[0] : undefined;
 		const handleOnChange = useCallback(() => onChange(reference), [onChange, reference]);
-		const [imageIsOk, setImageIsOk] = useState(true);
+		const [imageIsOk, setImageIsOk] = useState(Boolean(realImage));
 
 		useEffect(() => {
-			const testImage = new Image();
-			testImage.onerror = () => setImageIsOk(false);
-			testImage.src = img;
-		}, [img]);
+			if (realImage) {
+				const testImage = new Image();
+				testImage.onerror = () => setImageIsOk(false);
+				testImage.src = realImage;
+			}
+		}, [realImage]);
 
 		return (
 			<div className={classNames(className, styles.component)} role="presentation">
@@ -44,7 +49,7 @@ export const Label = forwardRef<HTMLInputElement, LabelProps<any>>(
 				<label
 					htmlFor={id}
 					className={styles.label}
-					style={imageIsOk ? ({ "--icon": `url(${img})` } as CSSProperties) : {}}
+					style={imageIsOk ? ({ "--icon": `url(${realImage})` } as CSSProperties) : {}}
 				>
 					<Body1 Component="span">{currency}</Body1>
 					<Caption Component="span" lighten={80}>

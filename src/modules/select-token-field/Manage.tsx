@@ -66,21 +66,16 @@ export const Manage: FC<{
 				>
 					Tokens
 				</Button>
-				<div className={styles.search}>
-					<Input
-						name="search"
-						type="text"
-						placeholder={
-							toggle === TOGGLES.list
-								? "https: // or ipfs:// or ENS name"
-								: toggle === TOGGLES.tokens
-								? "0x0000 address"
-								: undefined
-						}
-						onChange={toggle === TOGGLES.tokens ? addTokenByAddress : undefined}
-						before={toggle === TOGGLES.list ? <Search style={{ width: 19 }} /> : undefined}
-					/>
-				</div>
+				{toggle === TOGGLES.tokens && (
+					<div className={styles.search}>
+						<Input
+							name="search"
+							type="text"
+							placeholder={"0x0000 address"}
+							onChange={addTokenByAddress}
+						/>
+					</div>
+				)}
 			</div>
 			{toggle === TOGGLES.list && (
 				<div className={styles.scroll}>

@@ -10,7 +10,11 @@ import { MaybeWithClassName } from "@app/helper/react/types";
 import { useControlPopUp } from "@app/hooks/use-control-popup";
 import { Manage } from "@app/modules/select-token-field/Manage";
 import { useTokenListControl } from "@app/modules/select-token-field/tokenControl";
-import { ShortTokenListInfo, TokenListControl } from "@app/modules/select-token-field/types";
+import {
+	ShortTokenInfo,
+	ShortTokenListInfo,
+	TokenListControl,
+} from "@app/modules/select-token-field/types";
 import { FieldFrame } from "@app/ui/field-frame";
 import { Arrow } from "@app/ui/icons/arrow-down";
 import { PopUpContainer } from "@app/ui/pop-up-container";
@@ -26,7 +30,7 @@ type SelectTokenType = {
 	placeholder?: string;
 	readOnly?: boolean;
 	required?: boolean;
-	options?: Array<any>;
+	options?: Array<ShortTokenInfo>;
 	tokenList?: ShortTokenListInfo[];
 	tokenListControl: TokenListControl;
 	error?: string;
@@ -83,6 +87,12 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 	}, [active, changed, onChange, popUp]);
 
 	const [manageOn, setManageOn] = useState(false);
+
+	useEffect(() => {
+		if (!popUp.defined) {
+			setManageOn(false);
+		}
+	}, [popUp.defined]);
 
 	return (
 		// eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
@@ -168,7 +178,7 @@ export const SelectToken: FC<
 		useCallback((list) => activeLists.includes(list.name), [activeLists])
 	);
 
-	const options = useMemo(
+	const options: ShortTokenInfo[] = useMemo(
 		() =>
 			tokens.filter(filter).map((token) => {
 				return {
@@ -176,6 +186,7 @@ export const SelectToken: FC<
 					title: token.name,
 					currency: token.symbol,
 					img: token.logoURI,
+					source: token.source,
 				};
 			}),
 		[filter, tokens]

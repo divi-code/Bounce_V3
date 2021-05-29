@@ -1,11 +1,12 @@
 import classNames from "classnames";
-import React, { FC, useRef } from "react";
+import React, { ChangeEvent, FC, useMemo, useRef, useState } from "react";
 import { StrollableContainer } from "react-stroller";
 
 import { uid } from "react-uid";
 
 import { Label } from "@app/modules/select-token-field/Label";
 
+import { ShortTokenInfo } from "@app/modules/select-token-field/types";
 import { Button } from "@app/ui/button";
 import { Pen } from "@app/ui/icons/pen";
 import { Search } from "@app/ui/icons/search";
@@ -15,9 +16,9 @@ import { ScrollBar, VerticalScrollIndicator } from "@app/ui/stroller-components"
 import styles from "./ListOfTokens.module.scss";
 
 type ListOfTokensType = {
-	active: string;
+	active: ShortTokenInfo;
 	name: string;
-	options: Array<any>;
+	options: Array<ShortTokenInfo>;
 	onChange(item: any): void;
 	onManage(): void;
 };
@@ -29,7 +30,21 @@ export const ListOfTokens: FC<ListOfTokensType> = ({
 	onChange,
 	onManage,
 }) => {
-	const activeRef = useRef<HTMLInputElement>(null);
+	const [searchValue, setSearch] = useState("");
+	const handleOnSearch = (e: ChangeEvent<HTMLInputElement>) =>
+		setSearch(e.target.value.toLowerCase());
+
+	const listOfTokens = useMemo(() => {
+		if (!searchValue) {
+			return options;
+		}
+
+		return options.filter(
+			(option) =>
+				option.title.toLowerCase().includes(searchValue) ||
+				option.key.toLowerCase().includes(searchValue)
+		);
+	}, [options, searchValue]);
 
 	return (
 		<div className={styles.component}>
@@ -39,19 +54,19 @@ export const ListOfTokens: FC<ListOfTokensType> = ({
 					type="text"
 					placeholder="Search by name or paste address"
 					before={<Search style={{ width: 19 }} />}
+					onChange={handleOnSearch}
 				/>
 			</div>
 			<div className={styles.scroll}>
 				<StrollableContainer bar={ScrollBar} draggable inBetween={<VerticalScrollIndicator />}>
 					<ul className={styles.list}>
-						{options.map((option, index) => {
+						{listOfTokens.map((option, index) => {
 							const checked = option === active;
 
 							return (
-								<li key={option.key}>
+								<li key={uid(option)}>
 									<Label
 										className={classNames(styles.input, checked && styles.active)}
-										ref={checked || (!active && index === 0) ? activeRef : undefined}
 										onChange={onChange}
 										reference={option}
 										title={option.title}
