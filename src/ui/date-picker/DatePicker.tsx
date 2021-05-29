@@ -1,7 +1,7 @@
 /* eslint-disable no-var */
 import classNames from "classnames";
 
-import React, { FC, useCallback, useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, FC, useCallback, useEffect, useRef, useState } from "react";
 import { CSSProperties } from "react";
 import { useCallbackState } from "use-callback-state";
 
@@ -10,7 +10,10 @@ import { MaybeWithClassName } from "@app/helper/react/types";
 import { useOnClickOutside } from "@app/hooks/use-click-outside";
 import { useOpenControl } from "@app/hooks/use-field-control";
 import { useResizeObserver } from "@app/hooks/use-resize-observer";
+import { Button } from "@app/ui/button";
+import { DateInterval } from "@app/ui/calendar/types";
 import { FieldFrame } from "@app/ui/field-frame";
+import { Input } from "@app/ui/input";
 import { dateToISODate, endOfTheDay, to2DigitOrNothing } from "@app/ui/utils/dateFormatter";
 
 import { Calendar, QuickNavType } from "../calendar";
@@ -47,6 +50,7 @@ type DatePickerType = {
 	name: string;
 	placeholder?: string;
 	dayFill?: Record<number, number | boolean>;
+	selection?: DateInterval;
 	noIntervalValidate?: boolean;
 	label: string;
 	dropdownWidth?: string;
@@ -98,6 +102,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 	min,
 	max,
 	dayFill,
+	selection,
 	onChange,
 	placeholder,
 	noIntervalValidate,
@@ -132,7 +137,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 		);
 	};
 
-	const [value, setValue] = useCallbackState(initialValue, (newValue, oldValue) => {
+	const [calendarValue, setCalendarValue] = useCallbackState(initialValue, (newValue, oldValue) => {
 		if (!validateDate(newValue)) {
 			return oldValue;
 		}
@@ -140,12 +145,12 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 		return newValue;
 	});
 
-	const maxDays = getMaxDay(value);
+	const maxDays = getMaxDay(calendarValue);
 	const thisYear = new Date().getFullYear() - YEAR_OFFSET;
 
 	const validateAndSetDate = (newDate: Date) => {
 		if (validateDate(newDate)) {
-			setValue(newDate);
+			setCalendarValue(newDate);
 
 			return true;
 		} else {
@@ -154,7 +159,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 	};
 
 	var [year, setYear] = useDateState(
-		value ? String(value.getFullYear() - YEAR_OFFSET) : "",
+		calendarValue ? String(calendarValue.getFullYear() - YEAR_OFFSET) : "",
 		0,
 		thisYear,
 		["", month, day],
@@ -162,7 +167,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 		validateAndSetDate
 	);
 	var [month, setMonth] = useDateState(
-		value ? String(value.getMonth() - MONTH_OFFSET) : "",
+		calendarValue ? String(calendarValue.getMonth() - MONTH_OFFSET) : "",
 		1,
 		12,
 		[year, "", day],
@@ -170,7 +175,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 		validateAndSetDate
 	);
 	var [day, setDay] = useDateState(
-		value ? String(value.getDate()) : "",
+		calendarValue ? String(calendarValue.getDate()) : "",
 		1,
 		maxDays,
 		[year, month, ""],
@@ -179,33 +184,66 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 	);
 
 	useEffect(() => {
-		if (value) {
-			onChange(value);
-			setDay(String(value.getDate()), true);
-			setMonth(String(value.getMonth() - MONTH_OFFSET), true);
-			setYear(String(value.getFullYear() - YEAR_OFFSET), true);
+		if (calendarValue) {
+			setDay(String(calendarValue.getDate()), true);
+			setMonth(String(calendarValue.getMonth() - MONTH_OFFSET), true);
+			setYear(String(calendarValue.getFullYear() - YEAR_OFFSET), true);
 		}
-	}, [+value!]);
+	}, [+calendarValue!]);
 
 	useEffect(() => {
-		if (!value && year && month && day) {
-			setValue(new Date(+year + YEAR_OFFSET, +month + MONTH_OFFSET, +day));
+		if (!calendarValue && year && month && day) {
+			setCalendarValue(new Date(+year + YEAR_OFFSET, +month + MONTH_OFFSET, +day));
 		}
-	}, [+value!, year, month, day]);
+	}, [+calendarValue!, year, month, day]);
 
 	useEffect(() => {
-		setValue(initialValue);
+		setCalendarValue(initialValue);
+		// console.log("set", initialValue);
 	}, [+initialValue!]);
 
 	const topRef = useRef<HTMLDivElement>(null);
 	useOnClickOutside([topRef], closeByClickAway, on);
 
+	const [hours, onHoursChange] = useCallbackState(
+		initialValue ? initialValue.getHours() : 0,
+		// @ts-ignore
+		(event: ChangeEvent<HTMLInputElement>, prev) => {
+			const value = +event.target.value;
+
+			return value >= 0 && value <= 24 ? value : prev;
+		}
+	);
+
+	const [minutes, onMinutesChange] = useCallbackState(
+		initialValue ? initialValue.getMinutes() : 0,
+		// @ts-ignore
+		(event: ChangeEvent<HTMLInputElement>, prev) => {
+			const value = +event.target.value;
+
+			return value >= 0 && value <= 60 ? value : prev;
+		}
+	);
+
 	const onCalendarValueSet = useCallback(
 		(date: Date) => {
-			setValue(date);
-			close();
+			setCalendarValue(date);
 		},
-		[close, setValue]
+		[setCalendarValue]
+	);
+
+	useEffect(
+		() => {
+			if (calendarValue) {
+				const year = calendarValue.getFullYear();
+				const month = calendarValue.getMonth();
+				const day = calendarValue.getDate();
+				const newDate = new Date(year, month, day, hours, minutes);
+				onChange(newDate);
+			}
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[hours, minutes, calendarValue]
 	);
 
 	return (
@@ -214,18 +252,20 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 			<input
 				name={name}
 				type="hidden"
-				value={value ? dateToISODate(value) : ""}
+				value={calendarValue ? dateToISODate(calendarValue) : ""}
 				readOnly={readOnly}
 				required={required}
 			/>
 			<FieldFrame
 				className={styles.toggle}
 				focus={on}
-				placeholder={!value}
+				placeholder={!calendarValue}
 				onClick={!readOnly ? toggle : () => null}
 			>
-				{value
-					? `${to2DigitOrNothing(day)}.${to2DigitOrNothing(month)}.${to2DigitOrNothing(year)}`
+				{calendarValue
+					? `${to2DigitOrNothing(day)}.${to2DigitOrNothing(month)}.${to2DigitOrNothing(
+							year
+					  )} ${hours}:${minutes}`
 					: placeholder}
 				<Icon />
 			</FieldFrame>
@@ -250,17 +290,49 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 					ref={setCalendarRef}
 				>
 					{on && (
-						<Calendar
-							className={styles.calendar}
-							label={label}
-							quickNav={quickNav}
-							disableEmptyDays={false}
-							value={value}
-							minDate={min ? new Date(min) : undefined}
-							maxDate={max ? new Date(max) : undefined}
-							dayFill={dayFill}
-							onChange={onCalendarValueSet}
-						/>
+						<>
+							<Calendar
+								className={styles.calendar}
+								label={label}
+								quickNav={quickNav}
+								disableEmptyDays={false}
+								value={calendarValue}
+								minDate={min ? new Date(min) : undefined}
+								maxDate={max ? new Date(max) : undefined}
+								dayFill={dayFill}
+								selection={selection}
+								selected={calendarValue}
+								onChange={onCalendarValueSet}
+							/>
+
+							<div>
+								<Input
+									name="hours"
+									type="number"
+									inputProps={{
+										min: "0",
+										max: "24",
+									}}
+									placeholder="12"
+									required
+									value={hours}
+									onChange={onHoursChange as any}
+								/>
+								<Input
+									name="minutes"
+									type="number"
+									inputProps={{
+										min: "0",
+										max: "60",
+									}}
+									placeholder="35"
+									required
+									value={minutes}
+									onChange={onMinutesChange as any}
+								/>
+								<Button onClick={close}>Close</Button>
+							</div>
+						</>
 					)}
 				</div>
 			</div>

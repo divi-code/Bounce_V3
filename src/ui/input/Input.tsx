@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { FC, ReactNode, useCallback, useState } from "react";
+import React, { FC, ReactNode, useCallback, useState, InputHTMLAttributes } from "react";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
@@ -10,7 +10,7 @@ import styles from "./Input.module.scss";
 type InputType = {
 	name: string;
 	type: string;
-	value?: string;
+	value?: string | number;
 	placeholder?: string;
 	readOnly?: boolean;
 	required?: boolean;
@@ -20,6 +20,7 @@ type InputType = {
 	onChange?(e: React.ChangeEvent<HTMLInputElement>): void;
 	onBlur?(e: React.FocusEvent): void;
 	onFocus?(e: React.FocusEvent): void;
+	inputProps?: Partial<InputHTMLAttributes<HTMLInputElement>>;
 };
 
 export const Input: FC<InputType & MaybeWithClassName> = ({
@@ -36,6 +37,7 @@ export const Input: FC<InputType & MaybeWithClassName> = ({
 	onChange,
 	onBlur,
 	onFocus,
+	inputProps,
 }) => {
 	const [inputFocused, setInputFocused] = useState(false);
 
@@ -79,6 +81,7 @@ export const Input: FC<InputType & MaybeWithClassName> = ({
 					onChange={onChange}
 					onFocus={onInputFocused}
 					onBlur={onInputBlur}
+					{...inputProps}
 				/>
 				{after}
 			</div>

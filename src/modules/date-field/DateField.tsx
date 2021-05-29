@@ -4,6 +4,7 @@ import { Field } from "react-final-form";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { QuickNavType } from "@app/ui/calendar";
+import { DateInterval } from "@app/ui/calendar/types";
 import { DatePicker, DropdownPositionType } from "@app/ui/date-picker";
 
 type DateFieldType = {
@@ -19,6 +20,7 @@ type DateFieldType = {
 	dropdownPosition?: DropdownPositionType;
 	min?: string;
 	max?: string;
+	selection?: DateInterval;
 };
 
 export const DateField: FC<DateFieldType & MaybeWithClassName> = ({
@@ -34,6 +36,7 @@ export const DateField: FC<DateFieldType & MaybeWithClassName> = ({
 	dropdownPosition,
 	min,
 	max,
+	selection,
 }) => {
 	return (
 		<Field name={name} value={value}>
@@ -50,6 +53,7 @@ export const DateField: FC<DateFieldType & MaybeWithClassName> = ({
 					dropdownPosition={dropdownPosition}
 					min={min}
 					max={max}
+					selection={selection}
 					readOnly={readOnly}
 					required={required}
 				/>

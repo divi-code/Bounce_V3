@@ -45,24 +45,33 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 			</Label>
 			<div ref={setBlockRef}>
 				<div className={styles.period}>
-					<Label Component="div" label="Start Time">
-						<DateField
-							placeholder="10.01.2021"
-							name="startPool"
-							min={new Date().toString()}
-							dropdownWidth={`${blockWidth}px`}
-							label="Choose start date"
-							quickNav={["today", "tomorrow", "in-2-days"]}
-						/>
-					</Label>
 					<FormSpy subscription={{ values: true }}>
 						{(props) => (
 							<>
+								<Label Component="div" label="Start Time">
+									<DateField
+										placeholder="10.01.2021"
+										name="startPool"
+										min={new Date().toString()}
+										selection={{
+											start: new Date(props.values.startPool),
+											end: new Date(props.values.endPool),
+										}}
+										dropdownWidth={`${blockWidth}px`}
+										label="Choose start date"
+										quickNav={["today", "tomorrow", "in-2-days"]}
+									/>
+								</Label>
+
 								<Label Component="div" label="End Time">
 									<DateField
 										placeholder="10.01.2021"
 										name="endPool"
 										min={new Date(props.values.startPool).toString()}
+										selection={{
+											start: new Date(props.values.startPool),
+											end: new Date(props.values.endPool),
+										}}
 										dropdownWidth={`${blockWidth}px`}
 										dropdownPosition="right"
 										label="Choose end date"

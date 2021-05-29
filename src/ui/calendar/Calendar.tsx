@@ -30,6 +30,7 @@ interface Props {
 	label: string;
 	value?: Date;
 	selection?: DateInterval;
+	selected?: Date;
 	minDate?: Date;
 	maxDate?: Date;
 	dayFill?: Record<number, number | boolean>;
@@ -57,6 +58,7 @@ export const Calendar: FC<Props & MaybeWithClassName> = ({
 	label,
 	quickNav,
 	selection,
+	selected,
 	minDate,
 	maxDate,
 	value,
@@ -224,6 +226,7 @@ export const Calendar: FC<Props & MaybeWithClassName> = ({
 						month={month}
 						year={year}
 						selection={selection}
+						selected={selected}
 						pickDate={pickDate}
 						from={minDate}
 						to={maxDate}

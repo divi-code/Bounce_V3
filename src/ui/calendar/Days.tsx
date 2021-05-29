@@ -10,6 +10,7 @@ import { generateDays } from "./utils";
 
 type DaysType = {
 	selection?: DateInterval;
+	selected?: Date;
 	day?: number;
 	month?: number;
 	pickDate: SetDateFn;
@@ -22,6 +23,7 @@ type DaysType = {
 export const DayPanelImpl: FC<DaysType & MaybeWithClassName & { days: CalendarDay[] }> = ({
 	days,
 	selection,
+	selected,
 	dayFill,
 	day,
 	month,
@@ -42,7 +44,7 @@ export const DayPanelImpl: FC<DaysType & MaybeWithClassName & { days: CalendarDa
 						onClick={pickDate}
 						from={from}
 						to={to}
-						selected={currentDay.day === day}
+						selected={selected && selected.toDateString() === currentDay.date.toDateString()}
 						disableEmptyDay={disableEmptyDay}
 						empty={dayFill && !dayFill[+currentDay.date]}
 					/>
@@ -57,6 +59,7 @@ export const DayPanel: FC<DaysType & MaybeWithClassName & { year?: number }> = (
 	month,
 	year,
 	selection,
+	selected,
 	pickDate,
 	from,
 	to,
@@ -67,6 +70,7 @@ export const DayPanel: FC<DaysType & MaybeWithClassName & { year?: number }> = (
 	<DayPanelImpl
 		days={generateDays(month, year)}
 		selection={selection}
+		selected={selected}
 		pickDate={pickDate}
 		day={day}
 		month={month}
