@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 
 import { FormSpy } from "react-final-form";
 
@@ -33,11 +33,13 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 	tokenFrom,
 	balance,
 }) => {
+	const [amount, setAmount] = useState(undefined);
+
 	return (
 		<Form
 			onSubmit={onSubmit}
 			className={styles.form}
-			initialValues={{ tokenFrom: tokenFrom, allocation: "limited" }}
+			initialValues={{ tokenFrom: tokenFrom, allocation: "limited", amount: amount }}
 		>
 			<div className={styles.group}>
 				<Label Component="div" label="From">
@@ -63,12 +65,28 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 					</Label>
 				)}
 			</FormSpy>
-			<Label Component="label" label="Amount" tooltip="Create new item">
+			<Label
+				Component="label"
+				label="Amount"
+				tooltip="Create new item"
+				after={
+					<span className={styles.balance}>
+						Balance: {parseInt(balance).toFixed(2)} {tokenFrom}
+					</span>
+				}
+			>
 				<TextField
 					type="number"
 					name="amount"
 					placeholder="0.00"
-					after={<Currency token={tokenFrom} />}
+					after={
+						<div className={styles.amount}>
+							<button className={styles.max} onClick={() => setAmount(parseInt(balance))}>
+								MAX
+							</button>
+							<Currency token={tokenFrom} />
+						</div>
+					}
 					required
 				/>
 			</Label>

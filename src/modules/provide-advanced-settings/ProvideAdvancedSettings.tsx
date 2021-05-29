@@ -4,9 +4,11 @@ import { FormSpy } from "react-final-form";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { useResizeObserver } from "@app/hooks/use-resize-observer";
+import { CheckboxField } from "@app/modules/checkbox-field";
 import { DateField } from "@app/modules/date-field";
 import { Form } from "@app/modules/form";
 import { Label } from "@app/modules/label";
+import { OnOffField } from "@app/modules/on-off-field ";
 import { RadioField } from "@app/modules/radio-field";
 import { TextField } from "@app/modules/text-field";
 
@@ -33,7 +35,11 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 	useResizeObserver(blockRef, (ref) => setBlockWidth(ref.clientWidth));
 
 	return (
-		<Form onSubmit={onSubmit} className={styles.form} initialValues={{ whitelist: "yes" }}>
+		<Form
+			onSubmit={onSubmit}
+			className={styles.form}
+			initialValues={{ delayToken: ["unlock"], whitelist: "yes" }}
+		>
 			<Label Component="div" label="Pool Name">
 				<TextField type="text" name="poolName" required />
 			</Label>
@@ -71,20 +77,27 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 			<FormSpy subscription={{ values: true }}>
 				{(props) => (
 					<>
-						<Label Component="label" label="Delay Unlocking Token" tooltip="Create new item">
-							<DateField
-								placeholder="10.01.2021"
-								name="claimStart"
-								min={new Date(props.values.startPool).toString()}
-								label="Choose date"
-								quickNav={["in-5-days", "in-7-days", "in-10-days"]}
-							/>
+						<Label
+							Component="div"
+							label="Delay Unlocking Token"
+							tooltip="Create new item"
+							after={<OnOffField name="delayToken" value="unlock" />}
+						>
+							{props.values.delayToken.includes("unlock") ? (
+								<DateField
+									placeholder="10.01.2021"
+									name="claimStart"
+									min={new Date(props.values.startPool).toString()}
+									label="Choose date"
+									quickNav={["in-5-days", "in-7-days", "in-10-days"]}
+								/>
+							) : undefined}
 						</Label>
 					</>
 				)}
 			</FormSpy>
 			<Label Component="div" label="Whitelist" tooltip="Create new item">
-				<RadioGroup count={2}>
+				<RadioGroup count={2} fixed>
 					<RadioField name="whitelist" label="No" value={WHITELIST_TYPE.no} />
 					<RadioField name="whitelist" label="Yes" value={WHITELIST_TYPE.yes} />
 				</RadioGroup>

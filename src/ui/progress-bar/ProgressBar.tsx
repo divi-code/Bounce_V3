@@ -18,9 +18,9 @@ export const ProgressBar: FC<ProgressBarType & MaybeWithClassName> = ({
 	fillInPercentage,
 }) => {
 	const COLORS = {
-		live: "var(--success)",
-		filled: "var(--process)",
-		closed: "var(--error)",
+		[POOL_STATUS.LIVE]: "var(--success)",
+		[POOL_STATUS.FILLED]: "var(--process)",
+		[POOL_STATUS.CLOSED]: "var(--error)",
 	};
 
 	return (

@@ -55,10 +55,14 @@ export type AuctionPoolType = {
 	onlyBot: boolean;
 };
 
-export const createAuctionPool = async (
+export const createAuctionPool = (
 	contract: ContractType,
 	account: string,
 	data: AuctionPoolType
 ) => {
 	return contract.methods.create(data, []).send({ from: account });
+};
+
+export const getBalance = async (contract: ContractType, account: string) => {
+	return contract.methods.balanceOf(account).call();
 };

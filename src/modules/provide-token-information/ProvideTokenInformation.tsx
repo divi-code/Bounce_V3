@@ -6,7 +6,7 @@ import { Label } from "@app/modules/label";
 import { SelectTokenField } from "@app/modules/select-token-field";
 import { TextField } from "@app/modules/text-field";
 
-import { PrimaryButton } from "@app/ui/button";
+import { NavLink, PrimaryButton } from "@app/ui/button";
 import { RightArrow2 } from "@app/ui/icons/arrow-right-2";
 
 import styles from "./ProvideTokenInformation.module.scss";
@@ -38,6 +38,7 @@ const Effector: FC<EffectorType> = ({ decimal, address, onTokenChange }) => {
 };
 
 type ProvideTokenInformationType = EffectorType & {
+	href: string;
 	onSubmit(values): void;
 };
 
@@ -46,14 +47,25 @@ export const ProvideTokenInformation: FC<ProvideTokenInformationType> = ({
 	onTokenChange,
 	decimal,
 	address,
+	href,
 }) => {
 	return (
 		<Form onSubmit={onSubmit} className={styles.form} initialValues={{ address, decimal }}>
 			<Effector decimal={decimal} address={address} onTokenChange={onTokenChange} />
-			<Label Component="div" label="Token">
+			<Label
+				className={styles.label}
+				Component="div"
+				label="Token"
+				tooltip={
+					<>
+						Please do not select deflationary
+						<br /> or inflationary token
+					</>
+				}
+			>
 				<SelectTokenField name="tokenFrom" placeholder="Select a token" required />
 			</Label>
-			<Label Component="label" label="Token contact address">
+			<Label Component="label" className={styles.label} label="Token contact address">
 				<TextField
 					type="text"
 					name="address"
@@ -62,9 +74,19 @@ export const ProvideTokenInformation: FC<ProvideTokenInformationType> = ({
 					required
 				/>
 			</Label>
-			<Label Component="label" label="Token decimal">
+			<Label Component="label" className={styles.label} label="Token decimal">
 				<TextField type="text" name="decimal" placeholder="0" readOnly required />
 			</Label>
+			<NavLink
+				className={styles.link}
+				href={href}
+				size="medium"
+				variant="text"
+				color="dark-grey"
+				weight="regular"
+			>
+				View on Etherscan
+			</NavLink>
 			<PrimaryButton
 				className={styles.submit}
 				size="large"

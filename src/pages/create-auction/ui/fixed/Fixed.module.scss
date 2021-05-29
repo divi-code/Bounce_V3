@@ -18,6 +18,39 @@
   align-items: center;
 }
 
+.balance {
+  font-family: var(--primary-font);
+  font-size: 0.875rem;
+  line-height: 1.2;
+  font-weight: var(--medium);
+  color: rgba(var(--primary-black), 1);
+}
+
+.amount {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  grid-column-gap: calc(var(--spacing-unit) * 3);
+}
+
+.max {
+  width: 3.75rem;
+  height: 2rem;
+  padding: 0;
+  margin: 0;
+
+  box-sizing: border-box;
+
+  font-family: var(--primary-font);
+  font-size: 0.875rem;
+  color: rgba(var(--primary-white), 1);
+
+  border: 0;
+  border-radius: 1.875rem;
+
+  background-color: rgba(var(--primary-black), 1);
+}
+
 .submit {
   margin-top: calc(var(--spacing-unit) * 0.5);
 }

@@ -1,0 +1,67 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  display: inline-flex;
+  padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+
+  font-family: var(--primary-font);
+  font-size: var(--body-1);
+  line-height: 1.25;
+  font-weight: var(--regular);
+  color: rgba(var(--color), 1);
+
+  border: 1px solid rgba(var(--color), 0.5);
+  border-radius: 0.5rem;
+}
+
+.default {
+  background-color: #F7F7F7;
+}
+
+.error {
+  background-color: #FFF4F5;
+}
+
+.success {
+  background-color: #F2FFF5;
+}
+
+.title {
+  display: inline-flex;
+  align-items: center;
+}
+
+.title::before {
+  position: relative;
+  content: "";
+
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: calc(var(--spacing-unit) * 1.25);
+
+  border-radius: 50%;
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  overflow: hidden;
+}
+
+.defaultTitle::before {
+  background-image: url("./assets/default.svg");
+}
+
+.errorTitle::before {
+  background-image: url("./assets/error.svg");
+}
+
+.successTitle::before {
+  background-image: url("./assets/success.svg");
+}
+
+.text {
+  color: rgba(var(--primary-black), 0.7);
+}

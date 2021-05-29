@@ -1,7 +1,6 @@
 import classNames from "classnames";
 import { FC, ReactNode } from "react";
 
-import { POOL_TYPE } from "@app/api/pool/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { useConvertDate } from "@app/hooks/use-convert-data";
 import { Currency } from "@app/modules/currency";
@@ -34,7 +33,12 @@ type ConfirmationType = {
 	delay: string;
 };
 
-export const ConfirmationView: FC<MaybeWithClassName & ConfirmationType> = ({
+type CommonType = {
+	type: string;
+	alert?: ReactNode;
+};
+
+export const ConfirmationView: FC<MaybeWithClassName & ConfirmationType & CommonType> = ({
 	className,
 	name,
 	type,
@@ -48,6 +52,7 @@ export const ConfirmationView: FC<MaybeWithClassName & ConfirmationType> = ({
 	whitelist,
 	duration,
 	delay,
+	alert,
 }) => {
 	const TOKEN_DATA = {
 		"Pool type": type,
@@ -78,13 +83,14 @@ export const ConfirmationView: FC<MaybeWithClassName & ConfirmationType> = ({
 			<DescriptionList title="Token Information" data={TOKEN_DATA} />
 			<DescriptionList title="Auction Parameters" data={PARAMETERS_DATA} />
 			<DescriptionList title="Advanced Setting" data={SETTINGS_DATA} />
+			{alert && <div>{alert}</div>}
 		</div>
 	);
 };
 
 export type ConfirmationInType = TokenOutType & SettingsOutType & FixedOutType;
 
-export const ConfirmationImp: FC<{ type: POOL_TYPE }> = ({ type }) => {
+export const ConfirmationImp: FC<CommonType> = ({ type, alert }) => {
 	const {
 		poolName,
 		tokenFromAddress,
@@ -121,16 +127,19 @@ export const ConfirmationImp: FC<{ type: POOL_TYPE }> = ({ type }) => {
 				new Date(endPool),
 				"long"
 			)}`}
-			delay={delayClaim ? convertDate(new Date(claimStart), "long") : "No"}
+			delay={
+				delayClaim
+					? convertDate(new Date(claimStart), "long")
+					: convertDate(new Date(startPool), "long")
+			}
 			type={type}
+			alert={alert}
 		/>
 	);
 };
 
-export const Confirmation = defineFlowStep<
-	ConfirmationInType,
-	{},
-	MaybeWithClassName & { type: POOL_TYPE }
->({
-	Body: ConfirmationImp,
-});
+export const Confirmation = defineFlowStep<ConfirmationInType, {}, MaybeWithClassName & CommonType>(
+	{
+		Body: ConfirmationImp,
+	}
+);

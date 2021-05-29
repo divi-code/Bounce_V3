@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { POOL_TYPE } from "@app/api/pool/const";
 import { Layout } from "@app/layout";
 import NoSsr from "@app/modules/no-ssr/NoSsr";
+import { RequireConnectedWallet } from "@app/modules/require-connected-wallet";
 import { CreateAuction } from "@app/pages/create-auction";
 import { pageWithLayout } from "@app/utils/pageInLayout";
 
@@ -13,7 +14,9 @@ const AuctionPage = pageWithLayout(
 
 		return (
 			<NoSsr>
-				<CreateAuction type={type as POOL_TYPE} />
+				<RequireConnectedWallet>
+					<CreateAuction type={type as POOL_TYPE} />
+				</RequireConnectedWallet>
 			</NoSsr>
 		);
 	},

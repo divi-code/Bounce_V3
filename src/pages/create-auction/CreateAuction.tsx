@@ -1,5 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
-import { FC } from "react";
+import { FC, useState } from "react";
 
 import { POOL_ADDRESS_MAPPING, POOL_NAME_MAPPING, POOL_TYPE } from "@app/api/pool/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
@@ -8,6 +8,7 @@ import { CreateFlow } from "@app/modules/create-flow";
 import { defineFlow } from "@app/modules/flow/definition";
 
 import { WHITELIST_TYPE } from "@app/modules/provide-advanced-settings";
+import { Alert, ALERT_TYPE } from "@app/ui/alert";
 import { numToWei } from "@app/utils/bn/wei";
 import {
 	approveAuctionPool,
@@ -35,6 +36,16 @@ const FIXED_STEPS = defineFlow(Token, Fixed, Settings, Confirmation);
 // const ENGLISH_STEPS = defineFlow(Token, English, Settings, Confirmation);
 // const LOTTERY_STEPS = defineFlow(Token, Lottery, Settings, Confirmation);
 
+enum OPERATION {
+	default = "default",
+	approval = "approval",
+	confirm = "confirm",
+	pending = "confirm",
+	success = "success",
+	error = "error",
+	cancel = "cancel",
+}
+
 export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ type }) => {
 	const getStepsByType = (pool: POOL_TYPE) => {
 		switch (pool) {
@@ -57,7 +68,19 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 
 	const findToken = useTokenSearch();
 
+	const [operation, setOperation] = useState(OPERATION.default);
+
 	const onComplete = async (data: ConfirmationInType) => {
+		setOperation(OPERATION.approval);
+
+		const tokenFrom = findToken(data.tokenFrom);
+		const tokenTo = findToken(data.tokenTo);
+
+		const fromAmount = numToWei(data.amount, findToken(data.tokenFrom).decimals, 0);
+		const toAmount = numToWei(data.swapRatio * data.amount, tokenTo.decimals, 0);
+
+		const limit = numToWei(-data.limit, findToken(data.tokenFrom).decimals, 0);
+
 		try {
 			const tokenContract = getTokenContract(provider, findToken(data.tokenFrom).address);
 
@@ -66,40 +89,78 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 				POOL_ADDRESS_MAPPING[type],
 				chainId,
 				account,
-				numToWei(data.amount, findToken(data.tokenFrom).decimals, 0)
+				fromAmount
 			);
 
-			console.log(result);
-
-			const tokenFrom = findToken(data.tokenFrom);
-			const tokenTo = findToken(data.tokenTo);
+			setOperation(OPERATION.confirm);
 
 			if (result.status) {
-				const createAuctionResult = await createAuctionPool(contract, account, {
+				await createAuctionPool(contract, account, {
 					name: data.poolName,
 					creator: account,
 					token0: tokenFrom.address,
 					token1: tokenTo.address,
-					amountTotal0: numToWei(data.amount, tokenFrom.decimals, 0),
-					amountTotal1: numToWei(data.swapRatio * data.amount, tokenTo.decimals, 0),
+					amountTotal0: fromAmount,
+					amountTotal1: toAmount,
 					openAt: +data.startPool,
 					closeAt: +data.endPool,
 					claimAt: +data.claimStart,
 					enableWhiteList: data.whitelist === WHITELIST_TYPE.yes,
-					maxAmount1PerWallet:
-						numToWei(-data.limit, findToken(data.tokenFrom).decimals, 0) ||
-						numToWei(0, findToken(data.tokenFrom).decimals, 0),
+					maxAmount1PerWallet: limit || "0",
 					onlyBot: false,
-				});
-				console.log(createAuctionResult);
+				})
+					.on("transactionHash", () => {
+						setOperation(OPERATION.pending);
+					})
+					.on("receipt", () => {
+						setOperation(OPERATION.success);
+					})
+					.on("error", () => {
+						setOperation(OPERATION.error);
+					});
 			} else {
-				console.log("Approval Error");
+				setOperation(OPERATION.error);
 			}
 		} catch (e) {
-			console.error(e);
-			console.log("Error");
+			if (e.code === 4001) {
+				setOperation(OPERATION.cancel);
+			} else {
+				setOperation(OPERATION.error);
+			}
+
+			console.log("err", e);
 		} finally {
 			// close modal
+		}
+	};
+
+	const getAlertMessageByStatus = (status: OPERATION) => {
+		switch (status) {
+			case OPERATION.approval:
+				return "Approving";
+			case OPERATION.pending:
+				return "Pending";
+			case OPERATION.error:
+				return "Something went wrong";
+			case OPERATION.cancel:
+				return "Cancel operation";
+			case OPERATION.success:
+				return "Congratulations";
+		}
+	};
+
+	const getAlertTypeByStatus = (status: OPERATION) => {
+		switch (status) {
+			case OPERATION.approval:
+				return ALERT_TYPE.default;
+			case OPERATION.pending:
+				return ALERT_TYPE.default;
+			case OPERATION.error:
+				return ALERT_TYPE.error;
+			case OPERATION.cancel:
+				return ALERT_TYPE.error;
+			case OPERATION.success:
+				return ALERT_TYPE.success;
 		}
 	};
 
@@ -109,6 +170,14 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 				type={POOL_NAME_MAPPING[type]}
 				steps={getStepsByType(type)}
 				onComplete={onComplete}
+				alert={
+					operation !== OPERATION.default && (
+						<Alert
+							title={getAlertMessageByStatus(operation)}
+							type={getAlertTypeByStatus(operation)}
+						/>
+					)
+				}
 			/>
 		</div>
 	);

@@ -1,17 +1,9 @@
-import { CreateView } from "./Create";
+import { Create } from "./Create";
 
 export const Default = () => {
 	return (
 		<div>
-			<CreateView />
-		</div>
-	);
-};
-
-export const Active = () => {
-	return (
-		<div>
-			<CreateView active={true} />
+			<Create />
 		</div>
 	);
 };

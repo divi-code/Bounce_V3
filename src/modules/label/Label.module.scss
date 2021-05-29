@@ -3,14 +3,32 @@
 
 .component {
   display: grid;
+  grid-template-areas: "label after" "children children";
+  align-items: center;
+  justify-content: space-between;
 }
 
 .label {
+  position: relative;
+  z-index: 1;
+  grid-area: label;
+
   display: grid;
   grid-auto-flow: column;
   grid-column-gap: var(--spacing-unit);
   justify-content: start;
   align-items: center;
+}
 
-  margin-bottom: calc(var(--spacing-unit) * 2);
+.after {
+  grid-area: after;
+
+  display: grid;
+  justify-items: flex-end;
+}
+
+.children {
+  grid-area: children;
+
+  margin-top: calc(var(--spacing-unit) * 2);
 }

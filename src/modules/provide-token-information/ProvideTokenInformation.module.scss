@@ -3,9 +3,18 @@
 
 .form {
   display: grid;
-  grid-row-gap: calc(var(--spacing-unit) * 5);
+}
+
+.label:not(:first-child) {
+  margin-top: calc(var(--spacing-unit) * 5);
+}
+
+.link {
+  --text-decoration: underline;
+
+  margin-top: calc(var(--spacing-unit) * 3.5);
 }
 
 .submit {
-  margin-top: calc(var(--spacing-unit) * 0.5);
+  margin-top: calc(var(--spacing-unit) * 4.5);
 }

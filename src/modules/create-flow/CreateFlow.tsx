@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 
 import React from "react";
 import { uid } from "react-uid";
@@ -12,6 +12,7 @@ import styles from "./CreateFlow.module.scss";
 
 type CreateFlowType = {
 	type: string;
+	alert?: ReactNode;
 	steps: any;
 	onComplete(data: unknown): void;
 };
@@ -25,6 +26,7 @@ const CAPTIONS = {
 export const CreateFlow: FC<CreateFlowType & MaybeWithClassName> = ({
 	steps,
 	type,
+	alert,
 	onComplete,
 }) => {
 	return (
@@ -35,6 +37,7 @@ export const CreateFlow: FC<CreateFlowType & MaybeWithClassName> = ({
 			className={styles.step}
 			innerClassName={styles.innerStep}
 			type={type}
+			alert={alert}
 		>
 			{(body, { currentStep, isLastStep, moveBack, moveForward }) => {
 				return (

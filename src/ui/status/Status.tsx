@@ -16,10 +16,10 @@ type StatusProps = {
 
 export const Status: FC<StatusProps & MaybeWithClassName> = ({ className, status, captions }) => {
 	const COLORS = {
-		live: "var(--success)",
-		filled: "var(--process)",
-		closed: "var(--error)",
-		error: "var(--error)",
+		[POOL_STATUS.LIVE]: "var(--success)",
+		[POOL_STATUS.FILLED]: "var(--process)",
+		[POOL_STATUS.CLOSED]: "var(--error)",
+		[POOL_STATUS.ERROR]: "var(--error)",
 	};
 
 	return (
