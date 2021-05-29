@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useMemo } from "react";
 
 import { FormSpy } from "react-final-form";
 
@@ -33,13 +33,11 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 	tokenFrom,
 	balance,
 }) => {
-	const [amount, setAmount] = useState(undefined);
-
 	return (
 		<Form
 			onSubmit={onSubmit}
 			className={styles.form}
-			initialValues={{ tokenFrom: tokenFrom, allocation: "limited", amount: amount }}
+			initialValues={useMemo(() => ({ tokenFrom, allocation: "limited" }), [tokenFrom])}
 		>
 			<div className={styles.group}>
 				<Label Component="div" label="From">
@@ -81,9 +79,17 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 					placeholder="0.00"
 					after={
 						<div className={styles.amount}>
-							<button className={styles.max} onClick={() => setAmount(parseInt(balance))}>
-								MAX
-							</button>
+							<FormSpy>
+								{({ form }) => (
+									<button
+										className={styles.max}
+										onClick={() => form.change("amount", parseInt(balance))}
+										type="button"
+									>
+										MAX
+									</button>
+								)}
+							</FormSpy>
 							<Currency token={tokenFrom} />
 						</div>
 					}
