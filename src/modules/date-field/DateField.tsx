@@ -41,12 +41,13 @@ export const DateField: FC<DateFieldType & MaybeWithClassName> = ({
 }) => {
 	return (
 		<Field name={name} value={value} validate={required ? isRequired : undefined}>
-			{({ input }) => (
+			{({ input, meta }) => (
 				<DatePicker
 					className={className}
 					name={input.name}
 					initialValue={input.value}
 					onChange={input.onChange}
+					onBlur={input.onBlur}
 					placeholder={placeholder}
 					label={label}
 					quickNav={quickNav}
@@ -57,6 +58,7 @@ export const DateField: FC<DateFieldType & MaybeWithClassName> = ({
 					selection={selection}
 					readOnly={readOnly}
 					required={required}
+					error={(meta.error && meta.touched ? meta.error : undefined) || meta.submitError}
 				/>
 			)}
 		</Field>

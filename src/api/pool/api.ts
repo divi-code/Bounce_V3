@@ -43,5 +43,5 @@ export const fetchPoolSearch = async (
 		throw new Error("failed to load data:" + res.error_msg);
 	}
 
-	return res.data.pool_ids || [];
+	return res.data.pool_ids.filter(Boolean) || [];
 };

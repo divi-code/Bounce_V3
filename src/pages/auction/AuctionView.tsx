@@ -13,10 +13,10 @@ import styles from "@app/pages/auction/Auction.module.scss";
 import { Card, CardType } from "@app/pages/auction/ui/card";
 
 import { Button } from "@app/ui/button";
-import { FoldableSection } from "@app/ui/foldable-section";
 import { GutterBox } from "@app/ui/gutter-box";
 
 import { PopupTeleporterTarget } from "@app/ui/pop-up-container";
+import { toDeltaTimer } from "@app/utils/time";
 
 type AuctionType = {
 	result?: CardType[];
@@ -72,34 +72,37 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 					<section className={styles.result}>
 						<GutterBox>
 							{result && (
-								<ul className={styles.list}>
-									{result.map((auction) => (
-										<li key={uid(auction)} className={styles.item}>
-											<Card
-												href={auction.href}
-												id={auction.id}
-												status={auction.status}
-												name={auction.name}
-												address={auction.address}
-												type={auction.type}
-												tokenCurrency={auction.tokenCurrency}
-												auctionAmount={auction.auctionAmount}
-												auctionCurrency={auction.auctionCurrency}
-												auctionPrice={auction.auctionPrice}
-												fillInPercentage={auction.fillInPercentage}
-											/>
-										</li>
-									))}
-								</ul>
-							)}
-							{result && numberOfPages > 1 && (
-								<Pagination
-									className={styles.pagination}
-									numberOfPages={numberOfPages}
-									currentPage={currentPage}
-									onBack={onBack}
-									onNext={onNext}
-								/>
+								<>
+									<ul className={styles.list}>
+										{result.map((auction) => (
+											<li key={uid(auction)} className={styles.item}>
+												<Card
+													href={auction.href}
+													id={auction.id}
+													status={auction.status}
+													name={auction.name}
+													address={auction.address}
+													type={auction.type}
+													tokenCurrency={auction.tokenCurrency}
+													auctionAmount={auction.auctionAmount}
+													auctionCurrency={auction.auctionCurrency}
+													auctionPrice={auction.auctionPrice}
+													fillInPercentage={auction.fillInPercentage}
+												/>
+												{toDeltaTimer((-auction.openTime + Date.now()) / 1000)}
+											</li>
+										))}
+									</ul>
+									{numberOfPages > 1 && (
+										<Pagination
+											className={styles.pagination}
+											numberOfPages={numberOfPages}
+											currentPage={currentPage}
+											onBack={onBack}
+											onNext={onNext}
+										/>
+									)}
+								</>
 							)}
 						</GutterBox>
 					</section>

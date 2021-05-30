@@ -57,8 +57,10 @@ type DatePickerType = {
 	quickNav?: Array<QuickNavType>;
 	dropdownPosition?: DropdownPositionType;
 	onChange(date: Date): void;
+	onBlur?(): void;
 	readOnly?: boolean;
 	required?: boolean;
+	error?: string;
 };
 
 const testMinMax = (value: string, min?: number, max?: number) =>
@@ -104,6 +106,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 	dayFill,
 	selection,
 	onChange,
+	onBlur,
 	placeholder,
 	noIntervalValidate,
 	className,
@@ -113,6 +116,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 	quickNav,
 	readOnly,
 	required,
+	error,
 }) => {
 	const [calendarRef, setCalendarRef] = useState<HTMLElement | null>(null);
 
@@ -273,6 +277,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 				focus={on}
 				placeholder={!calendarValue}
 				onClick={!readOnly ? toggle : () => null}
+				error={error}
 			>
 				{calendarValue
 					? `${to2DigitOrNothing(day)}.${to2DigitOrNothing(month)}.${to2DigitOrNothing(
@@ -300,6 +305,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 					// onFocus={onFocus}
 					// onBlur={onBlur}
 					ref={setCalendarRef}
+					onBlur={onBlur}
 				>
 					{on && (
 						<>

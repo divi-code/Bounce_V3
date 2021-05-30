@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { FC, ReactNode } from "react";
 
+import { POOL_SHORT_NAME_MAPPING, POOL_SPECIFIC_NAME_MAPPING } from "@app/api/pool/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { useConvertDate } from "@app/hooks/use-convert-data";
 import { Currency } from "@app/modules/currency";
@@ -53,13 +54,13 @@ export const ConfirmationView: FC<MaybeWithClassName & ConfirmationType & Common
 	delay,
 }) => {
 	const TOKEN_DATA = {
-		"Pool type": type,
 		"Contact address": address,
 		"Token symbol": tokenFrom,
 		"Token declaim": declaim,
 	};
 
 	const PARAMETERS_DATA = {
+		"Pool type": type,
 		To: tokenTo,
 		"Swap Ratio": swapRatio,
 		Amount: amount,
@@ -67,17 +68,14 @@ export const ConfirmationView: FC<MaybeWithClassName & ConfirmationType & Common
 	};
 
 	const SETTINGS_DATA = {
-		Participations: "Public",
-		Whitelist: whitelist,
+		Participations: whitelist,
 		"Pool duration": duration,
 		"Delay Unlocking Token": delay,
 	};
 
 	return (
 		<div className={classNames(className, styles.component)}>
-			<Heading3 className={styles.title}>
-				{name} {type}
-			</Heading3>
+			<Heading3 className={styles.title}>{name}</Heading3>
 			<DescriptionList title="Token Information" data={TOKEN_DATA} />
 			<DescriptionList title="Auction Parameters" data={PARAMETERS_DATA} />
 			<DescriptionList title="Advanced Setting" data={SETTINGS_DATA} />
@@ -109,7 +107,7 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 
 	return (
 		<ConfirmationView
-			name={poolName}
+			name={`${poolName} ${POOL_SPECIFIC_NAME_MAPPING[type]}`}
 			address={walletConversion(tokenFromAddress)}
 			tokenFrom={<Currency token={tokenFrom} small={true} />}
 			declaim={tokenDecimal}
@@ -119,17 +117,13 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 			allocation={
 				allocation === ALLOCATION_TYPE.limited ? `Limit ${limit} ${tokenFrom}` : "No Limits"
 			}
-			whitelist={whitelist === WHITELIST_TYPE.yes ? "Yes" : "No"}
+			whitelist={whitelist === WHITELIST_TYPE.yes ? "Whitelist" : "Public"}
 			duration={`From ${convertDate(new Date(startPool), "long")} - To ${convertDate(
 				new Date(endPool),
 				"long"
 			)}`}
-			delay={
-				delayClaim
-					? convertDate(new Date(claimStart), "long")
-					: convertDate(new Date(startPool), "long")
-			}
-			type={type}
+			delay={delayClaim ? convertDate(new Date(claimStart), "long") : "No"}
+			type={POOL_SHORT_NAME_MAPPING[type]}
 		/>
 	);
 };

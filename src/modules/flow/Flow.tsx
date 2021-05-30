@@ -37,7 +37,7 @@ export function Flow<T extends object = {}, P extends object = {}>({
 			setValidationStatus(undefined);
 			setStep(step + 1);
 		} else {
-			onComplete(data);
+			return onComplete(data);
 		}
 	}, [hasNextStep, data, step, onComplete]);
 
@@ -59,11 +59,11 @@ export function Flow<T extends object = {}, P extends object = {}>({
 			currentStep: step,
 			isLastStep: step === steps.length - 1,
 
-			moveForward: () => {
+			moveForward: async () => {
 				const currentStep = steps[step];
 
 				if (submitAction) {
-					submitAction();
+					await submitAction();
 				}
 
 				const validateResult = !currentStep.validate || currentStep.validate(data, stepProps);
@@ -74,7 +74,7 @@ export function Flow<T extends object = {}, P extends object = {}>({
 					return;
 				}
 
-				moveStepForward();
+				return moveStepForward();
 			},
 			moveBack: moveStepBack,
 			addData,

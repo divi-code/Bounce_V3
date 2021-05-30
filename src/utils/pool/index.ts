@@ -1,5 +1,4 @@
 import { isGreaterThanOrEqualTo } from "@app/utils/bn";
-import { getDeltaTime } from "@app/utils/time";
 
 export enum POOL_STATUS {
 	COMING = "coming",
@@ -9,17 +8,26 @@ export enum POOL_STATUS {
 	ERROR = "error",
 }
 
-export const getStatus = (amount, totalAmount, openAt, closeAt): POOL_STATUS => {
-	const filled = isGreaterThanOrEqualTo(amount, totalAmount);
-	const expired = getDeltaTime(closeAt) === 0;
+export const getStatus = (
+	openAt: string | number,
+	closeAt: string | number,
+	amount: string,
+	totalAmount: string
+): POOL_STATUS => {
+	const nowTime = new Date();
+	const openTime = new Date(+openAt);
+	const closeTime = new Date(+closeAt);
 
-	if (filled) {
-		return POOL_STATUS.FILLED;
+	if (nowTime > openTime) {
+		if (nowTime < closeTime) {
+			if (amount && totalAmount && isGreaterThanOrEqualTo(amount, totalAmount))
+				return POOL_STATUS.FILLED;
+
+			return POOL_STATUS.LIVE;
+		} else {
+			return POOL_STATUS.CLOSED;
+		}
+	} else {
+		return POOL_STATUS.COMING;
 	}
-
-	if (expired) {
-		return POOL_STATUS.CLOSED;
-	}
-
-	return Date.now() < openAt * 1000 ? POOL_STATUS.COMING : POOL_STATUS.LIVE;
 };

@@ -80,10 +80,8 @@ export const Auction = () => {
 	const [page, setPage] = useState(0);
 
 	useEffect(() => {
-		setSearchWindow(poolList.filter(Boolean).slice(page * WINDOW_SIZE, (page + 1) * WINDOW_SIZE));
+		setSearchWindow(poolList.slice(page * WINDOW_SIZE, (page + 1) * WINDOW_SIZE));
 	}, [page, poolList]);
-
-	console.log(poolList.filter(Boolean));
 
 	useEffect(() => {
 		const { auctionType } = searchFilters;
@@ -124,7 +122,7 @@ export const Auction = () => {
 
 					return {
 						href: `/auction/${auctionType}/${pool.poolID}`,
-						status: getStatus(pool.amountSwap0, fromAmount, pool.openAt, pool.closeAt),
+						status: getStatus(pool.openAt, pool.closeAt, pool.amountSwap0, fromAmount),
 						id: pool.poolID,
 						name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
 						address: from.address,
@@ -135,6 +133,9 @@ export const Auction = () => {
 						auctionCurrency: to.symbol,
 						auctionPrice: getSwapRatio(fromAmount, toAmount, from.decimals, to.decimals),
 						fillInPercentage: pool.amountSwap0 ? getProgress(pool.amountSwap0, fromAmount) : 0,
+						openTime: pool.openAt,
+						closeAt: pool.closeAt,
+						claimAt: pool.claimAt,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));
@@ -150,6 +151,9 @@ export const Auction = () => {
 		searchFilters.auctionType,
 		setConvertedPoolInformation,
 	]);
+
+	console.log(poolInformation);
+	console.log(convertedPoolInformation);
 
 	const router = useRouter();
 
@@ -200,7 +204,7 @@ export const Auction = () => {
 			result={poolInformation.length ? convertedPoolInformation : undefined}
 			initialSearchState={initialSearchState}
 			currentPage={page}
-			numberOfPages={Math.floor(poolList.filter(Boolean).length / WINDOW_SIZE)}
+			numberOfPages={Math.floor(poolList.length / WINDOW_SIZE)}
 			onBack={() => setPage(page - 1)}
 			onNext={() => setPage(page + 1)}
 		/>
