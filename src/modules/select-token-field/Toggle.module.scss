@@ -2,14 +2,6 @@
 @use "../../helper/style/media";
 
 .component {
-  position: relative;
-}
-
-.input {
-  @include mixin.visuallyHidden();
-}
-
-.label {
   display: grid;
   grid-template-columns: auto 1fr auto;
   grid-template-areas: "icon name toggle" "icon count toggle";
@@ -24,7 +16,7 @@
   border-radius: 0.5rem;
 }
 
-.label::before {
+.component::before {
   position: relative;
   content: "";
   grid-area: icon;

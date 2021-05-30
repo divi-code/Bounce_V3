@@ -81,20 +81,18 @@ export const Manage: FC<{
 			</div>
 			{toggle === TOGGLES.list && (
 				<div className={styles.scroll}>
-					<StrollableContainer bar={ScrollBar} draggable inBetween={<VerticalScrollIndicator />}>
+					<StrollableContainer bar={ScrollBar} draggable>
 						<ul className={styles.list}>
 							{tokenLists.map((item) => (
-								<li key={item.key}>
-									<Toggle
-										id={uid(item)}
-										count={item.count}
-										img={item.img}
-										name={item.name}
-										checked={tokenListControl.activeLists.includes(item.key)}
-										reference={item.key}
-										onChange={tokenListControl.change}
-									/>
-								</li>
+								<Toggle
+									key={uid(item)}
+									count={item.count}
+									img={item.img}
+									name={item.name}
+									checked={tokenListControl.activeLists.includes(item.key)}
+									reference={item.key}
+									onChange={tokenListControl.change}
+								/>
 							))}
 						</ul>
 					</StrollableContainer>
@@ -104,11 +102,7 @@ export const Manage: FC<{
 				<div className={styles.custom}>
 					<div>
 						{localTokens.length > 0 ? (
-							<StrollableContainer
-								bar={ScrollBar}
-								draggable
-								inBetween={<VerticalScrollIndicator />}
-							>
+							<StrollableContainer bar={ScrollBar} draggable>
 								<ul className={styles.customList}>
 									{localTokens.map((token) => (
 										<li key={uid(token)}>
