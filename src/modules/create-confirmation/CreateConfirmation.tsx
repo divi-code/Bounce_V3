@@ -1,10 +1,11 @@
-import { FC, ReactNode, useState } from "react";
+import { FC, ReactNode, useCallback, useState } from "react";
 
 import { MaybeWithClassName, WithChildren } from "@app/helper/react/types";
 import { Button, PrimaryButton } from "@app/ui/button";
 
 import { GutterBox } from "@app/ui/gutter-box";
 import { Close } from "@app/ui/icons/close";
+import { Spinner } from "@app/ui/spinner";
 import { Heading2 } from "@app/ui/typography";
 
 import styles from "./CreateConfirmation.module.scss";
@@ -24,7 +25,7 @@ export const CreateConfirmation: FC<CreateConfirmationType & MaybeWithClassName 
 }) => {
 	const [loading, setLoading] = useState(false);
 
-	const handleOnComplete = async () => {
+	const handleOnComplete = useCallback(async () => {
 		setLoading(true);
 
 		try {
@@ -32,7 +33,7 @@ export const CreateConfirmation: FC<CreateConfirmationType & MaybeWithClassName 
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [onComplete]);
 
 	return (
 		<section className={className}>
@@ -58,7 +59,7 @@ export const CreateConfirmation: FC<CreateConfirmationType & MaybeWithClassName 
 						disabled={loading}
 						size="large"
 					>
-						Confirm
+						{loading ? <Spinner size="small" /> : "Confirm"}
 					</PrimaryButton>
 				</div>
 			</GutterBox>
