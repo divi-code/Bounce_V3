@@ -54,3 +54,39 @@
 
   list-style: none;
 }
+
+.custom {
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
+.customList {
+  display: grid;
+  grid-row-gap: calc(var(--spacing-unit) * 2.5);
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.footer {
+  position: relative;
+
+  display: grid;
+  place-content: center;
+
+  padding: calc(var(--spacing-unit) * 2.5);
+}
+
+.footer::before {
+  position: absolute;
+  left: calc(var(--spacing-unit) * -5);
+  right: calc(var(--spacing-unit) * -5);
+  content: "";
+
+  display: block;
+  height: 1px;
+
+  background-color: rgba(var(--primary-black), 0.1);
+}

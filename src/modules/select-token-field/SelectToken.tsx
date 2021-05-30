@@ -58,13 +58,13 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 
 	const initialActive = options.find((item) => item.key === value);
 
-	const defaultActive = initialActive
+	const defaultActive: ShortTokenInfo = initialActive
 		? initialActive
 		: placeholder
-		? { key: undefined, title: undefined, currency: placeholder, img: undefined }
+		? { key: undefined, title: undefined, currency: placeholder, img: undefined, source: undefined }
 		: options[0];
 
-	const [active, setActive] = useState(defaultActive);
+	const [active, setActive] = useState<ShortTokenInfo>(defaultActive);
 	const [changed, setChanged] = useState(false);
 
 	const groupName = useUID();

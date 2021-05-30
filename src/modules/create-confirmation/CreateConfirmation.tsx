@@ -35,6 +35,8 @@ export const CreateConfirmation: FC<CreateConfirmationType & MaybeWithClassName 
 		}
 	}, [onComplete]);
 
+	console.log(loading);
+
 	return (
 		<section className={className}>
 			<GutterBox>

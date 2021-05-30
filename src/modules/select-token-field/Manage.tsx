@@ -5,6 +5,7 @@ import { StrollableContainer } from "react-stroller";
 
 import { uid } from "react-uid";
 
+import { Currency } from "@app/modules/currency";
 import { ShortTokenListInfo, TokenListControl } from "@app/modules/select-token-field/types";
 import { Button } from "@app/ui/button";
 
@@ -12,6 +13,7 @@ import { Search } from "@app/ui/icons/search";
 import { Input } from "@app/ui/input";
 import { ScrollBar, VerticalScrollIndicator } from "@app/ui/stroller-components";
 
+import { Body1, Caption } from "@app/ui/typography";
 import { queryERC20Token } from "@app/web3/api/eth/api";
 import { useLocallyDefinedTokens } from "@app/web3/api/tokens/local-tokens";
 
@@ -98,7 +100,34 @@ export const Manage: FC<{
 					</StrollableContainer>
 				</div>
 			)}
-			{toggle === TOGGLES.tokens && <div>Coming Soon</div>}
+			{toggle === TOGGLES.tokens && (
+				<div className={styles.custom}>
+					<div>
+						{localTokens.length > 0 ? (
+							<StrollableContainer
+								bar={ScrollBar}
+								draggable
+								inBetween={<VerticalScrollIndicator />}
+							>
+								<ul className={styles.customList}>
+									{localTokens.map((token) => (
+										<li key={uid(token)}>
+											<Currency token={token.symbol} />
+										</li>
+									))}
+								</ul>
+							</StrollableContainer>
+						) : (
+							<Body1>0 Custom Tokens</Body1>
+						)}
+					</div>
+					<div className={styles.footer}>
+						<Body1 Component="span" lighten={50}>
+							Tip: Custom tokens are stored locally in your browser
+						</Body1>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

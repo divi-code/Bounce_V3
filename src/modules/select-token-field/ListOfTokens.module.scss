@@ -29,6 +29,20 @@
 }
 
 .footer {
+  position: relative;
+
   display: grid;
   place-content: center;
+}
+
+.footer::before {
+  position: absolute;
+  left: calc(var(--spacing-unit) * -5);
+  right: calc(var(--spacing-unit) * -5);
+  content: "";
+
+  display: block;
+  height: 1px;
+
+  background-color: rgba(var(--primary-black), 0.1);
 }

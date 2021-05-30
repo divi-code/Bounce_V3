@@ -60,7 +60,7 @@ export const ListOfTokens: FC<ListOfTokensType> = ({
 			<div className={styles.scroll}>
 				<StrollableContainer bar={ScrollBar} draggable inBetween={<VerticalScrollIndicator />}>
 					<ul className={styles.list}>
-						{listOfTokens.map((option, index) => {
+						{listOfTokens.map((option) => {
 							const checked = option === active;
 
 							return (
