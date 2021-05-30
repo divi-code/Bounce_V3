@@ -4,7 +4,7 @@ import { RequireConnectedWallet } from "@app/modules/require-connected-wallet";
 import { Create } from "@app/pages/create";
 import { pageWithLayout } from "@app/utils/pageInLayout";
 
-const Index = pageWithLayout(
+const CreatePage = pageWithLayout(
 	() => (
 		<NoSsr>
 			<RequireConnectedWallet>
@@ -19,4 +19,4 @@ const Index = pageWithLayout(
 	)
 );
 
-export default Index;
+export default CreatePage;

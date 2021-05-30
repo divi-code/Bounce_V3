@@ -11,7 +11,6 @@ import { divide } from "@app/utils/bn";
 import { weiToNum } from "@app/utils/bn/wei";
 import { POOL_STATUS } from "@app/utils/pool";
 import { PoolInfoType, queryPoolInformation } from "@app/web3/api/bounce/pool-search";
-import { queryERC20Token } from "@app/web3/api/eth/api";
 import { useTokenQuery, useTokenSearch } from "@app/web3/api/tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 import { ADDRESS_MAPPING } from "@app/web3/networks/mapping";
@@ -21,6 +20,14 @@ import { AuctionView } from "./AuctionView";
 const WINDOW_SIZE = 10;
 
 const getProgress = (amount, totalAmount) => +divide(amount, totalAmount, 0);
+
+const tryParseJSON = (tryThis: string, orThis: any): any => {
+	try {
+		return JSON.parse(tryThis);
+	} catch (e) {
+		return orThis;
+	}
+};
 
 const getSwapRatio = (
 	fromAmount: string,
@@ -133,10 +140,14 @@ export const Auction = () => {
 
 	useEffect(
 		() => {
-			const isEmpty = Object.keys(searchFilters).length === 0;
+			const { auctionType, ...rest } = searchFilters;
 
-			if (!isEmpty) {
-				router.push("/?filters=" + encodeURIComponent(JSON.stringify(searchFilters)), undefined, {
+			if (auctionType) {
+				const isEmpty = Object.keys(rest).length === 0;
+
+				const filters = isEmpty ? "" : `?filters=${encodeURIComponent(JSON.stringify(rest))}`;
+
+				router.push(`/auction/${auctionType}/${filters}`, undefined, {
 					shallow: true,
 				});
 			}
@@ -147,11 +158,10 @@ export const Auction = () => {
 
 	const [initialSearchState] = useState(() => {
 		try {
-			if (!router.query.filters) {
-				return {};
-			}
-
-			return JSON.parse(decodeURIComponent(router.query.filters as string));
+			return {
+				...tryParseJSON(decodeURIComponent(router.query.filters as string), {}),
+				auctionType: router.query.auctionType,
+			};
 		} catch (e) {
 			console.error(e);
 
@@ -159,16 +169,19 @@ export const Auction = () => {
 		}
 	});
 
+	const [tryIfNotConnected, setTryIfNotConnected] = useState(false);
+	useEffect(() => void setTimeout(() => setTryIfNotConnected(true), 1000), []);
+
 	useEffect(
 		() => {
 			const isEmpty = Object.keys(initialSearchState).length === 0;
 
-			if (!isEmpty) {
+			if (!isEmpty && (provider || tryIfNotConnected)) {
 				onSubmit(initialSearchState);
 			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[provider]
+		[provider && setTryIfNotConnected]
 	);
 
 	return (
