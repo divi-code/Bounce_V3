@@ -8,10 +8,13 @@
 }
 
 .header {
-
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 
 .main {
+  position: relative;
   flex-grow: 1;
 }
 

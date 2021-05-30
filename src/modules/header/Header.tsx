@@ -106,8 +106,8 @@ export const HeaderView: FC<HeaderType & MaybeWithClassName> = ({ className, act
 	);
 };
 
-export const Header: FC<MaybeWithClassName> = () => {
+export const Header: FC<MaybeWithClassName> = ({ className }) => {
 	const active = useConnected();
 
-	return <HeaderView active={active} />;
+	return <HeaderView className={className} active={active} />;
 };

@@ -9,6 +9,10 @@
 }
 
 .search {
+  position: sticky;
+  top: var(--header-height);
+  z-index: 10;
+
   height: 8.75rem;
 
   transition-timing-function: linear;
