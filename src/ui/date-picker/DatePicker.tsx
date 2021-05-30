@@ -206,20 +206,32 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 	useOnClickOutside([topRef], closeByClickAway, on);
 
 	const [hours, onHoursChange] = useCallbackState(
-		initialValue ? initialValue.getHours() : 0,
+		initialValue ? initialValue.getHours() : "",
 		// @ts-ignore
 		(event: ChangeEvent<HTMLInputElement>, prev) => {
-			const value = +event.target.value;
+			const realValue = event.target.value;
 
-			return value >= 0 && value <= 24 ? value : prev;
+			if (realValue === "") {
+				return "";
+			}
+
+			const value = +realValue;
+
+			return value >= 0 && value <= 23 ? value : prev;
 		}
 	);
 
 	const [minutes, onMinutesChange] = useCallbackState(
-		initialValue ? initialValue.getMinutes() : 0,
+		initialValue ? initialValue.getMinutes() : "",
 		// @ts-ignore
 		(event: ChangeEvent<HTMLInputElement>, prev) => {
-			const value = +event.target.value;
+			const realValue = event.target.value;
+
+			if (realValue === "") {
+				return "";
+			}
+
+			const value = +realValue;
 
 			return value >= 0 && value <= 60 ? value : prev;
 		}
@@ -238,7 +250,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 				const year = calendarValue.getFullYear();
 				const month = calendarValue.getMonth();
 				const day = calendarValue.getDate();
-				const newDate = new Date(year, month, day, hours, minutes);
+				const newDate = new Date(year, month, day, +hours, +minutes);
 				onChange(newDate);
 			}
 		},
@@ -311,7 +323,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 									type="number"
 									inputProps={{
 										min: "0",
-										max: "24",
+										max: "23",
 									}}
 									placeholder="12"
 									required

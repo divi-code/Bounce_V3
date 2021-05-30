@@ -21,7 +21,7 @@ export type FixedOutType = {
 	swapRatio: number;
 	amount: number;
 	allocation: ALLOCATION_TYPE;
-	limit: string;
+	limit?: number;
 	fixedFormValues: any;
 };
 
@@ -30,7 +30,7 @@ const FixedImp = () => {
 	const { tokenFrom } = useFlowData<FixedInType>();
 	const initialValues = useMemo(
 		() => ({ tokenFrom, allocation: "limited", ...data.fixedFormValues }),
-		[tokenFrom]
+		[data.fixedFormValues, tokenFrom]
 	);
 
 	const findToken = useTokenSearch();
@@ -51,10 +51,10 @@ const FixedImp = () => {
 	const onSubmit = async (values: any) => {
 		addData({
 			tokenTo: values.tokenTo,
-			swapRatio: parseInt(values.swapRatio),
-			amount: parseInt(values.amount),
+			swapRatio: parseFloat(values.swapRatio),
+			amount: parseFloat(values.amount),
 			allocation: values.allocation,
-			limit: values.limit ? values.limit : "",
+			limit: parseFloat(values.limit),
 			fixedFormValues: values,
 		});
 

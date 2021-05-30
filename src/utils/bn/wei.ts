@@ -15,5 +15,5 @@ export const weiToNum = (value: string, decimals = 18, fixed = 6) => {
 };
 
 export const numToWei = (value: number, decimals = 18, fixed = 6) => {
-	return toWei(value, decimals).toNumber().toFixed(fixed).toString();
+	return toWei(value, decimals).toFixed(fixed).toString();
 };

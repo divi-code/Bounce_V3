@@ -20,5 +20,11 @@ const pickDateFormat = (format: "long" | "short"): Intl.DateTimeFormatOptions =>
 };
 
 export const useConvertDate = () => (date: Date, format: "long" | "short") => {
-	return Intl.DateTimeFormat(LANGUAGE, pickDateFormat(format)).format(date);
+	try {
+		return Intl.DateTimeFormat(LANGUAGE, pickDateFormat(format)).format(date);
+	} catch (e) {
+		console.error(e);
+
+		return "InvalidDate";
+	}
 };

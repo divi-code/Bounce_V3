@@ -17,9 +17,16 @@ type AlertType = {
 	title: string;
 	type: ALERT_TYPE;
 	text?: string;
+	style?: CSSProperties;
 };
 
-export const Alert: FC<AlertType & MaybeWithClassName> = ({ className, title, text, type }) => {
+export const Alert: FC<AlertType & MaybeWithClassName> = ({
+	className,
+	title,
+	text,
+	type,
+	style,
+}) => {
 	const COLORS = {
 		[ALERT_TYPE.default]: "var(--primary-black)",
 		[ALERT_TYPE.success]: "var(--success)",
@@ -29,7 +36,7 @@ export const Alert: FC<AlertType & MaybeWithClassName> = ({ className, title, te
 	return (
 		<div
 			className={classNames(className, styles.component, styles[type])}
-			style={{ "--color": COLORS[type] } as CSSProperties}
+			style={{ ...style, "--color": COLORS[type] } as CSSProperties}
 		>
 			<span className={classNames(styles.title, styles[`${type}Title`])}>{title}</span>{" "}
 			{text && <span className={styles.text}>{text}</span>}

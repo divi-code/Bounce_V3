@@ -4,6 +4,7 @@ import { uid } from "react-uid";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { Form } from "@app/modules/form";
+import { Pagination } from "@app/modules/pagination";
 import { PoolSearchField } from "@app/modules/pool-search-field";
 import { Search } from "@app/modules/search";
 import { SelectAuction } from "@app/modules/select-auction";
@@ -20,6 +21,10 @@ import { PopupTeleporterTarget } from "@app/ui/pop-up-container";
 type AuctionType = {
 	result?: CardType[];
 	initialSearchState: any;
+	numberOfPages: number;
+	currentPage: number;
+	onBack?(): void;
+	onNext?(): void;
 	onSubmit?(values: any): any;
 };
 
@@ -27,6 +32,10 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 	className,
 	result,
 	onSubmit,
+	numberOfPages,
+	currentPage,
+	onBack,
+	onNext,
 	initialSearchState,
 }) => {
 	return (
@@ -59,7 +68,7 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 						</Button>
 					</Form>
 				</Search>
-				<FoldableSection open={result && result.length > 0} timeout={300} ssr={false}>
+				{result && result.length > 0 && (
 					<section className={styles.result}>
 						<GutterBox>
 							{result && (
@@ -73,21 +82,28 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 												name={auction.name}
 												address={auction.address}
 												type={auction.type}
-												tokenLogo={auction.tokenLogo}
 												tokenCurrency={auction.tokenCurrency}
 												auctionAmount={auction.auctionAmount}
 												auctionCurrency={auction.auctionCurrency}
 												auctionPrice={auction.auctionPrice}
-												time={auction.time}
 												fillInPercentage={auction.fillInPercentage}
 											/>
 										</li>
 									))}
 								</ul>
 							)}
+							{result && numberOfPages > 1 && (
+								<Pagination
+									className={styles.pagination}
+									numberOfPages={numberOfPages}
+									currentPage={currentPage}
+									onBack={onBack}
+									onNext={onNext}
+								/>
+							)}
 						</GutterBox>
 					</section>
-				</FoldableSection>
+				)}
 			</div>
 			<PopupTeleporterTarget />
 		</>

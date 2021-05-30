@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC } from "react";
 
 import { FormSpy } from "react-final-form";
 
@@ -11,6 +11,7 @@ import { SelectTokenField } from "@app/modules/select-token-field";
 import { TextField } from "@app/modules/text-field";
 
 import { PrimaryButton } from "@app/ui/button";
+import { FoldableSection } from "@app/ui/foldable-section";
 import { RightArrow2 } from "@app/ui/icons/arrow-right-2";
 import { RadioGroup } from "@app/ui/radio-group";
 import { Body1 } from "@app/ui/typography";
@@ -28,6 +29,8 @@ export enum ALLOCATION_TYPE {
 	noLimits = "no-limits",
 	limited = "limited",
 }
+
+const FLOAT = "0.0001";
 
 export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 	onSubmit,
@@ -53,6 +56,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 							<TextField
 								type="number"
 								name="swapRatio"
+								step={FLOAT}
 								placeholder="0.00"
 								after={<Currency token={props.values.tokenTo} />}
 								required
@@ -75,6 +79,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 					type="number"
 					name="amount"
 					placeholder="0.00"
+					step={FLOAT}
 					after={
 						<div className={styles.amount}>
 							<FormSpy>
@@ -100,20 +105,23 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 					<RadioField name="allocation" label="Limited" value={ALLOCATION_TYPE.limited} />
 				</RadioGroup>
 			</Label>
+
 			<FormSpy subscription={{ values: true }}>
-				{(props) =>
-					props.values.allocation === "limited" && (
+				{(props) => (
+					<FoldableSection open={props.values.allocation === "limited"} timeout={300} ssr>
 						<Label Component="label" label="Limit">
 							<TextField
 								type="text"
 								name="limit"
+								key={props.values.allocation}
 								placeholder="0.00"
+								step={FLOAT}
 								after={<Currency token={tokenFrom} />}
-								required
+								required={props.values.allocation === "limited"}
 							/>
 						</Label>
-					)
-				}
+					</FoldableSection>
+				)}
 			</FormSpy>
 			<FormSpy>
 				{(form) => (

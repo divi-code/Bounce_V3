@@ -4,7 +4,6 @@ import { FormSpy } from "react-final-form";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { useResizeObserver } from "@app/hooks/use-resize-observer";
-import { CheckboxField } from "@app/modules/checkbox-field";
 import { DateField } from "@app/modules/date-field";
 import { Form } from "@app/modules/form";
 import { Label } from "@app/modules/label";
@@ -26,6 +25,10 @@ export enum WHITELIST_TYPE {
 	yes = "yes",
 	no = "no",
 }
+
+const getDateIntervalStart = (from: Date) => {
+	return new Date(from.getFullYear(), from.getMonth(), from.getDate());
+};
 
 export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSettingsType> = ({
 	onSubmit,
@@ -50,7 +53,7 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 									<DateField
 										placeholder="10.01.2021"
 										name="startPool"
-										min={new Date().toString()}
+										min={getDateIntervalStart(new Date()).toString()}
 										selection={{
 											start: new Date(props.values.startPool),
 											end: new Date(props.values.endPool),
@@ -66,7 +69,7 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 									<DateField
 										placeholder="10.01.2021"
 										name="endPool"
-										min={new Date(props.values.startPool).toString()}
+										min={getDateIntervalStart(new Date(props.values.startPool)).toString()}
 										selection={{
 											start: new Date(props.values.startPool),
 											end: new Date(props.values.endPool),
@@ -92,16 +95,17 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 							tooltip="Create new item"
 							after={<OnOffField name="delayToken" value="unlock" />}
 						>
-							{props.values.delayToken.includes("unlock") ? (
+							{props.values.delayToken.includes("unlock") && (
 								<DateField
+									key={props.values.claimStart}
 									placeholder="10.01.2021"
 									name="claimStart"
-									min={new Date(props.values.startPool).toString()}
+									min={getDateIntervalStart(new Date(props.values.startPool)).toString()}
 									label="Choose date"
 									quickNav={["in-5-days", "in-7-days", "in-10-days"]}
-									required
+									required={props.values.delayToken.includes("unlock")}
 								/>
-							) : undefined}
+							)}
 						</Label>
 					</>
 				)}

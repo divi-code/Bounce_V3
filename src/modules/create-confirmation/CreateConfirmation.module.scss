@@ -31,6 +31,7 @@
 
 .body {
   margin-top: calc(var(--spacing-unit) * 3.5);
+  margin-bottom: calc(var(--spacing-unit) * 5.5);
   padding: calc(var(--spacing-unit) * 3.5) calc(var(--spacing-unit) * 4.5);
 
   border: 1px solid rgba(var(--primary-black), 0.1);
@@ -38,5 +39,5 @@
 }
 
 .submit {
-  margin-top: calc(var(--spacing-unit) * 5.5);
+  margin: 0;
 }

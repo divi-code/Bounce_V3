@@ -23,8 +23,8 @@ const SettingsImp = () => {
 			poolName: values.poolName,
 			startPool: values.startPool,
 			endPool: values.endPool,
-			delayClaim: true,
-			claimStart: values.claimStart,
+			delayClaim: values.delayToken.length > 0,
+			claimStart: values.delayToken.length > 0 ? values.claimStart : values.endPool,
 			whitelist: values.whitelist,
 			settingsFormValues: values,
 		});

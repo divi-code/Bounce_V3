@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { useRouter } from "next/router";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { POOL_ADDRESS_MAPPING, POOL_NAME_MAPPING, POOL_TYPE } from "@app/api/pool/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
@@ -77,7 +77,11 @@ const getAlertTypeByStatus = (status: OPERATION) => {
 	}
 };
 
-``;
+const Effector: FC<{ onMount(): void }> = ({ onMount }) => {
+	useEffect(onMount, []);
+
+	return null;
+};
 
 export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ type }) => {
 	const getStepsByType = (pool: POOL_TYPE) => {
@@ -110,13 +114,13 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 		const tokenFrom = findToken(data.tokenFrom);
 		const tokenTo = findToken(data.tokenTo);
 
-		const fromAmount = numToWei(data.amount, findToken(data.tokenFrom).decimals, 0);
+		const fromAmount = numToWei(data.amount, tokenFrom.decimals, 0);
 		const toAmount = numToWei(data.swapRatio * data.amount, tokenTo.decimals, 0);
 
-		const limit = numToWei(-data.limit, findToken(data.tokenFrom).decimals, 0);
+		const limit = data.limit ? numToWei(data.limit, tokenFrom.decimals, 0) : "0";
 
 		try {
-			const tokenContract = getTokenContract(provider, findToken(data.tokenFrom).address);
+			const tokenContract = getTokenContract(provider, tokenTo.address);
 
 			const result = await approveAuctionPool(
 				tokenContract,
@@ -140,7 +144,7 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 					closeAt: +data.endPool,
 					claimAt: +data.claimStart,
 					enableWhiteList: data.whitelist === WHITELIST_TYPE.yes,
-					maxAmount1PerWallet: limit || "0",
+					maxAmount1PerWallet: limit,
 					onlyBot: false,
 				})
 					.on("transactionHash", (h) => {
@@ -154,7 +158,8 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 						const poolId = r.events.Created.returnValues[0];
 						routerPush(`/auction/${type}/${poolId}`);
 					})
-					.on("error", () => {
+					.on("error", (e) => {
+						console.error("error", e);
 						setOperation(OPERATION.error);
 					});
 			} else {
@@ -180,12 +185,16 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 				steps={getStepsByType(type)}
 				onComplete={onComplete}
 				alert={
-					operation !== OPERATION.default && (
-						<Alert
-							title={getAlertMessageByStatus(operation)}
-							type={getAlertTypeByStatus(operation)}
-						/>
-					)
+					<>
+						<Effector onMount={() => setOperation(OPERATION.default)} />
+						{operation !== OPERATION.default && (
+							<Alert
+								title={getAlertMessageByStatus(operation)}
+								type={getAlertTypeByStatus(operation)}
+								style={{ marginBottom: 16 }}
+							/>
+						)}
+					</>
 				}
 			/>
 		</div>

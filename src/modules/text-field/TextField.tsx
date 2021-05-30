@@ -13,6 +13,7 @@ type TextFieldType = {
 	readOnly?: boolean;
 	initialValue?: any;
 	value?: any;
+	step?: string;
 	required?: boolean;
 	validate?: (value: string) => any;
 	before?: string | ReactNode;
@@ -30,6 +31,7 @@ export const TextField: FC<TextFieldType & MaybeWithClassName> = ({
 	before,
 	after,
 	value,
+	step,
 }) => {
 	return (
 		<Field
@@ -52,6 +54,7 @@ export const TextField: FC<TextFieldType & MaybeWithClassName> = ({
 					required={required}
 					before={before}
 					after={after}
+					inputProps={{ step }}
 					error={(meta.error && meta.touched ? meta.error : undefined) || meta.submitError}
 				/>
 			)}

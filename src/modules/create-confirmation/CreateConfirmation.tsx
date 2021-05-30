@@ -51,7 +51,7 @@ export const CreateConfirmation: FC<CreateConfirmationType & MaybeWithClassName 
 						Close
 					</Button>
 					<div className={styles.body}>{children}</div>
-					{alert && <div>{alert}</div>}
+					{alert}
 					<PrimaryButton
 						className={styles.submit}
 						onClick={handleOnComplete}

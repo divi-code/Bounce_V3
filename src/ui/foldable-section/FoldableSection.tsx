@@ -95,7 +95,7 @@ export const FoldableSection: FC<ComponentType> = ({
 					setIdle(true);
 				}, timeout);
 
-				// return () => clearTimeout(tm);
+				return () => clearTimeout(tm);
 			}
 		}
 

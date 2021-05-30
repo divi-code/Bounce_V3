@@ -21,7 +21,7 @@ import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
 import { AuctionView } from "./AuctionView";
 
-const WINDOW_SIZE = 10;
+const WINDOW_SIZE = 9;
 
 const tryParseJSON = (tryThis: string, orThis: any): any => {
 	try {
@@ -77,10 +77,13 @@ export const Auction = () => {
 
 	const [searchWindow, setSearchWindow] = useState<number[]>([]);
 
+	const [page, setPage] = useState(0);
+
 	useEffect(() => {
-		const page = 0;
 		setSearchWindow(poolList.filter(Boolean).slice(page * WINDOW_SIZE, (page + 1) * WINDOW_SIZE));
-	}, [poolList]);
+	}, [page, poolList]);
+
+	console.log(poolList.filter(Boolean));
 
 	useEffect(() => {
 		const { auctionType } = searchFilters;
@@ -196,6 +199,10 @@ export const Auction = () => {
 			onSubmit={onSubmit}
 			result={poolInformation.length ? convertedPoolInformation : undefined}
 			initialSearchState={initialSearchState}
+			currentPage={page}
+			numberOfPages={Math.floor(poolList.filter(Boolean).length / WINDOW_SIZE)}
+			onBack={() => setPage(page - 1)}
+			onNext={() => setPage(page + 1)}
 		/>
 	);
 };

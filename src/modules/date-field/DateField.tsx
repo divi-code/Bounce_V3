@@ -40,7 +40,7 @@ export const DateField: FC<DateFieldType & MaybeWithClassName> = ({
 	selection,
 }) => {
 	return (
-		<Field name={name} value={value} validate={isRequired}>
+		<Field name={name} value={value} validate={required ? isRequired : undefined}>
 			{({ input }) => (
 				<DatePicker
 					className={className}
