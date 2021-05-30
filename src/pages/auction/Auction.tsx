@@ -11,7 +11,7 @@ import { weiToNum } from "@app/utils/bn/wei";
 import { POOL_STATUS } from "@app/utils/pool";
 import { PoolInfoType, queryPoolInformation } from "@app/web3/api/bounce/pool-search";
 import { queryERC20Token } from "@app/web3/api/eth/api";
-import { useTokenSearch } from "@app/web3/api/tokens";
+import { useTokenQuery, useTokenSearch } from "@app/web3/api/tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 import { ADDRESS_MAPPING } from "@app/web3/networks/mapping";
 
@@ -83,22 +83,19 @@ export const Auction = () => {
 				searchWindow
 			);
 			setPoolInformation(pools.filter(Boolean));
-			console.log(pools);
 		})();
 	}, [chainId, searchWindow, provider]);
 
 	const findToken = useTokenSearch();
+	const queryToken = useTokenQuery();
 
 	const [convertedPoolInformation, setConvertedPoolInformation] = useState<PoolInfoType[]>([]);
 
 	useEffect(() => {
 		Promise.all(
 			poolInformation.map(async (pool) => {
-				const fromSymbol = await queryERC20Token(provider, pool.token0, chainId);
-				const toSymbol = await queryERC20Token(provider, pool.token1, chainId);
-
-				const from = findToken(fromSymbol.symbol);
-				const to = findToken(toSymbol.symbol);
+				const from = await queryToken(pool.token0);
+				const to = await queryToken(pool.token1);
 
 				return {
 					href: "",

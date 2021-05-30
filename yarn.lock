@@ -7232,6 +7232,13 @@ function-bind@^1.1.1:
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
   integrity sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==
 
+function-double@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/function-double/-/function-double-1.0.4.tgz#46074f215a171594036d816fa963c2902b482c86"
+  integrity sha512-J+vMIwmWx/uY3Fc4TNeyPyQOjSbaWpHO/xj+tv8RbViLfPipFGohgOWN+kSkuWTwSZPZxMfYopECUA/9Tq8YJA==
+  dependencies:
+    util-arity "^1.1.0"
+
 function.prototype.name@^1.1.0:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/function.prototype.name/-/function.prototype.name-1.1.4.tgz#e4ea839b9d3672ae99d0efd9f38d9191c5eaac83"
@@ -8902,6 +8909,14 @@ junk@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/junk/-/junk-3.1.0.tgz#31499098d902b7e98c5d9b9c80f43457a88abfa1"
   integrity sha512-pBxcB3LFc8QVgdggvZWyeys+hnrNWg4OcZIU/1X59k5jQdLBlCsYGRQaz234SqoRLTCgMH00fY0xRJH+F9METQ==
+
+kashe@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/kashe/-/kashe-1.0.3.tgz#f9b16e5dd08e9f9ce837e7a72e2cb4848665947c"
+  integrity sha512-O6njWM3zPy6lpvjiDBLkNuIYH0GnJpm9xxEayl3P2chsffyjYn9cKJdTJlglDnknfc4dBarN1dhn1gT5lU7Vkg==
+  dependencies:
+    function-double "^1.0.4"
+    reselect "^4.0.0"
 
 keccak@^3.0.0:
   version "3.0.1"
@@ -12000,6 +12015,11 @@ require-main-filename@^2.0.0:
   resolved "https://registry.yarnpkg.com/require-main-filename/-/require-main-filename-2.0.0.tgz#d0b329ecc7cc0f61649f62215be69af54aa8989b"
   integrity sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==
 
+reselect@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
+  integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
+
 resolve-from@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-4.0.0.tgz#4abcd852ad32dd7baabfe9b40e00a36db5f392e6"
@@ -13934,6 +13954,11 @@ utf8@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/utf8/-/utf8-3.0.0.tgz#f052eed1364d696e769ef058b183df88c87f69d1"
   integrity sha512-E8VjFIQ/TyQgp+TZfS6l8yp/xWppSAHzidGiRrqe4bK4XP9pTRyKFgGJpO3SN7zdX4DeomTrwaseCHovfpFcqQ==
+
+util-arity@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/util-arity/-/util-arity-1.1.0.tgz#59d01af1fdb3fede0ac4e632b0ab5f6ce97c9330"
+  integrity sha1-WdAa8f2z/t4KxOYysKtfbOl8kzA=
 
 util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"

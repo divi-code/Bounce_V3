@@ -1,9 +1,13 @@
 import { TokenInfo, TokenList } from "@uniswap/token-lists";
 import { useWeb3React } from "@web3-react/core";
+import { kashe } from "kashe";
 import { createContext, FC, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
+import { AbstractProvider } from "web3-core";
+
+import { queryERC20Token } from "@app/web3/api/eth/api";
 import { useLocallyDefinedTokens } from "@app/web3/api/tokens/local-tokens";
-import { useChainId } from "@app/web3/hooks/use-web3";
+import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
 import { getEtherChain } from "../eth/token/token";
 
@@ -89,11 +93,46 @@ export const useAllTokens = (filter: (list: TokenList) => boolean) => {
 
 const passAll = () => true;
 
+const findTokenIn = (symbol: string, tokens: TokenInfo[]): TokenInfo | undefined =>
+	tokens.find((token) => token.symbol === symbol);
+
 export const useTokenSearch = () => {
 	const tokens = useAllTokens(passAll);
 
+	return useCallback((symbol: string) => findTokenIn(symbol, tokens), [tokens]);
+};
+
+const getCacheFrom = kashe(<T extends unknown>(_source: any): Record<string, T> => ({}));
+
+const cachedERC20Query = async (
+	provider: AbstractProvider,
+	address,
+	chainID: number,
+	tokens: TokenInfo[]
+) => {
+	const token = await queryERC20Token(provider, address, chainID);
+
+	return {
+		...findTokenIn(token.symbol, tokens),
+		...token,
+	};
+};
+
+export const useTokenQuery = () => {
+	const tokens = useAllTokens(passAll);
+	const provider = useWeb3Provider();
+	const chainId = useChainId();
+
+	const cache = getCacheFrom<Promise<TokenInfo>>(provider || {});
+
 	return useCallback(
-		(symbol: string): TokenInfo | undefined => tokens.find((token) => token.symbol === symbol),
-		[tokens]
+		(address: string): Promise<TokenInfo> => {
+			if (!cache[address]) {
+				cache[address] = cachedERC20Query(provider, address, chainId, tokens);
+			}
+
+			return cache[address];
+		},
+		[cache, chainId, provider, tokens]
 	);
 };

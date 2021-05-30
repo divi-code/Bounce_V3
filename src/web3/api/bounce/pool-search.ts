@@ -5,7 +5,7 @@ import { callPoolDataByID } from "@app/web3/api/bounce/helpers";
 import { WEB3_NETWORKS } from "@app/web3/networks/const";
 import { ADDRESS_MAPPING } from "@app/web3/networks/mapping";
 
-export const queryPoolInformation = (
+export const queryPoolInformation = async (
 	provider: AbstractProvider,
 	target: ADDRESS_MAPPING,
 	chainId: WEB3_NETWORKS,
@@ -13,19 +13,19 @@ export const queryPoolInformation = (
 ) => {
 	const contract = getBounceContract(provider, target, chainId);
 
-	return Promise.all(
-		queryListArr.map(async (poolID) => {
-			const poolItemInfo = await callPoolDataByID(contract, poolID);
+	return (
+		await Promise.all(
+			queryListArr.map(async (poolID) => {
+				const poolItemInfo = await callPoolDataByID(contract, poolID);
 
-			console.log(poolItemInfo);
+				if (poolItemInfo && poolItemInfo.token0) {
+					return { poolID, ...poolItemInfo };
+				}
 
-			if (poolItemInfo && poolItemInfo.token0) {
-				return { poolID, ...poolItemInfo };
-			}
-
-			return undefined;
-		})
-	);
+				return undefined;
+			})
+		)
+	).filter(Boolean);
 };
 
 type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
