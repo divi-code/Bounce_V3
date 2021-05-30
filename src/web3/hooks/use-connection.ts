@@ -47,7 +47,11 @@ export const useAutomaticReconnection = () => {
 
 				if (chosenProvider && KNOWN_WALLETS[chosenProvider]) {
 					console.log("activate", chosenProvider);
-					activate(KNOWN_WALLETS[chosenProvider]());
+
+					activate(KNOWN_WALLETS[chosenProvider]()).then(
+						() => console.log("connected"),
+						(e) => console.error("failed to reactivate", e)
+					);
 				}
 			}
 		},

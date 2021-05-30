@@ -1,4 +1,5 @@
 import { FORM_ERROR } from "final-form";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import { fetchPoolSearch } from "@app/api/pool/api";
@@ -128,10 +129,53 @@ export const Auction = () => {
 		setConvertedPoolInformation,
 	]);
 
+	const router = useRouter();
+
+	useEffect(
+		() => {
+			const isEmpty = Object.keys(searchFilters).length === 0;
+
+			if (!isEmpty) {
+				router.push("/?filters=" + encodeURIComponent(JSON.stringify(searchFilters)), undefined, {
+					shallow: true,
+				});
+			}
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[searchFilters]
+	);
+
+	const [initialSearchState] = useState(() => {
+		try {
+			if (!router.query.filters) {
+				return {};
+			}
+
+			return JSON.parse(decodeURIComponent(router.query.filters as string));
+		} catch (e) {
+			console.error(e);
+
+			return {};
+		}
+	});
+
+	useEffect(
+		() => {
+			const isEmpty = Object.keys(initialSearchState).length === 0;
+
+			if (!isEmpty) {
+				onSubmit(initialSearchState);
+			}
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[provider]
+	);
+
 	return (
 		<AuctionView
 			onSubmit={onSubmit}
 			result={poolInformation.length ? convertedPoolInformation : undefined}
+			initialSearchState={initialSearchState}
 		/>
 	);
 };

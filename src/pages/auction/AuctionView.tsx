@@ -19,6 +19,7 @@ import { PopupTeleporterTarget } from "@app/ui/pop-up-container";
 
 type AuctionType = {
 	result?: CardType[];
+	initialSearchState: any;
 	onSubmit?(values: any): any;
 };
 
@@ -26,6 +27,7 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 	className,
 	result,
 	onSubmit,
+	initialSearchState,
 }) => {
 	return (
 		<>
@@ -36,7 +38,7 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 					text="Fill in the fields optional below to easily find the auction that suits you"
 					visibleText={result === undefined}
 				>
-					<Form className={styles.form} onSubmit={onSubmit}>
+					<Form className={styles.form} onSubmit={onSubmit} initialValues={initialSearchState}>
 						<div>
 							<SelectTokenField name="token-type" placeholder="Select a token" />
 						</div>

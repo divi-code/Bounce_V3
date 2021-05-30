@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { FC, ReactNode } from "react";
 
 import { ApplicationWrappers } from "@app/layout/ApplicationWrappers";
@@ -28,6 +29,12 @@ const Providers: FC = ({ children }) => {
 	);
 };
 
+const WaitForRouter: FC = ({ children }) => {
+	const router = useRouter();
+
+	return router.isReady ? <>{children}</> : null;
+};
+
 export const Layout: FC<LayoutType> = ({
 	children,
 	className,
@@ -45,7 +52,9 @@ export const Layout: FC<LayoutType> = ({
 				</Head>
 				<Header className={styles.header} />
 				<main className={styles.main}>
-					<div className={styles.desktop}>{children}</div>
+					<div className={styles.desktop}>
+						<WaitForRouter>{children}</WaitForRouter>
+					</div>
 					<div className={styles.mobile}>
 						Sorry, this event is unavailable on mobile. Please visit our desktop website to
 						participate.
