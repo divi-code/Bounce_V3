@@ -44,11 +44,12 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 	otcPrice,
 	fillInPercentage,
 }) => {
-	const STATUS = {
-		live: "Live",
-		filled: "Filled",
-		closed: "Closed",
-		error: "Error",
+	const STATUS: Record<POOL_STATUS, string> = {
+		[POOL_STATUS.COMING]: "Coming soon",
+		[POOL_STATUS.LIVE]: "Live",
+		[POOL_STATUS.FILLED]: "Filled",
+		[POOL_STATUS.CLOSED]: "Closed",
+		[POOL_STATUS.ERROR]: "Error",
 	};
 
 	const TOKEN_INFORMATION = {

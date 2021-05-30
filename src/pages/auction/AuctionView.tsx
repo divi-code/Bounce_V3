@@ -16,7 +16,6 @@ import { Button } from "@app/ui/button";
 import { GutterBox } from "@app/ui/gutter-box";
 
 import { PopupTeleporterTarget } from "@app/ui/pop-up-container";
-import { toDeltaTimer } from "@app/utils/time";
 
 type AuctionType = {
 	result?: CardType[];
@@ -89,7 +88,6 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 													auctionPrice={auction.auctionPrice}
 													fillInPercentage={auction.fillInPercentage}
 												/>
-												{toDeltaTimer((-auction.openTime + Date.now()) / 1000)}
 											</li>
 										))}
 									</ul>

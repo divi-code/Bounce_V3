@@ -2,11 +2,12 @@ import { POOL_STATUS } from "@app/utils/pool";
 
 import { Status } from "./Status";
 
-const STATUS = {
-	live: "Live",
-	filled: "Filled",
-	closed: "Closed",
-	error: "",
+const STATUS: Record<POOL_STATUS, string> = {
+	[POOL_STATUS.COMING]: "Coming soon",
+	[POOL_STATUS.LIVE]: "Live",
+	[POOL_STATUS.FILLED]: "Filled",
+	[POOL_STATUS.CLOSED]: "Closed",
+	[POOL_STATUS.ERROR]: "Error",
 };
 
 export const Default = () => {
