@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import { defineFlowStep } from "@app/modules/flow/definition";
 import { useFlowControl } from "@app/modules/flow/hooks";
 
@@ -10,10 +12,11 @@ export type SettingsOutType = {
 	delayClaim: boolean;
 	claimStart: string;
 	whitelist: string;
+	settingsFormValues: any;
 };
 
 const SettingsImp = () => {
-	const { moveForward, addData } = useFlowControl<SettingsOutType>();
+	const { moveForward, addData, data } = useFlowControl<SettingsOutType>();
 
 	const onSubmit = async (values: any) => {
 		addData({
@@ -23,12 +26,22 @@ const SettingsImp = () => {
 			delayClaim: true,
 			claimStart: values.claimStart,
 			whitelist: values.whitelist,
+			settingsFormValues: values,
 		});
 
 		moveForward();
 	};
 
-	return <ProvideAdvancedSettings onSubmit={onSubmit} />;
+	const initialValues = useMemo(
+		() => ({
+			delayToken: ["unlock"],
+			whitelist: "yes",
+			...data.settingsFormValues,
+		}),
+		[data.settingsFormValues]
+	);
+
+	return <ProvideAdvancedSettings onSubmit={onSubmit} initialValues={initialValues} />;
 };
 
 export const Settings = defineFlowStep<{}, SettingsOutType, {}>({

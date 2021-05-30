@@ -1,7 +1,7 @@
 export const composeValidators = (...validators: any[]) => (value: string) =>
 	validators.reduce((error, validator) => error || validator(value), undefined);
 
-export function isRequired(value: string): string | undefined {
+export function isRequired<T>(value: T): string | undefined {
 	return value ? undefined : "This field is required.";
 }
 

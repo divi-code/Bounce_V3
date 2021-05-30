@@ -6,6 +6,7 @@ import { MaybeWithClassName } from "@app/helper/react/types";
 import { QuickNavType } from "@app/ui/calendar";
 import { DateInterval } from "@app/ui/calendar/types";
 import { DatePicker, DropdownPositionType } from "@app/ui/date-picker";
+import { isRequired } from "@app/utils/validation";
 
 type DateFieldType = {
 	className?: string;
@@ -39,7 +40,7 @@ export const DateField: FC<DateFieldType & MaybeWithClassName> = ({
 	selection,
 }) => {
 	return (
-		<Field name={name} value={value}>
+		<Field name={name} value={value} validate={isRequired}>
 			{({ input }) => (
 				<DatePicker
 					className={className}

@@ -15,7 +15,8 @@ type StatusProps = {
 };
 
 export const Status: FC<StatusProps & MaybeWithClassName> = ({ className, status, captions }) => {
-	const COLORS = {
+	const COLORS: Record<POOL_STATUS, string> = {
+		[POOL_STATUS.COMING]: "var(--primary-black)",
 		[POOL_STATUS.LIVE]: "var(--success)",
 		[POOL_STATUS.FILLED]: "var(--process)",
 		[POOL_STATUS.CLOSED]: "var(--error)",
@@ -24,7 +25,11 @@ export const Status: FC<StatusProps & MaybeWithClassName> = ({ className, status
 
 	return (
 		<Caption
-			className={classNames(className, styles.component)}
+			className={classNames(
+				className,
+				styles.component,
+				status === POOL_STATUS.COMING && styles.coming
+			)}
 			Component="span"
 			style={{ "--color": COLORS[status] } as CSSProperties}
 			color="custom"

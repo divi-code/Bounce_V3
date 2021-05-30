@@ -1,0 +1,1 @@
+export { AuctionView } from "./AuctionView";

@@ -1,5 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { defineFlowStep } from "@app/modules/flow/definition";
 import { useFlowControl, useFlowData } from "@app/modules/flow/hooks";
@@ -22,11 +22,16 @@ export type FixedOutType = {
 	amount: number;
 	allocation: ALLOCATION_TYPE;
 	limit: string;
+	fixedFormValues: any;
 };
 
 const FixedImp = () => {
-	const { moveForward, addData } = useFlowControl<FixedOutType>();
+	const { moveForward, addData, data } = useFlowControl<FixedOutType>();
 	const { tokenFrom } = useFlowData<FixedInType>();
+	const initialValues = useMemo(
+		() => ({ tokenFrom, allocation: "limited", ...data.fixedFormValues }),
+		[tokenFrom]
+	);
 
 	const findToken = useTokenSearch();
 
@@ -50,12 +55,20 @@ const FixedImp = () => {
 			amount: parseInt(values.amount),
 			allocation: values.allocation,
 			limit: values.limit ? values.limit : "",
+			fixedFormValues: values,
 		});
 
 		moveForward();
 	};
 
-	return <FixedView onSubmit={onSubmit} tokenFrom={tokenFrom} balance={balance} />;
+	return (
+		<FixedView
+			onSubmit={onSubmit}
+			tokenFrom={tokenFrom}
+			balance={balance}
+			initialValues={initialValues}
+		/>
+	);
 };
 
 export const Fixed = defineFlowStep<FixedInType, FixedOutType, {}>({

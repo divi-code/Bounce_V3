@@ -118,20 +118,24 @@ const cachedERC20Query = async (
 	};
 };
 
+const STABLE_REF = {};
+
 export const useTokenQuery = () => {
 	const tokens = useAllTokens(passAll);
 	const provider = useWeb3Provider();
 	const chainId = useChainId();
 
-	const cache = getCacheFrom<Promise<TokenInfo>>(provider || {});
+	const cache = getCacheFrom<Promise<TokenInfo>>(provider || STABLE_REF);
 
 	return useCallback(
 		(address: string): Promise<TokenInfo> => {
-			if (!cache[address]) {
-				cache[address] = cachedERC20Query(provider, address, chainId, tokens);
-			}
+			if (provider) {
+				if (!cache[address]) {
+					cache[address] = cachedERC20Query(provider, address, chainId, tokens);
+				}
 
-			return cache[address];
+				return cache[address];
+			}
 		},
 		[cache, chainId, provider, tokens]
 	);

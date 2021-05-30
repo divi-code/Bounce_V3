@@ -24,3 +24,11 @@
     background-color: rgba(var(--color), 1);
   }
 }
+
+.coming {
+  color: rgba(var(--color), 0.4);
+
+  &::before {
+    background-color: rgba(var(--color), 0.4);
+  }
+}

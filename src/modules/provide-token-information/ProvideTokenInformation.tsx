@@ -1,6 +1,6 @@
 import { TokenInfo } from "@uniswap/token-lists";
 import { FC, useCallback, useEffect } from "react";
-import { useForm, useFormState } from "react-final-form";
+import { useForm, useFormState, FormSpy } from "react-final-form";
 
 import { Form } from "@app/modules/form";
 import { Label } from "@app/modules/label";
@@ -40,6 +40,7 @@ const Effector: FC<EffectorType> = ({ decimal, address, onTokenChange }) => {
 
 type ProvideTokenInformationType = EffectorType & {
 	href: string;
+	initialState: any;
 	onSubmit(values): void;
 };
 
@@ -48,12 +49,13 @@ export const ProvideTokenInformation: FC<ProvideTokenInformationType> = ({
 	onTokenChange,
 	decimal,
 	address,
+	initialState,
 	href,
 }) => {
 	const notEtherium = useCallback((token: TokenInfo) => token.symbol !== "ETH", []);
 
 	return (
-		<Form onSubmit={onSubmit} className={styles.form} initialValues={{ address, decimal }}>
+		<Form onSubmit={onSubmit} className={styles.form} initialValues={initialState}>
 			<Effector decimal={decimal} address={address} onTokenChange={onTokenChange} />
 			<Label
 				className={styles.label}
@@ -95,14 +97,18 @@ export const ProvideTokenInformation: FC<ProvideTokenInformationType> = ({
 			>
 				View on Etherscan
 			</NavLink>
-			<PrimaryButton
-				className={styles.submit}
-				size="large"
-				iconAfter={<RightArrow2 width={18} height="auto" style={{ marginLeft: 12 }} />}
-				submit
-			>
-				Next Step
-			</PrimaryButton>
+			<FormSpy>
+				{(form) => (
+					<PrimaryButton
+						className={styles.submit}
+						size="large"
+						iconAfter={<RightArrow2 width={18} height="auto" style={{ marginLeft: 12 }} />}
+						submit
+					>
+						{initialState && form.dirty ? "Save" : "Next Step"}
+					</PrimaryButton>
+				)}
+			</FormSpy>
 		</Form>
 	);
 };

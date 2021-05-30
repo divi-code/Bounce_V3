@@ -20,7 +20,7 @@ export type TypographyType = {
 	color?: ColorType | "custom";
 	size?: FontSizeType;
 	weight?: WeightType;
-	lighten?: 100 | 90 | 80 | 70 | 60 | 50 | 40;
+	lighten?: 100 | 90 | 80 | 70 | 60 | 50 | 40 | 30 | 20 | 10;
 	style?: CSSProperties;
 } & WithChildren &
 	MaybeWithClassName;

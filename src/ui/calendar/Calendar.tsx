@@ -148,32 +148,32 @@ export const Calendar: FC<Props & MaybeWithClassName> = ({
 			<Body1 className={styles.header} Component="div">
 				{label}
 				{quickNav && quickNav.includes("today") && (
-					<button className={styles.control} onClick={setToday}>
+					<button className={styles.control} type="button" onClick={setToday}>
 						Today
 					</button>
 				)}
 				{quickNav && quickNav.includes("tomorrow") && (
-					<button className={styles.control} onClick={() => setInXDays(1)}>
+					<button className={styles.control} type="button" onClick={() => setInXDays(1)}>
 						Tomorrow
 					</button>
 				)}
 				{quickNav && quickNav.includes("in-2-days") && (
-					<button className={styles.control} onClick={() => setInXDays(2)}>
+					<button className={styles.control} type="button" onClick={() => setInXDays(2)}>
 						In 2 days
 					</button>
 				)}
 				{quickNav && quickNav.includes("in-5-days") && (
-					<button className={styles.control} onClick={() => setInXDays(5)}>
+					<button className={styles.control} type="button" onClick={() => setInXDays(5)}>
 						In 5 days
 					</button>
 				)}
 				{quickNav && quickNav.includes("in-7-days") && (
-					<button className={styles.control} onClick={() => setInXDays(7)}>
+					<button className={styles.control} type="button" onClick={() => setInXDays(7)}>
 						In 7 days
 					</button>
 				)}
 				{quickNav && quickNav.includes("in-10-days") && (
-					<button className={styles.control} onClick={() => setInXDays(10)}>
+					<button className={styles.control} type="button" onClick={() => setInXDays(10)}>
 						In 10 days
 					</button>
 				)}

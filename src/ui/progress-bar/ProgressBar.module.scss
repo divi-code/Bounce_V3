@@ -28,3 +28,7 @@
     transition-property: width;
   }
 }
+
+.coming::before {
+  background-color: rgba(var(--color), 0.4);
+}

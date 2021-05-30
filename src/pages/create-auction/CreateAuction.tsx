@@ -1,4 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
+import { useRouter } from "next/router";
 import { FC, useState } from "react";
 
 import { POOL_ADDRESS_MAPPING, POOL_NAME_MAPPING, POOL_TYPE } from "@app/api/pool/const";
@@ -99,6 +100,7 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 	const contract = getBounceContract(provider, POOL_ADDRESS_MAPPING[type], chainId);
 
 	const findToken = useTokenSearch();
+	const { push: routerPush } = useRouter();
 
 	const [operation, setOperation] = useState(OPERATION.default);
 
@@ -141,11 +143,16 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 					maxAmount1PerWallet: limit || "0",
 					onlyBot: false,
 				})
-					.on("transactionHash", () => {
+					.on("transactionHash", (h) => {
+						console.log("hash", h);
 						setOperation(OPERATION.pending);
 					})
-					.on("receipt", () => {
+					.on("receipt", (r) => {
+						console.log("receipt", r);
 						setOperation(OPERATION.success);
+
+						const poolId = r.events.Created.returnValues[0];
+						routerPush(`/auction/${type}/${poolId}`);
 					})
 					.on("error", () => {
 						setOperation(OPERATION.error);

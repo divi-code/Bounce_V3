@@ -21,6 +21,7 @@ type FixedViewType = {
 	onSubmit(values): void;
 	tokenFrom: string;
 	balance: string;
+	initialValues: any;
 };
 
 export enum ALLOCATION_TYPE {
@@ -32,13 +33,10 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 	onSubmit,
 	tokenFrom,
 	balance,
+	initialValues,
 }) => {
 	return (
-		<Form
-			onSubmit={onSubmit}
-			className={styles.form}
-			initialValues={useMemo(() => ({ tokenFrom, allocation: "limited" }), [tokenFrom])}
-		>
+		<Form onSubmit={onSubmit} className={styles.form} initialValues={initialValues}>
 			<div className={styles.group}>
 				<Label Component="div" label="From">
 					<SelectTokenField name="tokenFrom" required readOnly />
@@ -117,14 +115,18 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 					)
 				}
 			</FormSpy>
-			<PrimaryButton
-				className={styles.submit}
-				size="large"
-				iconAfter={<RightArrow2 width={18} height="auto" style={{ marginLeft: 12 }} />}
-				submit
-			>
-				Next Step
-			</PrimaryButton>
+			<FormSpy>
+				{(form) => (
+					<PrimaryButton
+						className={styles.submit}
+						size="large"
+						iconAfter={<RightArrow2 width={18} height="auto" style={{ marginLeft: 12 }} />}
+						submit
+					>
+						{initialValues.amount && form.dirty ? "Save" : "Next Step"}
+					</PrimaryButton>
+				)}
+			</FormSpy>
 		</Form>
 	);
 };

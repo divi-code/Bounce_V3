@@ -19,6 +19,7 @@ import styles from "./ProvideAdvancedSettings.module.scss";
 
 type ProvideAdvancedSettingsType = {
 	onSubmit(values): void;
+	initialValues: any;
 };
 
 export enum WHITELIST_TYPE {
@@ -28,6 +29,7 @@ export enum WHITELIST_TYPE {
 
 export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSettingsType> = ({
 	onSubmit,
+	initialValues,
 }) => {
 	const [blockRef, setBlockRef] = useState<HTMLElement | null>(null);
 
@@ -35,11 +37,7 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 	useResizeObserver(blockRef, (ref) => setBlockWidth(ref.clientWidth));
 
 	return (
-		<Form
-			onSubmit={onSubmit}
-			className={styles.form}
-			initialValues={{ delayToken: ["unlock"], whitelist: "yes" }}
-		>
+		<Form onSubmit={onSubmit} className={styles.form} initialValues={initialValues}>
 			<Label Component="div" label="Pool Name">
 				<TextField type="text" name="poolName" required />
 			</Label>
@@ -60,6 +58,7 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 										dropdownWidth={`${blockWidth}px`}
 										label="Choose start date"
 										quickNav={["today", "tomorrow", "in-2-days"]}
+										required
 									/>
 								</Label>
 
@@ -76,6 +75,7 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 										dropdownPosition="right"
 										label="Choose end date"
 										quickNav={["in-5-days", "in-7-days", "in-10-days"]}
+										required
 									/>
 								</Label>
 							</>
@@ -99,6 +99,7 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 									min={new Date(props.values.startPool).toString()}
 									label="Choose date"
 									quickNav={["in-5-days", "in-7-days", "in-10-days"]}
+									required
 								/>
 							) : undefined}
 						</Label>

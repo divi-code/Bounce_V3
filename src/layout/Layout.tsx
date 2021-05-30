@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { FC, ReactNode } from "react";
+import { createContext, FC, memo, ReactNode } from "react";
 
 import { ApplicationWrappers } from "@app/layout/ApplicationWrappers";
 import { ConnectWalletProvider } from "@app/modules/connect-wallet-modal/ConnectWalletProvider";
@@ -19,13 +19,28 @@ type LayoutType = {
 	className?: string;
 };
 
+const SuppressAllUpdates: FC = memo(
+	({ children }) => <>{children}</>,
+	() => true
+);
+
+const childrenContext = createContext<ReactNode>(null);
+
 const Providers: FC = ({ children }) => {
 	return (
-		<Web3ProviderRoot>
-			<ConnectWalletProvider>
-				<ApplicationWrappers>{children}</ApplicationWrappers>
-			</ConnectWalletProvider>
-		</Web3ProviderRoot>
+		<childrenContext.Provider value={children}>
+			<SuppressAllUpdates>
+				<Web3ProviderRoot>
+					<ConnectWalletProvider>
+						<ApplicationWrappers>
+							<childrenContext.Consumer>
+								{(teleChildren) => <>{teleChildren}</>}
+							</childrenContext.Consumer>
+						</ApplicationWrappers>
+					</ConnectWalletProvider>
+				</Web3ProviderRoot>
+			</SuppressAllUpdates>
+		</childrenContext.Provider>
 	);
 };
 

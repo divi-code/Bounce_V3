@@ -13,18 +13,21 @@ export type TokenOutType = {
 	tokenFrom: string;
 	tokenFromAddress: string;
 	tokenDecimal: string;
+	tokenFormValues: any;
 };
 
 const TokenImp = () => {
-	const { moveForward, addData } = useFlowControl<TokenOutType>();
+	const { moveForward, addData, data } = useFlowControl<TokenOutType>();
 
 	const chainId = useChainId();
+	const initialState = data.tokenFormValues;
 
 	const onSubmit = async (values: any) => {
 		addData({
 			tokenFrom: values.tokenFrom,
 			tokenFromAddress: values.address,
 			tokenDecimal: values.decimal,
+			tokenFormValues: values,
 		});
 
 		moveForward();
@@ -56,6 +59,7 @@ const TokenImp = () => {
 		<ProvideTokenInformation
 			onSubmit={onSubmit}
 			onTokenChange={onTokenChange}
+			initialState={initialState}
 			address={address}
 			decimal={decimal}
 			href={getLinkByNetwork(chainId)}

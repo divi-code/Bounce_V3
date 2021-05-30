@@ -3,23 +3,22 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import { fetchPoolSearch } from "@app/api/pool/api";
-import { POOL_NAME_MAPPING } from "@app/api/pool/const";
+import { POOL_ADDRESS_MAPPING, POOL_NAME_MAPPING } from "@app/api/pool/const";
 
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
+import { CardType } from "@app/pages/auction/ui/card";
 import { divide } from "@app/utils/bn";
 import { weiToNum } from "@app/utils/bn/wei";
-import { POOL_STATUS } from "@app/utils/pool";
+import { getStatus, POOL_STATUS } from "@app/utils/pool";
+import { getDeltaTime } from "@app/utils/time";
 import { PoolInfoType, queryPoolInformation } from "@app/web3/api/bounce/pool-search";
 import { useTokenQuery, useTokenSearch } from "@app/web3/api/tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
-import { ADDRESS_MAPPING } from "@app/web3/networks/mapping";
 
 import { AuctionView } from "./AuctionView";
 
 const WINDOW_SIZE = 10;
-
-const getProgress = (amount, totalAmount) => +divide(amount, totalAmount, 0);
 
 const tryParseJSON = (tryThis: string, orThis: any): any => {
 	try {
@@ -28,6 +27,8 @@ const tryParseJSON = (tryThis: string, orThis: any): any => {
 		return orThis;
 	}
 };
+
+const getProgress = (amount, totalAmount) => +divide(amount, totalAmount, 0);
 
 const getSwapRatio = (
 	fromAmount: string,
@@ -40,6 +41,8 @@ const getSwapRatio = (
 
 	return divide(from, to, 2);
 };
+
+const EMPTY_ARRAY = [];
 
 export const Auction = () => {
 	const provider = useWeb3Provider();
@@ -77,6 +80,8 @@ export const Auction = () => {
 	}, [poolList]);
 
 	useEffect(() => {
+		const { auctionType } = searchFilters;
+
 		(async () => {
 			if (searchWindow.length === 0) {
 				setPoolInformation([]);
@@ -86,52 +91,60 @@ export const Auction = () => {
 
 			const pools = await queryPoolInformation(
 				provider,
-				ADDRESS_MAPPING.FIX_SWAP,
+				POOL_ADDRESS_MAPPING[auctionType],
 				chainId,
 				searchWindow
 			);
 			setPoolInformation(pools.filter(Boolean));
 		})();
-	}, [chainId, searchWindow, provider]);
+	}, [chainId, searchWindow, provider, searchFilters]);
 
 	const findToken = useTokenSearch();
 	const queryToken = useTokenQuery();
 
-	const [convertedPoolInformation, setConvertedPoolInformation] = useState<PoolInfoType[]>([]);
+	const [convertedPoolInformation, setConvertedPoolInformation] = useState<CardType[]>([]);
 
 	useEffect(() => {
-		Promise.all(
-			poolInformation.map(async (pool) => {
-				const from = await queryToken(pool.token0);
-				const to = await queryToken(pool.token1);
+		const { auctionType } = searchFilters;
 
-				return {
-					href: "",
-					status: POOL_STATUS.LIVE,
-					time: pool.openAt,
-					id: pool.poolID,
-					name: pool.name,
-					address: pool.token0,
-					type: POOL_NAME_MAPPING[searchFilters.auctionType],
-					tokenCurrency: from.symbol,
-					tokenLogo: from.logoURI,
-					auctionAmount: pool.amountTotal0,
-					auctionCurrency: to.symbol,
-					auctionPrice: getSwapRatio(
-						pool.amountTotal0,
-						pool.amountTotal1,
-						from.decimals,
-						to.decimals
-					),
-					fillInPercentage: pool.amountSwap0 ? getProgress(pool.amountSwap0, pool.amountTotal0) : 0,
-				};
-			})
-		).then((info) => setConvertedPoolInformation(info));
+		if (poolInformation.length > 0) {
+			Promise.all(
+				poolInformation.map(async (pool) => {
+					const from = await queryToken(pool.token0);
+					const to = await queryToken(pool.token1);
+
+					return {
+						href: `/auction/${auctionType}/${pool.poolID}`,
+						status: getStatus(pool.amountSwap0, pool.amountTotal0, pool.openAt, pool.closeAt),
+						id: pool.poolID,
+						name: pool.name,
+						address: pool.token0,
+						type: POOL_NAME_MAPPING[auctionType],
+						tokenCurrency: from.symbol,
+						tokenLogo: from.logoURI,
+						auctionAmount: pool.amountTotal0,
+						auctionCurrency: to.symbol,
+						auctionPrice: getSwapRatio(
+							pool.amountTotal0,
+							pool.amountTotal1,
+							from.decimals,
+							to.decimals
+						),
+						fillInPercentage: pool.amountSwap0
+							? getProgress(pool.amountSwap0, pool.amountTotal0)
+							: 0,
+					};
+				})
+			).then((info) => setConvertedPoolInformation(info));
+		} else {
+			setConvertedPoolInformation(EMPTY_ARRAY);
+		}
 	}, [
 		chainId,
 		findToken,
 		poolInformation,
-		provider,
+		queryToken,
+		searchFilters,
 		searchFilters.auctionType,
 		setConvertedPoolInformation,
 	]);
@@ -169,19 +182,14 @@ export const Auction = () => {
 		}
 	});
 
-	const [tryIfNotConnected, setTryIfNotConnected] = useState(false);
-	useEffect(() => void setTimeout(() => setTryIfNotConnected(true), 1000), []);
-
 	useEffect(
 		() => {
-			const isEmpty = Object.keys(initialSearchState).length === 0;
-
-			if (!isEmpty && (provider || tryIfNotConnected)) {
+			if (initialSearchState.auctionType && provider) {
 				onSubmit(initialSearchState);
 			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[provider && setTryIfNotConnected]
+		[provider]
 	);
 
 	return (

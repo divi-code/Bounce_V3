@@ -1,8 +1,9 @@
 import classNames from "classnames";
-import { CSSProperties, FC } from "react";
+import { FC } from "react";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
+import { Currency } from "@app/modules/currency";
 import { NavLink } from "@app/ui/button";
 
 import { DescriptionList } from "@app/ui/description-list";
@@ -19,13 +20,11 @@ import styles from "./Card.module.scss";
 export type CardType = {
 	href?: string;
 	status: POOL_STATUS;
-	time: string;
 	id: string | number;
 	name: string;
 	address: string;
 	type: string;
 	tokenCurrency: string;
-	tokenLogo: string;
 	auctionAmount: string;
 	auctionCurrency: string;
 	auctionPrice: string | number;
@@ -36,12 +35,10 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 	className,
 	status,
 	href,
-	time,
 	id,
 	name,
 	address,
 	type,
-	tokenLogo,
 	tokenCurrency,
 	auctionAmount,
 	auctionCurrency,
@@ -49,23 +46,22 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 	fillInPercentage,
 }) => {
 	const STATUS: Record<POOL_STATUS, string> = {
-		live: time,
-		filled: "Filled",
-		closed: "Closed",
-		error: "Error",
+		[POOL_STATUS.COMING]: "Coming soon",
+		[POOL_STATUS.LIVE]: "Live",
+		[POOL_STATUS.FILLED]: "Filled",
+		[POOL_STATUS.CLOSED]: "Closed",
+		[POOL_STATUS.ERROR]: "Error",
 	};
 
 	const TOKEN_INFORMATION = {
 		"Contact address": walletConversion(address),
 		"Pool type": type,
-		"Token symbol": (
-			<span style={{ "--icon": `url("${tokenLogo}")` } as CSSProperties}>{tokenCurrency}</span>
-		),
+		"Token symbol": <Currency token={tokenCurrency} small />,
 	};
 
 	const AUCTION_INFORMATION = {
 		"Auction amount": auctionAmount,
-		"Auction currency": auctionCurrency,
+		"Auction currency": <Currency token={auctionCurrency} small />,
 		"Price per unit, $": auctionPrice,
 	};
 
