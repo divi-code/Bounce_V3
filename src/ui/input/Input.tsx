@@ -81,6 +81,7 @@ export const Input: FC<InputType & MaybeWithClassName> = ({
 					onChange={onChange}
 					onFocus={onInputFocused}
 					onBlur={onInputBlur}
+					autoComplete="off"
 					{...inputProps}
 				/>
 				{after}
