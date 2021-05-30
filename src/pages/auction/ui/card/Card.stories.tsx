@@ -26,6 +26,16 @@ export const Default = () => {
 	);
 };
 
+export const ComingSoon = () => {
+	return (
+		<div style={{ backgroundColor: "#E5E5E5", padding: 40 }}>
+			<div style={{ width: 400 }}>
+				<Card {...settings} status={POOL_STATUS.COMING} fillInPercentage={0} />
+			</div>
+		</div>
+	);
+};
+
 export const Filled = () => {
 	return (
 		<div style={{ backgroundColor: "#E5E5E5", padding: 40 }}>

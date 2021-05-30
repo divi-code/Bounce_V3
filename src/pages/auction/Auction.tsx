@@ -3,15 +3,18 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import { fetchPoolSearch } from "@app/api/pool/api";
-import { POOL_ADDRESS_MAPPING, POOL_NAME_MAPPING } from "@app/api/pool/const";
+import {
+	POOL_ADDRESS_MAPPING,
+	POOL_SHORT_NAME_MAPPING,
+	POOL_SPECIFIC_NAME_MAPPING,
+} from "@app/api/pool/const";
 
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
 import { CardType } from "@app/pages/auction/ui/card";
 import { divide } from "@app/utils/bn";
 import { weiToNum } from "@app/utils/bn/wei";
-import { getStatus, POOL_STATUS } from "@app/utils/pool";
-import { getDeltaTime } from "@app/utils/time";
+import { getStatus } from "@app/utils/pool";
 import { PoolInfoType, queryPoolInformation } from "@app/web3/api/bounce/pool-search";
 import { useTokenQuery, useTokenSearch } from "@app/web3/api/tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
@@ -113,26 +116,22 @@ export const Auction = () => {
 					const from = await queryToken(pool.token0);
 					const to = await queryToken(pool.token1);
 
+					const fromAmount = pool.amountTotal0;
+					const toAmount = pool.amountTotal1;
+
 					return {
 						href: `/auction/${auctionType}/${pool.poolID}`,
-						status: getStatus(pool.amountSwap0, pool.amountTotal0, pool.openAt, pool.closeAt),
+						status: getStatus(pool.amountSwap0, fromAmount, pool.openAt, pool.closeAt),
 						id: pool.poolID,
-						name: pool.name,
-						address: pool.token0,
-						type: POOL_NAME_MAPPING[auctionType],
+						name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
+						address: from.address,
+						type: POOL_SHORT_NAME_MAPPING[auctionType],
 						tokenCurrency: from.symbol,
 						tokenLogo: from.logoURI,
-						auctionAmount: pool.amountTotal0,
+						auctionAmount: weiToNum(fromAmount, from.decimals, 0),
 						auctionCurrency: to.symbol,
-						auctionPrice: getSwapRatio(
-							pool.amountTotal0,
-							pool.amountTotal1,
-							from.decimals,
-							to.decimals
-						),
-						fillInPercentage: pool.amountSwap0
-							? getProgress(pool.amountSwap0, pool.amountTotal0)
-							: 0,
+						auctionPrice: getSwapRatio(fromAmount, toAmount, from.decimals, to.decimals),
+						fillInPercentage: pool.amountSwap0 ? getProgress(pool.amountSwap0, fromAmount) : 0,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));

@@ -55,11 +55,11 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 
 	const TOKEN_INFORMATION = {
 		"Contact address": walletConversion(address),
-		"Pool type": type,
 		"Token symbol": <Currency token={tokenCurrency} small />,
 	};
 
 	const AUCTION_INFORMATION = {
+		"Pool type": type,
 		"Auction amount": auctionAmount,
 		"Auction currency": <Currency token={auctionCurrency} small />,
 		"Price per unit, $": auctionPrice,
