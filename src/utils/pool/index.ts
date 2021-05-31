@@ -1,4 +1,5 @@
-import { isGreaterThanOrEqualTo } from "@app/utils/bn";
+import { divide, isGreaterThanOrEqualTo } from "@app/utils/bn";
+import { weiToNum } from "@app/utils/bn/wei";
 
 export enum POOL_STATUS {
 	COMING = "coming",
@@ -30,4 +31,18 @@ export const getStatus = (
 	} else {
 		return POOL_STATUS.COMING;
 	}
+};
+
+export const getProgress = (amount, totalAmount) => +divide(amount, totalAmount, 0);
+
+export const getSwapRatio = (
+	fromAmount: string,
+	toAmount: string,
+	fromDecimals: number,
+	toDecimals: number
+): string => {
+	const from = weiToNum(fromAmount, fromDecimals);
+	const to = weiToNum(toAmount, toDecimals);
+
+	return divide(from, to, 2);
 };

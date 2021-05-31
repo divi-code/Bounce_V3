@@ -10,7 +10,7 @@ import { Search } from "@app/modules/search";
 import { SelectAuction } from "@app/modules/select-auction";
 import { SelectTokenField } from "@app/modules/select-token-field";
 import styles from "@app/pages/auction/Auction.module.scss";
-import { Card, CardType } from "@app/pages/auction/ui/card";
+import { Card, DisplayPoolInfoType } from "@app/pages/auction/ui/card";
 
 import { Button } from "@app/ui/button";
 import { GutterBox } from "@app/ui/gutter-box";
@@ -18,7 +18,7 @@ import { GutterBox } from "@app/ui/gutter-box";
 import { PopupTeleporterTarget } from "@app/ui/pop-up-container";
 
 type AuctionType = {
-	result?: CardType[];
+	result?: DisplayPoolInfoType[];
 	initialSearchState: any;
 	numberOfPages: number;
 	currentPage: number;
@@ -74,7 +74,7 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 								<>
 									<ul className={styles.list}>
 										{result.map((auction) => (
-											<li key={uid(auction)} className={styles.item}>
+											<li key={uid(auction)}>
 												<Card
 													href={auction.href}
 													id={auction.id}
@@ -82,11 +82,11 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 													name={auction.name}
 													address={auction.address}
 													type={auction.type}
-													tokenCurrency={auction.tokenCurrency}
-													auctionAmount={auction.auctionAmount}
-													auctionCurrency={auction.auctionCurrency}
-													auctionPrice={auction.auctionPrice}
-													fillInPercentage={auction.fillInPercentage}
+													token={auction.token}
+													total={auction.total}
+													currency={auction.currency}
+													price={auction.price}
+													fill={auction.fill}
 												/>
 											</li>
 										))}

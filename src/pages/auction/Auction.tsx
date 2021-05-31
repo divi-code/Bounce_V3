@@ -11,12 +11,11 @@ import {
 
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
-import { CardType } from "@app/pages/auction/ui/card";
-import { divide } from "@app/utils/bn";
+import { DisplayPoolInfoType } from "@app/pages/auction/ui/card";
 import { weiToNum } from "@app/utils/bn/wei";
-import { getStatus } from "@app/utils/pool";
+import { getStatus, getSwapRatio, getProgress } from "@app/utils/pool";
 import { PoolInfoType, queryPoolInformation } from "@app/web3/api/bounce/pool-search";
-import { useTokenQuery, useTokenSearch } from "@app/web3/api/tokens";
+import { useTokenQuery } from "@app/web3/api/tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
 import { AuctionView } from "./AuctionView";
@@ -29,20 +28,6 @@ const tryParseJSON = (tryThis: string, orThis: any): any => {
 	} catch (e) {
 		return orThis;
 	}
-};
-
-const getProgress = (amount, totalAmount) => +divide(amount, totalAmount, 0);
-
-const getSwapRatio = (
-	fromAmount: string,
-	toAmount: string,
-	fromDecimals: number,
-	toDecimals: number
-): string => {
-	const from = weiToNum(fromAmount, fromDecimals);
-	const to = weiToNum(toAmount, toDecimals);
-
-	return divide(from, to, 2);
 };
 
 const EMPTY_ARRAY = [];
@@ -103,10 +88,11 @@ export const Auction = () => {
 		})();
 	}, [chainId, searchWindow, provider, searchFilters]);
 
-	const findToken = useTokenSearch();
 	const queryToken = useTokenQuery();
 
-	const [convertedPoolInformation, setConvertedPoolInformation] = useState<CardType[]>([]);
+	const [convertedPoolInformation, setConvertedPoolInformation] = useState<DisplayPoolInfoType[]>(
+		[]
+	);
 
 	useEffect(() => {
 		const { auctionType } = searchFilters;
@@ -127,15 +113,11 @@ export const Auction = () => {
 						name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
 						address: from.address,
 						type: POOL_SHORT_NAME_MAPPING[auctionType],
-						tokenCurrency: from.symbol,
-						tokenLogo: from.logoURI,
-						auctionAmount: weiToNum(fromAmount, from.decimals, 0),
-						auctionCurrency: to.symbol,
-						auctionPrice: getSwapRatio(fromAmount, toAmount, from.decimals, to.decimals),
-						fillInPercentage: pool.amountSwap0 ? getProgress(pool.amountSwap0, fromAmount) : 0,
-						openTime: pool.openAt,
-						closeAt: pool.closeAt,
-						claimAt: pool.claimAt,
+						token: from.symbol,
+						total: weiToNum(fromAmount, from.decimals, 0),
+						currency: to.symbol,
+						price: getSwapRatio(fromAmount, toAmount, from.decimals, to.decimals),
+						fill: pool.amountSwap0 ? getProgress(pool.amountSwap0, fromAmount) : 0,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));
@@ -144,16 +126,12 @@ export const Auction = () => {
 		}
 	}, [
 		chainId,
-		findToken,
 		poolInformation,
 		queryToken,
 		searchFilters,
 		searchFilters.auctionType,
 		setConvertedPoolInformation,
 	]);
-
-	console.log(poolInformation);
-	console.log(convertedPoolInformation);
 
 	const router = useRouter();
 

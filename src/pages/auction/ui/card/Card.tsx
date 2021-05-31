@@ -17,21 +17,21 @@ import { POOL_STATUS } from "@app/utils/pool";
 
 import styles from "./Card.module.scss";
 
-export type CardType = {
+export type DisplayPoolInfoType = {
 	href?: string;
 	status: POOL_STATUS;
 	id: string | number;
 	name: string;
 	address: string;
 	type: string;
-	tokenCurrency: string;
-	auctionAmount: string;
-	auctionCurrency: string;
-	auctionPrice: string | number;
-	fillInPercentage: number;
+	token: string;
+	total: string;
+	currency: string;
+	price: string | number;
+	fill: number;
 };
 
-export const Card: FC<CardType & MaybeWithClassName> = ({
+export const Card: FC<DisplayPoolInfoType & MaybeWithClassName> = ({
 	className,
 	status,
 	href,
@@ -39,11 +39,11 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 	name,
 	address,
 	type,
-	tokenCurrency,
-	auctionAmount,
-	auctionCurrency,
-	auctionPrice,
-	fillInPercentage,
+	token,
+	total,
+	currency,
+	price,
+	fill,
 }) => {
 	const STATUS: Record<POOL_STATUS, string> = {
 		[POOL_STATUS.COMING]: "Coming soon",
@@ -55,14 +55,14 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 
 	const TOKEN_INFORMATION = {
 		"Contact address": walletConversion(address),
-		"Token symbol": <Currency token={tokenCurrency} small />,
+		"Token symbol": <Currency token={token} small />,
 	};
 
 	const AUCTION_INFORMATION = {
 		"Pool type": type,
-		"Auction amount": auctionAmount,
-		"Auction currency": <Currency token={auctionCurrency} small />,
-		"Price per unit, $": auctionPrice,
+		"Auction amount": total,
+		"Auction currency": <Currency token={currency} small />,
+		"Price per unit, $": price,
 	};
 
 	return (
@@ -84,7 +84,7 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 				title="Auction Information"
 				data={AUCTION_INFORMATION}
 			/>
-			<ProgressBar className={styles.bar} fillInPercentage={fillInPercentage} status={status} />
+			<ProgressBar className={styles.bar} fillInPercentage={fill} status={status} />
 		</NavLink>
 	);
 };

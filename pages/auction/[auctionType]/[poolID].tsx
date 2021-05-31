@@ -4,7 +4,7 @@ import { POOL_TYPE } from "@app/api/pool/const";
 import { Layout } from "@app/layout";
 import NoSsr from "@app/modules/no-ssr/NoSsr";
 import { RequireConnectedWallet } from "@app/modules/require-connected-wallet";
-import { AuctionView } from "@app/pages/auction-view";
+import { AuctionDetail } from "@app/pages/auction-detail";
 import { pageWithLayout } from "@app/utils/pageInLayout";
 
 const AuctionViewPage = pageWithLayout(
@@ -16,7 +16,7 @@ const AuctionViewPage = pageWithLayout(
 		return (
 			<NoSsr>
 				<RequireConnectedWallet>
-					<AuctionView poolID={+poolID} auctionType={auctionType as POOL_TYPE} />
+					<AuctionDetail poolID={+poolID} auctionType={auctionType as POOL_TYPE} />
 				</RequireConnectedWallet>
 			</NoSsr>
 		);
