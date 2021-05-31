@@ -15,7 +15,7 @@ type DateFieldType = {
 	placeholder?: string;
 	readOnly?: boolean;
 	required?: boolean;
-	label: string;
+	labels: string[];
 	quickNav?: Array<QuickNavType>;
 	dropdownWidth?: string;
 	dropdownPosition?: DropdownPositionType;
@@ -31,7 +31,7 @@ export const DateField: FC<DateFieldType & MaybeWithClassName> = ({
 	readOnly,
 	value,
 	required,
-	label,
+	labels,
 	quickNav,
 	dropdownWidth,
 	dropdownPosition,
@@ -49,7 +49,7 @@ export const DateField: FC<DateFieldType & MaybeWithClassName> = ({
 					onChange={input.onChange}
 					onBlur={input.onBlur}
 					placeholder={placeholder}
-					label={label}
+					labels={labels}
 					quickNav={quickNav}
 					dropdownWidth={dropdownWidth}
 					dropdownPosition={dropdownPosition}

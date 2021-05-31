@@ -14,6 +14,7 @@ import { Button } from "@app/ui/button";
 import { DateInterval } from "@app/ui/calendar/types";
 import { FieldFrame } from "@app/ui/field-frame";
 import { Input } from "@app/ui/input";
+import { Body1 } from "@app/ui/typography";
 import { dateToISODate, endOfTheDay, to2DigitOrNothing } from "@app/ui/utils/dateFormatter";
 
 import { Calendar, QuickNavType } from "../calendar";
@@ -52,7 +53,7 @@ type DatePickerType = {
 	dayFill?: Record<number, number | boolean>;
 	selection?: DateInterval;
 	noIntervalValidate?: boolean;
-	label: string;
+	labels: string[];
 	dropdownWidth?: string;
 	quickNav?: Array<QuickNavType>;
 	dropdownPosition?: DropdownPositionType;
@@ -110,7 +111,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 	placeholder,
 	noIntervalValidate,
 	className,
-	label,
+	labels,
 	dropdownWidth = "100%",
 	dropdownPosition = "left",
 	quickNav,
@@ -308,10 +309,9 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 					onBlur={onBlur}
 				>
 					{on && (
-						<>
+						<div className={styles.calendar}>
 							<Calendar
-								className={styles.calendar}
-								label={label}
+								label={labels[0]}
 								quickNav={quickNav}
 								disableEmptyDays={false}
 								value={calendarValue}
@@ -323,7 +323,8 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 								onChange={onCalendarValueSet}
 							/>
 
-							<div>
+							<div className={styles.time}>
+								<Body1 Component="span">{labels[0]}</Body1>
 								<Input
 									name="hours"
 									type="number"
@@ -335,7 +336,10 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 									required
 									value={hours}
 									onChange={onHoursChange as any}
+									after="Hour"
+									size="small"
 								/>
+								:
 								<Input
 									name="minutes"
 									type="number"
@@ -347,10 +351,19 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 									required
 									value={minutes}
 									onChange={onMinutesChange as any}
+									after="Min"
+									size="small"
 								/>
-								<Button onClick={close}>Close</Button>
+								<Button
+									className={styles.close}
+									onClick={close}
+									color="primary-black"
+									variant="contained"
+								>
+									Close
+								</Button>
 							</div>
-						</>
+						</div>
 					)}
 				</div>
 			</div>

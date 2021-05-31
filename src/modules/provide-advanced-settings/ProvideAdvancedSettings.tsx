@@ -59,7 +59,7 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 											end: new Date(props.values.endPool),
 										}}
 										dropdownWidth={`${blockWidth}px`}
-										label="Choose start date"
+										labels={["1. Choose start date", "2. Choose start time"]}
 										quickNav={["today", "tomorrow", "in-2-days"]}
 										required
 									/>
@@ -76,7 +76,7 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 										}}
 										dropdownWidth={`${blockWidth}px`}
 										dropdownPosition="right"
-										label="Choose end date"
+										labels={["1. Choose end date", "2. Choose end time"]}
 										quickNav={["in-5-days", "in-7-days", "in-10-days"]}
 										required
 									/>
@@ -101,7 +101,7 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 									placeholder="10.01.2021"
 									name="claimStart"
 									min={getDateIntervalStart(new Date(props.values.startPool)).toString()}
-									label="Choose date"
+									labels={["1. Choose date", "2. Choose time"]}
 									quickNav={["in-5-days", "in-7-days", "in-10-days"]}
 									required={props.values.delayToken.includes("unlock")}
 								/>

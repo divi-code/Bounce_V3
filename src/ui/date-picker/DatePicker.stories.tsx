@@ -10,7 +10,7 @@ export const Default = () => (
 
 export const Min = () => (
 	<DatePicker
-		label="Start"
+		labels={["Start date", "Start time"]}
 		placeholder="From"
 		name="date"
 		min={new Date().toString()}
@@ -20,7 +20,7 @@ export const Min = () => (
 
 export const InitialValue = () => (
 	<DatePicker
-		label="Start"
+		labels={["Start date", "Start time"]}
 		placeholder="From"
 		name="date"
 		min={new Date().toString()}
@@ -41,7 +41,7 @@ export const FloatWidth = () => {
 				style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridColumnGap: "20px" }}
 			>
 				<DatePicker
-					label="Start"
+					labels={["Start date", "Start time"]}
 					placeholder="From"
 					name="date"
 					min={new Date().toString()}
@@ -49,7 +49,7 @@ export const FloatWidth = () => {
 					dropdownWidth={`${blockWidth}px`}
 				/>
 				<DatePicker
-					label="Start"
+					labels={["Start date", "Start time"]}
 					placeholder="From"
 					name="date"
 					min={new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toString()}

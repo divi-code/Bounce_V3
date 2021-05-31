@@ -8,6 +8,7 @@ import { Caption } from "@app/ui/typography";
 import styles from "./Input.module.scss";
 
 type InputType = {
+	size: "small" | "medium";
 	name: string;
 	type: string;
 	value?: string | number;
@@ -25,6 +26,7 @@ type InputType = {
 
 export const Input: FC<InputType & MaybeWithClassName> = ({
 	className,
+	size = "medium",
 	name,
 	type,
 	placeholder,
@@ -62,6 +64,7 @@ export const Input: FC<InputType & MaybeWithClassName> = ({
 			<div
 				className={classNames(
 					styles.component,
+					styles[size],
 					inputFocused && styles.focus,
 					error && styles.errorState,
 					before && styles.before,

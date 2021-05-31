@@ -46,3 +46,46 @@
   pointer-events: all;
   visibility: visible;
 }
+
+.calendar {
+  padding: calc(var(--spacing-unit) * 2);
+
+  box-sizing: border-box;
+
+  border: 1px solid rgba(var(--primary-black), 0.1);
+  border-radius: 0.5rem;
+
+  background-color: rgba(var(--primary-white), 1);
+}
+
+.time {
+  position: relative;
+
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 1fr auto auto auto auto;
+  align-items: center;
+  grid-column-gap: var(--spacing-unit);
+
+  padding-top: calc(var(--spacing-unit) * 2);
+}
+
+.time::before {
+  position: absolute;
+  top: 0;
+  left: calc(var(--spacing-unit) * -2);
+  right: calc(var(--spacing-unit) * -2);
+  content: "";
+
+  display: block;
+  height: 1px;
+
+  background-color: rgba(var(--primary-black), 0.1);
+}
+
+.close {
+  min-height: 2.5rem;
+  padding: 0 1.25rem;
+
+  border-radius: 0.75rem;
+}

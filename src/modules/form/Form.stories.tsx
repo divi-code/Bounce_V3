@@ -76,7 +76,7 @@ export const FinalFormIntegration = () => {
 								name="start-time"
 								min={new Date().toString()}
 								dropdownWidth={`${blockWidth}px`}
-								label="Choose start date"
+								labels={["Choose start date", "Choose start time"]}
 								quickNav={["today", "tomorrow", "in-2-days"]}
 							/>
 						</Label>
@@ -87,7 +87,7 @@ export const FinalFormIntegration = () => {
 								min={new Date().toString()}
 								dropdownWidth={`${blockWidth}px`}
 								dropdownPosition="right"
-								label="Choose end date"
+								labels={["Choose start date", "Choose start time"]}
 								quickNav={["in-5-days", "in-7-days", "in-10-days"]}
 							/>
 						</Label>

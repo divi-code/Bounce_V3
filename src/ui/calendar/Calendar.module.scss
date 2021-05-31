@@ -2,14 +2,7 @@
 @use "../../helper/style/media";
 
 .component {
-  padding: calc(var(--spacing-unit) * 2);
 
-  box-sizing: border-box;
-
-  border: 1px solid rgba(var(--primary-black), 0.1);
-  border-radius: 0.5rem;
-
-  background-color: rgba(var(--primary-white), 1);
 }
 
 .header {
