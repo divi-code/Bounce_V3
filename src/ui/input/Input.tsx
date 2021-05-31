@@ -8,7 +8,7 @@ import { Caption } from "@app/ui/typography";
 import styles from "./Input.module.scss";
 
 type InputType = {
-	size: "small" | "medium";
+	size?: "small" | "medium";
 	name: string;
 	type: string;
 	value?: string | number;

@@ -133,20 +133,25 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 			setOperation(OPERATION.confirm);
 
 			if (result.status) {
-				await createAuctionPool(contract, account, {
-					name: data.poolName,
-					creator: account,
-					token0: tokenFrom.address,
-					token1: tokenTo.address,
-					amountTotal0: fromAmount,
-					amountTotal1: toAmount,
-					openAt: +data.startPool,
-					closeAt: +data.endPool,
-					claimAt: +data.claimStart,
-					enableWhiteList: data.whitelist === WHITELIST_TYPE.yes,
-					maxAmount1PerWallet: limit,
-					onlyBot: false,
-				})
+				await createAuctionPool(
+					contract,
+					account,
+					{
+						name: data.poolName,
+						creator: account,
+						token0: tokenFrom.address,
+						token1: tokenTo.address,
+						amountTotal0: fromAmount,
+						amountTotal1: toAmount,
+						openAt: +data.startPool,
+						closeAt: +data.endPool,
+						claimAt: +data.claimStart,
+						enableWhiteList: data.whitelist === WHITELIST_TYPE.yes,
+						maxAmount1PerWallet: limit,
+						onlyBot: false,
+					},
+					data.whitelistList
+				)
 					.on("transactionHash", (h) => {
 						console.log("hash", h);
 						setOperation(OPERATION.pending);

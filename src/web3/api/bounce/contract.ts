@@ -62,11 +62,12 @@ export type AuctionPoolType = {
 export const createAuctionPool = (
 	contract: ContractType,
 	account: string,
-	data: AuctionPoolType
+	data: AuctionPoolType,
+	whiteList?: string[]
 ) => {
 	console.log("sending", data);
 
-	return contract.methods.create(data, []).send({ from: account });
+	return contract.methods.create(data, whiteList || []).send({ from: account });
 };
 
 export const getBalance = async (contract: ContractType, account: string) => {

@@ -6,11 +6,13 @@ import { Body1, Caption } from "@app/ui/typography";
 
 import { useTokenSearch } from "@app/web3/api/tokens";
 
+import { uriToHttp } from "@app/web3/api/tokens/ens/helpers";
+
 import styles from "./Currency.module.scss";
 
 type CurrencyType = {
 	symbol: string;
-	img: string;
+	img?: string;
 };
 
 export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClassName> = ({
@@ -21,11 +23,15 @@ export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClas
 }) => {
 	const [logoIsOk, setLogoIsOk] = useState(true);
 
+	const realImage = img ? uriToHttp(img)[0] : undefined;
+
 	useEffect(() => {
-		const testImage = new Image();
-		testImage.onerror = () => setLogoIsOk(false);
-		testImage.src = img;
-	}, [img]);
+		if (realImage) {
+			const testImage = new Image();
+			testImage.onerror = () => setLogoIsOk(false);
+			testImage.src = realImage;
+		}
+	}, [realImage]);
 
 	return small ? (
 		<Caption
@@ -51,8 +57,9 @@ export const Currency: FC<MaybeWithClassName & { token: string; small?: boolean 
 	small,
 }) => {
 	const findToken = useTokenSearch();
+	const tokenInfo = findToken(token);
 
 	return token ? (
-		<CurrencyView symbol={token} img={findToken(token).logoURI} small={small} />
+		<CurrencyView symbol={token} img={tokenInfo ? tokenInfo.logoURI : undefined} small={small} />
 	) : null;
 };

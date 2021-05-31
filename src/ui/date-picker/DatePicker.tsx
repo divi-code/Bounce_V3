@@ -212,7 +212,6 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 
 	const [hours, onHoursChange] = useCallbackState(
 		initialValue ? initialValue.getHours() : "",
-		// @ts-ignore
 		(event: ChangeEvent<HTMLInputElement>, prev) => {
 			const realValue = event.target.value;
 
@@ -228,7 +227,6 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 
 	const [minutes, onMinutesChange] = useCallbackState(
 		initialValue ? initialValue.getMinutes() : "",
-		// @ts-ignore
 		(event: ChangeEvent<HTMLInputElement>, prev) => {
 			const realValue = event.target.value;
 

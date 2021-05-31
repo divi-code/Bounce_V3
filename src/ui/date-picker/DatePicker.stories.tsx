@@ -5,7 +5,12 @@ import { useResizeObserver } from "@app/hooks/use-resize-observer";
 import { DatePicker } from "./DatePicker";
 
 export const Default = () => (
-	<DatePicker label="Start" placeholder="From" name="date" onChange={() => null} />
+	<DatePicker
+		labels={["Start date", "Start time"]}
+		placeholder="From"
+		name="date"
+		onChange={() => null}
+	/>
 );
 
 export const Min = () => (

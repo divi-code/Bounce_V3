@@ -12,6 +12,7 @@ export type SettingsOutType = {
 	delayClaim: boolean;
 	claimStart: string;
 	whitelist: string;
+	whitelistList: string[] | undefined;
 	settingsFormValues: any;
 };
 
@@ -26,6 +27,7 @@ const SettingsImp = () => {
 			delayClaim: values.delayToken.length > 0,
 			claimStart: values.delayToken.length > 0 ? values.claimStart : values.endPool,
 			whitelist: values.whitelist,
+			whitelistList: values.whitelistList,
 			settingsFormValues: values,
 		});
 
@@ -35,7 +37,7 @@ const SettingsImp = () => {
 	const initialValues = useMemo(
 		() => ({
 			delayToken: ["unlock"],
-			whitelist: "yes",
+			whitelist: "no",
 			...data.settingsFormValues,
 		}),
 		[data.settingsFormValues]

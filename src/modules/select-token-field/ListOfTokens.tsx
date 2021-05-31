@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { ChangeEvent, FC, useMemo, useRef, useState } from "react";
+import React, { ChangeEvent, FC, useMemo, useState } from "react";
 import { StrollableContainer } from "react-stroller";
 
 import { uid } from "react-uid";
@@ -11,7 +11,7 @@ import { Button } from "@app/ui/button";
 import { Pen } from "@app/ui/icons/pen";
 import { Search } from "@app/ui/icons/search";
 import { Input } from "@app/ui/input";
-import { ScrollBar, VerticalScrollIndicator } from "@app/ui/stroller-components";
+import { ScrollBar } from "@app/ui/stroller-components";
 
 import styles from "./ListOfTokens.module.scss";
 
