@@ -7,11 +7,3 @@ export const Default = () => {
 		</div>
 	);
 };
-
-export const Active = () => {
-	return (
-		<div>
-			<HeaderView active={true} />
-		</div>
-	);
-};

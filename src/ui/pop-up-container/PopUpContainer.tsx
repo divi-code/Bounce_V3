@@ -36,6 +36,7 @@ type PopUpContainerType = {
 	onBack?(): void;
 	withBack?: boolean;
 	fixedHeight?: boolean;
+	withoutClose?: boolean;
 };
 
 type ComponentType = PopUpContainerType & MaybeWithClassName & WithChildren;
@@ -74,6 +75,7 @@ export const PopUpContainer: FC<ComponentType & MaybeWithClassName> = ({
 	withBack,
 	onBack,
 	fixedHeight,
+	withoutClose,
 }) => {
 	const windowHeight = useWindowSize()[1];
 
@@ -89,7 +91,12 @@ export const PopUpContainer: FC<ComponentType & MaybeWithClassName> = ({
 	return (
 		<Wrapper>
 			<Shadow className={className} visible={visible} animated={animated} />
-			<FocusOn autoFocus enabled={visible} onEscapeKey={onClose} onClickOutside={onClose}>
+			<FocusOn
+				autoFocus
+				enabled={visible}
+				onEscapeKey={!withoutClose && onClose}
+				onClickOutside={!withoutClose && onClose}
+			>
 				<div data-autofocus-inside>
 					{/* eslint-disable-next-line max-len */}
 					{/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions */}
@@ -111,15 +118,17 @@ export const PopUpContainer: FC<ComponentType & MaybeWithClassName> = ({
 							className={classNames(styles.container, fixedHeight && styles.fixedHeight)}
 							style={{ maxWidth: maxWidth ? `${maxWidth / 16}rem` : "none" }}
 						>
-							<Button
-								className={styles.close}
-								icon={<Close />}
-								color="primary-black"
-								variant="text"
-								onClick={onClose}
-							>
-								Close
-							</Button>
+							{!withoutClose && (
+								<Button
+									className={styles.close}
+									icon={<Close />}
+									color="primary-black"
+									variant="text"
+									onClick={onClose}
+								>
+									Close
+								</Button>
+							)}
 							{withBack && (
 								<Button
 									className={styles.back}

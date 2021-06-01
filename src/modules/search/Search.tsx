@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { FC } from "react";
+import { CSSProperties, FC } from "react";
 
 import { MaybeWithClassName, WithChildren } from "@app/helper/react/types";
 import { GutterBox } from "@app/ui/gutter-box";
@@ -11,6 +11,7 @@ type SearchType = {
 	title: string;
 	text: string;
 	visibleText?: boolean;
+	style?: CSSProperties;
 };
 
 export const Search: FC<SearchType & MaybeWithClassName & WithChildren> = ({
@@ -19,9 +20,10 @@ export const Search: FC<SearchType & MaybeWithClassName & WithChildren> = ({
 	text,
 	children,
 	visibleText,
+	style,
 }) => {
 	return (
-		<section className={classNames(className, styles.component)}>
+		<section className={classNames(className, styles.component)} style={style}>
 			<GutterBox className={classNames(styles.wrapper, !visibleText && styles.withoutText)}>
 				{visibleText && (
 					<>

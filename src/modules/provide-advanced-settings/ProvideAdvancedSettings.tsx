@@ -14,8 +14,8 @@ import { OnOffField } from "@app/modules/on-off-field ";
 import { RadioField } from "@app/modules/radio-field";
 import { TextField } from "@app/modules/text-field";
 
+import { WhiteListPopUp } from "@app/modules/whitelist-pop-up";
 import { PrimaryButton } from "@app/ui/button";
-import { PopUpContainer } from "@app/ui/pop-up-container";
 import { RadioGroup } from "@app/ui/radio-group";
 
 import styles from "./ProvideAdvancedSettings.module.scss";
@@ -32,37 +32,6 @@ export enum WHITELIST_TYPE {
 
 const getDateIntervalStart = (from: Date) => {
 	return new Date(from.getFullYear(), from.getMonth(), from.getDate());
-};
-
-const EMPTY_ARRAY = [];
-
-const WhiteListPopUp: FC<{
-	onSet(list: string[]): void;
-	initialValue?: string[];
-}> = ({ onSet, initialValue = EMPTY_ARRAY }) => {
-	const { open, close, popUp } = useControlPopUp();
-
-	useEffect(() => {
-		open();
-	}, [open]);
-
-	const [value, setValue] = useCallbackState(
-		initialValue.join("\n"),
-		(event: ChangeEvent<HTMLTextAreaElement>) => event.target.value
-	);
-
-	const setList = () => {
-		onSet(value.split("\n"));
-		close();
-	};
-
-	return (
-		<PopUpContainer animated={popUp.present} visible={popUp.defined} onClose={close}>
-			<textarea placeholder={"xxx-xxx-xxx"} value={value} onChange={setValue} />
-			<PrimaryButton onClick={setList}>Confirm</PrimaryButton>
-			<popUp.DefinePresent />
-		</PopUpContainer>
-	);
 };
 
 export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSettingsType> = ({
