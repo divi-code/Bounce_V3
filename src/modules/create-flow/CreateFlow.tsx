@@ -3,6 +3,7 @@ import { FC, ReactNode } from "react";
 import React from "react";
 import { uid } from "react-uid";
 
+import { POOL_NAME_MAPPING } from "@app/api/pool/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { CreateConfirmation } from "@app/modules/create-confirmation";
 import { CreateSteps } from "@app/modules/create-steps";
@@ -45,7 +46,7 @@ export const CreateFlow: FC<CreateFlowType & MaybeWithClassName> = ({
 							<CreateSteps
 								title={CAPTIONS[currentStep]}
 								count={steps.length - 1}
-								type={type}
+								type={POOL_NAME_MAPPING[type]}
 								currentStep={currentStep}
 								moveForward={moveForward}
 								moveBack={moveBack}

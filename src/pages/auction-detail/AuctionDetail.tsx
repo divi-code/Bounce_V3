@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
 import {
 	POOL_ADDRESS_MAPPING,
@@ -49,7 +49,10 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 	const [myPool, setMyPool] = useState<boolean>(false);
 	const [alert, setAlert] = useState<AlertType | undefined>();
 
-	const contract = getBounceContract(provider, POOL_ADDRESS_MAPPING[auctionType], chainId);
+	const contract = useMemo(
+		() => getBounceContract(provider, POOL_ADDRESS_MAPPING[auctionType], chainId),
+		[auctionType, chainId, provider]
+	);
 
 	const updateData = useCallback(async () => {
 		if (!contract) {

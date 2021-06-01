@@ -7,7 +7,6 @@ import { useConvertDate } from "@app/hooks/use-convert-data";
 import { Currency } from "@app/modules/currency";
 import { defineFlowStep } from "@app/modules/flow/definition";
 import { useFlowData } from "@app/modules/flow/hooks";
-import { WHITELIST_TYPE } from "@app/modules/provide-advanced-settings";
 import { DescriptionList } from "@app/ui/description-list";
 
 import { Heading3 } from "@app/ui/typography";
@@ -117,7 +116,7 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 			allocation={
 				allocation === ALLOCATION_TYPE.limited ? `Limit ${limit} ${tokenFrom}` : "No Limits"
 			}
-			whitelist={whitelist === WHITELIST_TYPE.yes ? "Whitelist" : "Public"}
+			whitelist={whitelist ? "Whitelist" : "Public"}
 			duration={`From ${convertDate(new Date(startPool), "long")} - To ${convertDate(
 				new Date(endPool),
 				"long"

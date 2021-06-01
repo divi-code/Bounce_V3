@@ -64,11 +64,13 @@ export const createAuctionPool = (
 	contract: ContractType,
 	account: string,
 	data: AuctionPoolType,
-	whiteList?: string[]
+	whiteList: string[] | undefined
 ) => {
 	console.log("sending", data);
 
-	return contract.methods.create(data, whiteList || []).send({ from: account });
+	return contract.methods
+		.create(data, whiteList !== undefined ? whiteList : [])
+		.send({ from: account });
 };
 
 export const getBalance = async (contract: ContractType, account: string) => {

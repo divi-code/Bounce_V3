@@ -128,7 +128,7 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 					props.values.whitelist === WHITELIST_TYPE.yes && (
 						<WhiteListPopUp
 							initialValue={props.values.whitelistList}
-							onSet={(list) => props.form.change("whitelistList" as any, list)}
+							onSet={(list) => props.form.change("whiteListList" as any, list)}
 						/>
 					)
 				}

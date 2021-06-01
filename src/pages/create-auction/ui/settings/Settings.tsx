@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { defineFlowStep } from "@app/modules/flow/definition";
 import { useFlowControl } from "@app/modules/flow/hooks";
 
-import { ProvideAdvancedSettings } from "@app/modules/provide-advanced-settings";
+import { ProvideAdvancedSettings, WHITELIST_TYPE } from "@app/modules/provide-advanced-settings";
 
 export type SettingsOutType = {
 	poolName: string;
@@ -11,8 +11,8 @@ export type SettingsOutType = {
 	endPool: string;
 	delayClaim: boolean;
 	claimStart: string;
-	whitelist: string;
-	whitelistList: string[] | undefined;
+	whitelist: boolean;
+	whiteListList: string[] | undefined;
 	settingsFormValues: any;
 };
 
@@ -26,8 +26,11 @@ const SettingsImp = () => {
 			endPool: values.endPool,
 			delayClaim: values.delayToken.length > 0,
 			claimStart: values.delayToken.length > 0 ? values.claimStart : values.endPool,
-			whitelist: values.whitelist,
-			whitelistList: values.whitelistList,
+			whitelist: values.whitelist === WHITELIST_TYPE.yes,
+			whiteListList:
+				values.whitelist === WHITELIST_TYPE.yes && values.whiteListList.length > 0
+					? values.whiteListList
+					: undefined,
 			settingsFormValues: values,
 		});
 
@@ -37,7 +40,7 @@ const SettingsImp = () => {
 	const initialValues = useMemo(
 		() => ({
 			delayToken: ["unlock"],
-			whitelist: "no",
+			whitelist: WHITELIST_TYPE.no,
 			...data.settingsFormValues,
 		}),
 		[data.settingsFormValues]

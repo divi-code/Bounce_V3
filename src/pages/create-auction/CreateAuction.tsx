@@ -111,6 +111,8 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 	const onComplete = async (data: ConfirmationInType) => {
 		setOperation(OPERATION.approval);
 
+		console.log(data);
+
 		const tokenFrom = findToken(data.tokenFrom);
 		const tokenTo = findToken(data.tokenTo);
 
@@ -146,11 +148,11 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 						openAt: +data.startPool,
 						closeAt: +data.endPool,
 						claimAt: +data.claimStart,
-						enableWhiteList: data.whitelist === WHITELIST_TYPE.yes,
+						enableWhiteList: data.whitelist,
 						maxAmount1PerWallet: limit,
 						onlyBot: false,
 					},
-					data.whitelistList
+					data.whiteListList
 				)
 					.on("transactionHash", (h) => {
 						console.log("hash", h);
@@ -186,7 +188,7 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 	return (
 		<div className={styles.component}>
 			<CreateFlow
-				type={POOL_NAME_MAPPING[type]}
+				type={type}
 				steps={getStepsByType(type)}
 				onComplete={onComplete}
 				alert={
