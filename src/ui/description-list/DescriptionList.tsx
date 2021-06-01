@@ -9,7 +9,7 @@ import styles from "./DescriptionList.module.scss";
 import type { FC, ReactNode } from "react";
 
 type DescriptionListType = {
-	title: string;
+	title?: string;
 	data: Record<string, ReactNode>;
 };
 
@@ -20,9 +20,11 @@ export const DescriptionList: FC<DescriptionListType & MaybeWithClassName> = ({
 }) => {
 	return (
 		<div className={classNames(className, styles.component)}>
-			<Caption Component="h3" className={styles.title} weight="medium">
-				{title}
-			</Caption>
+			{title && (
+				<Caption Component="h3" className={styles.title} weight="medium">
+					{title}
+				</Caption>
+			)}
 			<dl className={styles.list}>
 				{Object.keys(data).map((key) => (
 					<Fragment key={key}>

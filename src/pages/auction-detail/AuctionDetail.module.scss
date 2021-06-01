@@ -1,4 +1,6 @@
 .component {
+  display: grid;
+
   padding: calc(var(--spacing-unit) * 5) 0;
   min-height: calc(100vh - var(--header-height) - 1px);
 
@@ -49,10 +51,28 @@
 }
 
 .progress {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  grid-column-gap: var(--spacing-unit);
+  grid-row-gap: calc(var(--spacing-unit) * 2);
+  align-items: center;
+  justify-content: space-between;
+
   margin-top: calc(var(--spacing-unit) * 5);
 }
 
+.progressCaption {
+  margin: 0;
+}
+
+.bar {
+  grid-column: -1/1;
+}
+
 .action {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-row-gap: calc(var(--spacing-unit) * 4);
   padding: calc(var(--spacing-unit) * 4.5) calc(var(--spacing-unit) * 7.5);
 
   box-sizing: border-box;
@@ -61,4 +81,18 @@
   border: 1px solid rgba(var(--primary-black), 0.1);
 
   background-color: rgba(var(--primary-white), 1);
+}
+
+.header {
+  display: grid;
+  grid-row-gap: calc(var(--spacing-unit) * 1.5);
+  justify-items: center;
+
+  padding-bottom: calc(var(--spacing-unit) * 3);
+
+  border-bottom: 1px solid rgba(var(--primary-black), 0.1);
+}
+
+.actionTitle {
+  margin: 0;
 }

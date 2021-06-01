@@ -27,7 +27,7 @@ export type DisplayPoolInfoType = {
 	token: string;
 	total: string;
 	currency: string;
-	price: string | number;
+	price: string;
 	fill: number;
 };
 

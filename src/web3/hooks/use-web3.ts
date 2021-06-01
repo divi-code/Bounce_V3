@@ -31,3 +31,9 @@ export const useConnected = (): boolean => {
 
 	return active;
 };
+
+export const useAccount = (): string => {
+	const { account } = useWeb3React();
+
+	return account;
+};

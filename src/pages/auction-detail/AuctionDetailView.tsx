@@ -1,20 +1,31 @@
 import { FC, ReactNode } from "react";
 
+import { useConvertDate } from "@app/hooks/use-convert-data";
 import { Currency } from "@app/modules/currency";
+import { Timer } from "@app/modules/timer";
 import { DisplayPoolInfoType } from "@app/pages/auction";
 import { DescriptionList } from "@app/ui/description-list";
 import { GutterBox } from "@app/ui/gutter-box";
 
 import { ProgressBar } from "@app/ui/progress-bar";
-import { Caption, Heading1 } from "@app/ui/typography";
+import { Status } from "@app/ui/status";
+import { Caption, Heading1, Heading2 } from "@app/ui/typography";
 
 import { walletConversion } from "@app/utils/convertWallet";
+
+import { POOL_STATUS } from "@app/utils/pool";
 
 import styles from "./AuctionDetail.module.scss";
 
 type AuctionDetailViewType = {
+	actionTitle: string;
 	alert?: ReactNode;
 	amount: string;
+	limit?: string;
+	openAt: number;
+	closeAt: number;
+	claimAt?: Date;
+	onZero(): void;
 };
 
 export const AuctionDetailView: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
@@ -30,7 +41,15 @@ export const AuctionDetailView: FC<DisplayPoolInfoType & AuctionDetailViewType> 
 	total,
 	status,
 	fill,
+	onZero,
+	openAt,
+	closeAt,
+	actionTitle,
+	limit,
+	claimAt,
 }) => {
+	const convertDate = useConvertDate();
+
 	const TOKEN_INFORMATION = {
 		"Contact address": walletConversion(address),
 		"Token symbol": <Currency token={token} small />,
@@ -38,9 +57,19 @@ export const AuctionDetailView: FC<DisplayPoolInfoType & AuctionDetailViewType> 
 
 	const AUCTION_INFORMATION = {
 		"Pool type": type,
-		"Auction amount": total,
+		"Auction amount": parseFloat(total).toFixed(2),
 		"Auction currency": <Currency token={currency} small />,
-		"Price per unit, $": price,
+		"Price per unit, $": parseFloat(price).toFixed(2),
+		"Allocation per Wallet": limit ? limit : "No",
+		"Delay Unlocking Token": claimAt ? convertDate(new Date(claimAt), "long") : "No",
+	};
+
+	const STATUS: Record<POOL_STATUS, ReactNode> = {
+		[POOL_STATUS.COMING]: <Timer timer={openAt} onZero={onZero} />,
+		[POOL_STATUS.LIVE]: <Timer timer={closeAt} onZero={onZero} />,
+		[POOL_STATUS.FILLED]: "Filled",
+		[POOL_STATUS.CLOSED]: "Closed",
+		[POOL_STATUS.ERROR]: "Error",
 	};
 
 	return (
@@ -62,16 +91,22 @@ export const AuctionDetailView: FC<DisplayPoolInfoType & AuctionDetailViewType> 
 								data={AUCTION_INFORMATION}
 							/>
 							<div className={styles.progress}>
-								<Caption Component="h3" className={styles.caption} weight="medium">
+								<Caption Component="h3" className={styles.progressCaption} weight="medium">
 									Auction progress
 								</Caption>
-								<Caption Component="span" className={styles.caption} weight="medium">
+								<Caption Component="span" weight="regular">
 									{amount} {currency} / {total} {currency}
 								</Caption>
-								<ProgressBar status={status} fillInPercentage={fill} />
+								<ProgressBar className={styles.bar} status={status} fillInPercentage={fill} />
 							</div>
 						</div>
-						<div className={styles.action}>{children}</div>
+						<div className={styles.action}>
+							<div className={styles.header}>
+								<Heading2 className={styles.actionTitle}>{actionTitle}</Heading2>
+								<Status status={status} captions={STATUS} />
+							</div>
+							<div className={styles.body}>{children}</div>
+						</div>
 					</div>
 				</div>
 			</GutterBox>

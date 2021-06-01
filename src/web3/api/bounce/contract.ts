@@ -1,5 +1,6 @@
 import { AbstractProvider } from "web3-core";
 
+import { numToWei } from "@app/utils/bn/wei";
 import { getContract } from "@app/web3/contracts/helpers";
 import { WEB3_NETWORKS } from "@app/web3/networks/const";
 import { ADDRESS_MAPPING, getChainAddressMapping } from "@app/web3/networks/mapping";
@@ -76,4 +77,12 @@ export const getBalance = async (contract: ContractType, account: string) => {
 
 export const getPools = async (contract: ContractType, poolID: number) => {
 	return contract.methods.pools(poolID).call();
+};
+
+export const getMyAmount = (
+	contract: ContractType,
+	address: string,
+	index: number
+): Promise<string> => {
+	return contract.methods.myAmountSwapped1(address, index).call();
 };
