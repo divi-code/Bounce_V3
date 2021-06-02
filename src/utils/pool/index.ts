@@ -16,8 +16,8 @@ export const getStatus = (
 	totalAmount: string
 ): POOL_STATUS => {
 	const nowTime = new Date();
-	const openTime = new Date(+openAt);
-	const closeTime = new Date(+closeAt);
+	const openTime = new Date(+openAt * 1000);
+	const closeTime = new Date(+closeAt * 1000);
 
 	if (nowTime > openTime) {
 		if (nowTime < closeTime) {

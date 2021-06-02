@@ -65,9 +65,11 @@ export const createAuctionPool = (
 ) => {
 	console.log("sending", data);
 
-	return contract.methods
-		.create(data, whiteList !== undefined ? whiteList : [])
-		.send({ from: account });
+	const action = contract.methods.create(data, whiteList !== undefined ? whiteList : []);
+
+	action.estimateGas();
+
+	return action.send({ from: account });
 };
 
 export const getBalance = async (contract: ContractType, account: string) => {
@@ -99,8 +101,6 @@ export const swapContracts = async (
 	const action = contract.methods.swap(index, amount);
 
 	action.estimateGas();
-
-	console.log(amount, account, index);
 
 	return action.send({ from: account, value: amount });
 };

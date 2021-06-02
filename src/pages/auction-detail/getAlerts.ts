@@ -3,8 +3,8 @@ import { isGreaterThanOrEqualTo } from "@app/utils/bn";
 
 export const getAlertForOwner = (open: string, close: string, amount: string, total: string) => {
 	const nowTime = new Date();
-	const openTime = new Date(+open);
-	const closeTime = new Date(+close);
+	const openTime = new Date(+open * 1000);
+	const closeTime = new Date(+close * 1000);
 
 	const isFilled = amount && total && isGreaterThanOrEqualTo(amount, total);
 
@@ -40,7 +40,7 @@ export const getAlertForOwner = (open: string, close: string, amount: string, to
 	} else {
 		return {
 			title: "The auction is coming soon.",
-			text: "lease wait patiently until your auction is filled or closed.",
+			text: "Please wait patiently until your auction is filled or closed.",
 			type: ALERT_TYPE.default,
 		};
 	}

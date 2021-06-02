@@ -113,6 +113,8 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		const pool = await getPools(contract, poolID);
 		const bid = await getMyAmount(contract, account, poolID);
 
+		console.log(pool);
+
 		const from = await queryToken(pool.token0);
 		const to = await queryToken(pool.token1);
 
@@ -232,8 +234,8 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 				currency={pool.currency}
 				price={pool.price}
 				fill={pool.fill}
-				openAt={+pool.openAt / 1000}
-				closeAt={+pool.closeAt / 1000}
+				openAt={+pool.openAt}
+				closeAt={+pool.closeAt}
 				onZero={onRequestData}
 				actionTitle={getTitle()}
 				claimAt={pool.claimAt ? new Date(+pool.claimAt) : undefined}
