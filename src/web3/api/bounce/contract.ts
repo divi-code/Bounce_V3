@@ -36,10 +36,6 @@ export const approveAuctionPool = async (
 	account: string,
 	amount: string
 ) => {
-	console.log({
-		amount,
-	});
-
 	return contract.methods
 		.approve(getChainAddressMapping(target, chainId), amount)
 		.send({ from: account });
