@@ -1,14 +1,13 @@
 import { useWeb3React } from "@web3-react/core";
 import { useRouter } from "next/router";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 
-import { POOL_ADDRESS_MAPPING, POOL_NAME_MAPPING, POOL_TYPE } from "@app/api/pool/const";
+import { POOL_ADDRESS_MAPPING, POOL_TYPE } from "@app/api/pool/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { CreateFlow } from "@app/modules/create-flow";
 import { defineFlow } from "@app/modules/flow/definition";
 
-import { WHITELIST_TYPE } from "@app/modules/provide-advanced-settings";
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
 import { numToWei } from "@app/utils/bn/wei";
 import {
@@ -101,7 +100,12 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 
 	const provider = useWeb3Provider();
 	const { account, chainId } = useWeb3React();
-	const contract = getBounceContract(provider, POOL_ADDRESS_MAPPING[type], chainId);
+
+	const contract = useMemo(() => getBounceContract(provider, POOL_ADDRESS_MAPPING[type], chainId), [
+		type,
+		chainId,
+		provider,
+	]);
 
 	const findToken = useTokenSearch();
 	const { push: routerPush } = useRouter();

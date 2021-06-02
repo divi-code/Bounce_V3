@@ -71,7 +71,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 				tooltip="Create new item"
 				after={
 					<span className={styles.balance}>
-						Balance: {parseInt(balance).toFixed(2)} {tokenFrom}
+						Balance: {parseFloat(balance).toFixed(2)} {tokenFrom}
 					</span>
 				}
 			>
@@ -86,7 +86,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 								{({ form }) => (
 									<button
 										className={styles.max}
-										onClick={() => form.change("amount", parseInt(balance))}
+										onClick={() => form.change("amount", parseFloat(balance))}
 										type="button"
 									>
 										MAX

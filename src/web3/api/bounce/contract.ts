@@ -1,3 +1,4 @@
+import Web3 from "web3";
 import { AbstractProvider } from "web3-core";
 
 import { numToWei } from "@app/utils/bn/wei";
@@ -83,4 +84,23 @@ export const getMyAmount = (
 	index: number
 ): Promise<string> => {
 	return contract.methods.myAmountSwapped1(address, index).call();
+};
+
+export const getEthBalance = (web3: Web3, address: string): Promise<string> => {
+	return web3.eth.getBalance(address);
+};
+
+export const swapContracts = async (
+	contract: ContractType,
+	amount: string,
+	account: string,
+	index: number
+) => {
+	const action = contract.methods.swap(index, amount);
+
+	action.estimateGas();
+
+	console.log(amount, account, index);
+
+	return action.send({ from: account, value: amount });
 };

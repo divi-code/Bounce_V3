@@ -1,5 +1,7 @@
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
+import { FormSpy, FormProps } from "react-final-form";
+
 import {
 	POOL_ADDRESS_MAPPING,
 	POOL_SHORT_NAME_MAPPING,
@@ -8,22 +10,53 @@ import {
 } from "@app/api/pool/const";
 import { Currency } from "@app/modules/currency";
 import { Form } from "@app/modules/form";
+import { Label } from "@app/modules/label";
+import { TextField } from "@app/modules/text-field";
 import { DisplayPoolInfoType } from "@app/pages/auction";
 import { AuctionDetailView } from "@app/pages/auction-detail/AuctionDetailView";
 import { getAlertForOwner } from "@app/pages/auction-detail/getAlerts";
+
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
+import { PrimaryButton } from "@app/ui/button";
 import { DescriptionList } from "@app/ui/description-list";
-import { weiToNum } from "@app/utils/bn/wei";
+import { numToWei, weiToNum } from "@app/utils/bn/wei";
 import { getProgress, getStatus, getSwapRatio } from "@app/utils/pool";
-import { getBounceContract, getMyAmount, getPools } from "@app/web3/api/bounce/contract";
+import {
+	getBalance,
+	getBounceContract,
+	getEthBalance,
+	getMyAmount,
+	getPools,
+	getTokenContract,
+	swapContracts,
+} from "@app/web3/api/bounce/contract";
 import { useTokenQuery } from "@app/web3/api/tokens";
-import { useAccount, useChainId, useConnected, useWeb3Provider } from "@app/web3/hooks/use-web3";
+import {
+	useAccount,
+	useChainId,
+	useConnected,
+	useWeb3Provider,
+	useWeb3,
+} from "@app/web3/hooks/use-web3";
+
+import styles from "./AuctionDetail.module.scss";
 
 type AlertType = {
 	title: string;
 	text: string;
 	type: ALERT_TYPE;
 };
+
+const FLOAT = "0.0001";
+
+enum OPERATION {
+	default = "default",
+	loading = "loading",
+	approved = "approved",
+	approvalFailed = "approved-failed",
+	completed = "completed",
+	failed = "failed",
+}
 
 export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 	poolID,
@@ -34,6 +67,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 	const queryToken = useTokenQuery();
 	const isConnected = useConnected();
 	const account = useAccount();
+	const web3 = useWeb3();
 
 	const [pool, setPool] = useState<
 		DisplayPoolInfoType & {
@@ -46,13 +80,28 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		}
 	>();
 	const [bid, setBid] = useState<string>();
+
 	const [myPool, setMyPool] = useState<boolean>(false);
 	const [alert, setAlert] = useState<AlertType | undefined>();
+	const [balance, setBalance] = useState<string | undefined>("");
+
+	const [to, setTo] = useState(undefined);
 
 	const contract = useMemo(
 		() => getBounceContract(provider, POOL_ADDRESS_MAPPING[auctionType], chainId),
 		[auctionType, chainId, provider]
 	);
+
+	useEffect(() => {
+		if (to) {
+			if (to.symbol !== "ETH") {
+				const tokenContract = getTokenContract(provider, to.address);
+				getBalance(tokenContract, account).then((b) => setBalance(weiToNum(b, to.decimals, 6)));
+			} else {
+				getEthBalance(web3, account).then((b) => setBalance(weiToNum(b, to.decimals, 6)));
+			}
+		}
+	}, [account, to, provider, web3]);
 
 	const updateData = useCallback(async () => {
 		if (!contract) {
@@ -93,6 +142,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		};
 		setPool(matchedPool);
 		setBid(bid);
+		setTo(to);
 
 		if (pool.creator === account) {
 			setMyPool(true);
@@ -126,6 +176,47 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 			} else return "Join The Pool";
 		} else return "My Pool";
 	};
+
+	const [operation, setOperation] = useState(OPERATION.default);
+	const [lastOperation, setLastOperation] = useState<(() => void) | null>(null);
+
+	const bidAction: FormProps["onSubmit"] = async (values, form) => {
+		console.log("value", values.bid);
+		console.log("converted value", numToWei(values.bid, to.decimals, 0));
+
+		const operation = async () => {
+			try {
+				setOperation(OPERATION.loading);
+				await swapContracts(contract, numToWei(values.bid, to.decimals, 0), account, poolID);
+				setOperation(OPERATION.completed);
+				await updateData();
+				form.change("amount", undefined);
+				setLastOperation(null);
+			} catch (e) {
+				console.error("failed to stake", e);
+				setOperation(OPERATION.failed);
+
+				return {
+					// report to final form
+					error: "error",
+				};
+			} finally {
+				// close modal
+			}
+		};
+
+		setLastOperation(() => operation);
+
+		return operation();
+	};
+
+	const tryAgainAction = () => {
+		if (lastOperation) {
+			lastOperation();
+		}
+	};
+
+	console.log(operation);
 
 	if (pool) {
 		return (
@@ -172,7 +263,42 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 						}}
 					/>
 				) : (
-					<Form onSubmit={() => null}>{}</Form>
+					<Form onSubmit={bidAction} className={styles.form}>
+						<Label
+							label="Your Bid Amount"
+							Component="label"
+							after={
+								<>
+									Balance {parseFloat(balance).toFixed(2)} {pool.currency}
+								</>
+							}
+						>
+							<TextField
+								name="bid"
+								type="number"
+								step={FLOAT}
+								after={
+									<div className={styles.amount}>
+										<FormSpy>
+											{({ form }) => (
+												<button
+													className={styles.max}
+													onClick={() => form.change("bid", parseFloat(balance))}
+													type="button"
+												>
+													MAX
+												</button>
+											)}
+										</FormSpy>
+										<Currency token={pool.currency} />
+									</div>
+								}
+							/>
+						</Label>
+						<PrimaryButton size="large" submit>
+							Place a Bid
+						</PrimaryButton>
+					</Form>
 				)}
 			</AuctionDetailView>
 		);
