@@ -11,7 +11,8 @@
     "lint:styles": "stylelint  \"{pages,src}/**/*.scss\"",
     "postinstall": "patch-package",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "update-web-3": "yarn add @walletconnect/client @walletconnect/qrcode-modal @web3-react/core @web3-react/injected-connector @web3-react/walletconnect-connector"
   },
   "dependencies": {
     "@ethersproject/contracts": "^5.2.0",
@@ -23,7 +24,7 @@
     "@walletconnect/qrcode-modal": "^1.4.1",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
-    "@web3-react/walletconnect-connector": "^6.1.9",
+    "@web3-react/walletconnect-connector": "^6.2.0",
     "babel-plugin-storybook-csf-title": "^2.0.0",
     "bn.js": "^5.2.0",
     "classnames": "^2.3.1",

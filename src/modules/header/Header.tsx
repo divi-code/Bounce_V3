@@ -7,7 +7,7 @@ import { CREATE_PATH } from "@app/const/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { useScatteredContinuousState } from "@app/hooks/use-continuous-state";
 import { UserInfo } from "@app/modules/header/ui/user-info";
-import { Button, NavLink, PrimaryButton } from "@app/ui/button";
+import { NavLink, PrimaryButton } from "@app/ui/button";
 import { ExtendedLogo } from "@app/ui/icons/extend-logo";
 import { Toggle } from "@app/ui/icons/toggle";
 

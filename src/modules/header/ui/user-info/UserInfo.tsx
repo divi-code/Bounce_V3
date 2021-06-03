@@ -1,9 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import classNames from "classnames";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
-import Web3 from "web3";
-import { fromWei } from "web3-utils";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
@@ -11,11 +9,12 @@ import { Button } from "@app/ui/button";
 import { Copy } from "@app/ui/icons/copy";
 import { Exit } from "@app/ui/icons/exit";
 import { ShortLogo } from "@app/ui/icons/short-logo";
+import { weiToNum } from "@app/utils/bn/wei";
 import { walletConversion } from "@app/utils/convertWallet";
 
+import { getEthBalance } from "@app/web3/api/bounce/contract";
 import { useWalletConnection } from "@app/web3/hooks/use-connection";
 import { useWeb3 } from "@app/web3/hooks/use-web3";
-import { getMyBalance } from "@app/web3/utils/get-balance";
 
 import styles from "./UserInfo.module.scss";
 
@@ -25,7 +24,6 @@ type UserInfoType = {
 	balance?: string;
 	address: string;
 	ethBalance: string;
-	name: string;
 	onLogout(): void;
 };
 
@@ -35,7 +33,6 @@ export const UserInfoView: FC<ComponentType> = ({
 	className,
 	balance,
 	address,
-	name,
 	ethBalance,
 	onLogout,
 }) => {
@@ -61,14 +58,13 @@ export const UserInfoView: FC<ComponentType> = ({
 				</Button>
 				<div className={styles.dropdown}>
 					<div className={styles.info}>
-						<span className={styles.name}>{name}</span>
 						<CopyToClipboard text={address} onCopy={() => setCopy(true)}>
 							<p className={styles.copyAddress}>
 								{walletConversion(address)}
 								<Copy style={{ width: 20 }} />
 							</p>
 						</CopyToClipboard>
-						<span className={styles.ethBalance}>{parseFloat(ethBalance).toFixed(2)} ETH</span>
+						<span className={styles.ethBalance}>{ethBalance} ETH</span>
 					</div>
 					<Button
 						className={styles.logout}
@@ -83,42 +79,27 @@ export const UserInfoView: FC<ComponentType> = ({
 	);
 };
 
-const fetchInformation = async (web3: Web3, ethereumAddress: string) => {
-	return await getMyBalance(web3, ethereumAddress);
-};
-
 export const UserInfo = () => {
-	const [ethBalance, setEthBalance] = useState("0");
-	const [name, setName] = useState("John");
+	const [balance, setBalance] = useState("0");
 
-	const { active, account } = useWeb3React();
+	const { active, account, chainId } = useWeb3React();
 	const web3 = useWeb3();
 
-	const updateData = useCallback(async () => {
-		const myBalance = await fetchInformation(web3, account);
-
-		setEthBalance(myBalance);
-	}, [web3, account]);
-
 	useEffect(() => {
-		const tm = setInterval(updateData, 60000);
+		getEthBalance(web3, account).then((b) => setBalance(b));
+	}, [account, web3]);
 
-		return () => clearInterval(tm);
-	}, [updateData]);
-
-	useEffect(() => {
-		if (active) {
-			updateData();
-		}
-	}, [active, updateData]);
+	console.log("balance", balance);
+	console.log("I am active", active);
+	console.log("address", account);
+	console.log("chainId", chainId);
 
 	const { disconnect: disconnectWallet } = useWalletConnection();
 
 	return (
 		<UserInfoView
 			address={account}
-			ethBalance={fromWei(ethBalance)}
-			name={name}
+			ethBalance={weiToNum(balance, 18, 2)}
 			onLogout={disconnectWallet}
 		/>
 	);

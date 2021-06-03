@@ -1,19 +1,29 @@
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
-import { PROVIDER_POLLING_INTERVAL, RPC_URLS } from "../../const/const";
+import { WEB3_NETWORKS } from "@app/web3/networks/const";
+
+export const RPC_URLS = {
+	[WEB3_NETWORKS.MAIN]: "https://eth-mainnet.alchemyapi.io/v2/k2--UT_xVVXMOvAyoxJYqtKhlmyBbqnX",
+	[WEB3_NETWORKS.RINKEBY]: "https://rinkeby.infura.io/v3/bd80ce1ca1f94da48e151bb6868bb150",
+	[WEB3_NETWORKS.BINANCE]: "https://bsc-dataseed.binance.org",
+};
+
+const SUPPORTED_CHAIN_IDS = [WEB3_NETWORKS.MAIN, WEB3_NETWORKS.RINKEBY, WEB3_NETWORKS.BINANCE];
 
 const metaMaskFactory = () =>
 	new InjectedConnector({
-		supportedChainIds: [1, 3, 4, 5, 42, 56, 128],
+		supportedChainIds: SUPPORTED_CHAIN_IDS,
 	});
 
 const walletConnectFactory = () =>
 	new WalletConnectConnector({
-		rpc: { 1: RPC_URLS[1] },
+		rpc: RPC_URLS,
+		// supportedChainIds: SUPPORTED_CHAIN_IDS,
+		// infuraId: "099fc58e0de9451d80b18d7c74caa7c1", // obviously a hack
 		bridge: "https://bridge.walletconnect.org",
 		qrcode: true,
-		pollingInterval: PROVIDER_POLLING_INTERVAL,
+		pollingInterval: 15000,
 	});
 
 export const KNOWN_WALLETS = {
