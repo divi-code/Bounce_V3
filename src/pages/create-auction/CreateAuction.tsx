@@ -13,6 +13,7 @@ import { numToWei } from "@app/utils/bn/wei";
 import {
 	approveAuctionPool,
 	createAuctionPool,
+	getAllowance,
 	getBounceContract,
 	getTokenContract,
 } from "@app/web3/api/bounce/contract";
@@ -115,8 +116,6 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 	const onComplete = async (data: ConfirmationInType) => {
 		setOperation(OPERATION.approval);
 
-		console.log(data);
-
 		const tokenFrom = findToken(data.tokenFrom);
 		const tokenTo = findToken(data.tokenTo);
 
@@ -128,54 +127,65 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 		try {
 			const tokenContract = getTokenContract(provider, tokenFrom.address);
 
-			const result = await approveAuctionPool(
+			const allowance = await getAllowance(
 				tokenContract,
 				POOL_ADDRESS_MAPPING[type],
 				chainId,
-				account,
-				fromAmount
+				account
 			);
+
+			if (allowance < data.amount) {
+				const result = await approveAuctionPool(
+					tokenContract,
+					POOL_ADDRESS_MAPPING[type],
+					chainId,
+					account,
+					fromAmount
+				);
+
+				if (!result.status) {
+					setOperation(OPERATION.error);
+
+					return;
+				}
+			}
 
 			setOperation(OPERATION.confirm);
 
-			if (result.status) {
-				await createAuctionPool(
-					contract,
-					account,
-					{
-						name: data.poolName,
-						creator: account,
-						token0: tokenFrom.address,
-						token1: tokenTo.address,
-						amountTotal0: fromAmount,
-						amountTotal1: toAmount,
-						openAt: +data.startPool / 1000,
-						closeAt: +data.endPool / 1000,
-						claimAt: +data.claimStart / 1000,
-						enableWhiteList: data.whitelist,
-						maxAmount1PerWallet: limit,
-						onlyBot: false,
-					},
-					data.whiteListList
-				)
-					.on("transactionHash", (h) => {
-						console.log("hash", h);
-						setOperation(OPERATION.pending);
-					})
-					.on("receipt", (r) => {
-						console.log("receipt", r);
-						setOperation(OPERATION.success);
+			await createAuctionPool(
+				contract,
+				account,
+				{
+					name: data.poolName,
+					creator: account,
+					token0: tokenFrom.address,
+					token1: tokenTo.address,
+					amountTotal0: fromAmount,
+					amountTotal1: toAmount,
+					openAt: +data.startPool / 1000,
+					closeAt: +data.endPool / 1000,
+					claimAt: +data.claimStart / 1000,
+					enableWhiteList: data.whitelist,
+					maxAmount1PerWallet: limit,
+					onlyBot: false,
+				},
+				data.whiteListList
+			)
+				.on("transactionHash", (h) => {
+					console.log("hash", h);
+					setOperation(OPERATION.pending);
+				})
+				.on("receipt", (r) => {
+					console.log("receipt", r);
+					setOperation(OPERATION.success);
 
-						const poolId = r.events.Created.returnValues[0];
-						routerPush(`/auction/${type}/${poolId}`);
-					})
-					.on("error", (e) => {
-						console.error("error", e);
-						setOperation(OPERATION.error);
-					});
-			} else {
-				setOperation(OPERATION.error);
-			}
+					const poolId = r.events.Created.returnValues[0];
+					routerPush(`/auction/${type}/${poolId}`);
+				})
+				.on("error", (e) => {
+					console.error("error", e);
+					setOperation(OPERATION.error);
+				});
 		} catch (e) {
 			if (e.code === 4001) {
 				setOperation(OPERATION.cancel);

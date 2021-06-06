@@ -41,6 +41,15 @@ export const approveAuctionPool = async (
 		.send({ from: account });
 };
 
+export const getAllowance = async (
+	contract: ContractType,
+	target: ADDRESS_MAPPING,
+	chainId: WEB3_NETWORKS,
+	account: string
+) => {
+	return contract.methods.allowance(account, getChainAddressMapping(target, chainId)).call();
+};
+
 export type AuctionPoolType = {
 	name: string;
 	creator: string;
