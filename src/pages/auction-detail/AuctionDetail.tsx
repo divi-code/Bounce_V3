@@ -123,7 +123,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 
 		setPool(matchedPool);
 		setTo(to);
-		setUserPlaced(!!userBid);
+		setUserPlaced(parseFloat(weiToNum(userBid, to.decimals, 6)) > 0);
 		setUserClaimed(!!userClaim);
 		setCreatorClaimed(!!creatorClaim);
 		setUserWhitelisted(matchedPool.whitelist ? whitelistStatus : true);
@@ -333,7 +333,9 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 							creatorClaimed ||
 							operation === OPERATION.loading ||
 							getDeltaTime(pool.claimAt) > 0 ||
-							userClaimed
+							userClaimed ||
+							!userWhitelisted ||
+							!userPlaced
 						}
 						loading={operation === OPERATION.loading}
 						onClick={isCreator ? claimForCreator : claimForUser}

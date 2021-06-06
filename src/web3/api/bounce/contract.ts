@@ -79,15 +79,27 @@ export const getLimitAmount = async (contract: ContractType, poolID: number): Pr
 	return contract.methods.maxAmount1PerWalletP(poolID).call();
 };
 
-export const getMyAmount0 = async (contract: ContractType, address: string, poolID: number) => {
+export const getMyAmount0 = async (
+	contract: ContractType,
+	address: string,
+	poolID: number
+): Promise<string> => {
 	return contract.methods.myAmountSwapped0(address, poolID).call();
 };
 
-export const getMyAmount1 = async (contract: ContractType, address: string, poolID: number) => {
+export const getMyAmount1 = async (
+	contract: ContractType,
+	address: string,
+	poolID: number
+): Promise<string> => {
 	return contract.methods.myAmountSwapped1(address, poolID).call();
 };
 
-export const getMyClaimed = async (contract: ContractType, address: string, poolID: number) => {
+export const getMyClaimed = async (
+	contract: ContractType,
+	address: string,
+	poolID: number
+): Promise<boolean> => {
 	return contract.methods.myClaimed(address, poolID).call();
 };
 
@@ -95,7 +107,7 @@ export const getCreatorClaimed = async (
 	contract: ContractType,
 	address: string,
 	poolID: number
-) => {
+): Promise<boolean> => {
 	return contract.methods.creatorClaimed(address, poolID).call();
 };
 
@@ -103,7 +115,7 @@ export const getWhitelistedStatus = async (
 	contract: ContractType,
 	poolID: number,
 	address: string
-) => {
+): Promise<boolean> => {
 	return contract.methods.whitelistP(poolID, address).call();
 };
 

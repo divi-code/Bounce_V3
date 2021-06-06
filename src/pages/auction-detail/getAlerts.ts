@@ -98,7 +98,7 @@ export const getAlertForUsers = (
 			type: ALERT_TYPE.error,
 		};
 	} else {
-		if (isOpen && isPlaced && !isFilled) {
+		if (isOpen && !isClose && isPlaced && !isFilled) {
 			return {
 				title: "Bidded Tokens Sent.",
 				text:
@@ -107,7 +107,7 @@ export const getAlertForUsers = (
 			};
 		}
 
-		if (isOpen && isFilled && !isPlaced) {
+		if (isOpen && !isClose && isFilled && !isPlaced) {
 			return {
 				title: "Auction filled.",
 				text: "This auction is finished, please visit other live auctions.",
@@ -115,7 +115,7 @@ export const getAlertForUsers = (
 			};
 		}
 
-		if (isOpen && isFilled && isPlaced && !isClaimed) {
+		if (isOpen && !isClose && isFilled && isPlaced && !isClaimed) {
 			return {
 				title: "Auction filled.",
 				text: "This auction is finished, please claim your token.",
@@ -123,7 +123,7 @@ export const getAlertForUsers = (
 			};
 		}
 
-		if (isOpen && isFilled && isPlaced && isClaimed) {
+		if (isOpen && !isClose && isFilled && isPlaced && isClaimed) {
 			return {
 				title: "Auction filled.",
 				text: "This auction is finished",
