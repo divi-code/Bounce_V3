@@ -64,4 +64,6 @@
 
 .text {
   color: rgba(var(--primary-black), 0.7);
+
+  margin-left: calc(var(--spacing-unit) * 0.5);
 }

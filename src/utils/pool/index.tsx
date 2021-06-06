@@ -89,7 +89,7 @@ export type MatchedPoolType = {
 	openAt: number;
 	closeAt: number;
 	creator: string;
-	claimAt?: number;
+	claimAt: number;
 	limit: number;
 	whitelist: boolean;
 };
@@ -127,7 +127,7 @@ export const getMatchedPool = async (
 		openAt: openAt,
 		closeAt: closeAt,
 		creator: pool.creator,
-		claimAt: claimAt > closeAt ? claimAt : undefined,
+		claimAt: claimAt > closeAt ? claimAt : closeAt,
 		limit: parseFloat(weiToNum(limit, to.decimals, 6)),
 		whitelist: pool.enableWhiteList,
 	};

@@ -38,7 +38,7 @@ import styles from "./AuctionDetail.module.scss";
 import { Claim } from "./Claim";
 import { PlaceBid } from "./PlaceBid";
 import { View } from "./View";
-import { getAlertForOwner } from "./getAlerts";
+import { getAlertForOwner, getAlertForUsers } from "./getAlerts";
 
 type AlertType = {
 	title: string;
@@ -114,27 +114,24 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		const from = await queryToken(pool.token0);
 		const to = await queryToken(pool.token1);
 		const limit = await getLimitAmount(contract, poolID);
-		const bid = await getMyAmount1(contract, account, poolID);
+		const userBid = await getMyAmount1(contract, account, poolID);
 		const whitelistStatus = await getWhitelistedStatus(contract, poolID, account);
 		const creatorClaim = await getCreatorClaimed(contract, account, poolID);
-		const myClaim = await getMyClaimed(contract, account, poolID);
-
-		console.log("creatorClaim", creatorClaim);
-		console.log("myClaim", myClaim);
+		const userClaim = await getMyClaimed(contract, account, poolID);
 
 		const matchedPool = await getMatchedPool(contract, from, to, pool, poolID, auctionType);
 
 		setPool(matchedPool);
 		setTo(to);
-		setUserPlaced(!!parseFloat(weiToNum(bid, to.decimals, 6)));
-		setUserClaimed(!!myClaim);
+		setUserPlaced(!!userBid);
+		setUserClaimed(!!userClaim);
 		setCreatorClaimed(!!creatorClaim);
 		setUserWhitelisted(matchedPool.whitelist ? whitelistStatus : true);
 		setLimited(parseFloat(weiToNum(limit, to.decimals, 6)) > 0);
 		setCreator(pool.creator === account);
 
 		setLimit(
-			parseFloat(weiToNum(limit, to.decimals, 6)) - parseFloat(weiToNum(bid, to.decimals, 6))
+			parseFloat(weiToNum(limit, to.decimals, 6)) - parseFloat(weiToNum(userBid, to.decimals, 6))
 		);
 	}, [account, auctionType, contract, poolID, queryToken]);
 
@@ -283,10 +280,24 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 	useEffect(() => {
 		if (pool) {
 			if (isCreator) {
-				setAlert(getAlertForOwner(pool.openAt, pool.closeAt, pool.amount, pool.total));
+				setAlert(
+					getAlertForOwner(pool.openAt, pool.closeAt, pool.amount, pool.total, creatorClaimed)
+				);
+			} else {
+				setAlert(
+					getAlertForUsers(
+						userWhitelisted,
+						pool.openAt,
+						pool.closeAt,
+						pool.amount,
+						pool.total,
+						userPlaced,
+						userClaimed
+					)
+				);
 			}
 		}
-	}, [isCreator, pool]);
+	}, [creatorClaimed, isCreator, pool, userClaimed, userPlaced, userWhitelisted]);
 
 	if (pool) {
 		return (
@@ -309,6 +320,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 				claimAt={pool.claimAt ? new Date(+pool.claimAt) : undefined}
 				limit={pool.limit}
 				alert={alert && <Alert title={alert.title} text={alert.text} type={alert.type} />}
+				onBack={() => null}
 			>
 				{action === ACTION.claim && (
 					<Claim
