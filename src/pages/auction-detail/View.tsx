@@ -4,9 +4,12 @@ import { useConvertDate } from "@app/hooks/use-convert-data";
 import { Currency } from "@app/modules/currency";
 import { Timer } from "@app/modules/timer";
 import { DisplayPoolInfoType } from "@app/pages/auction";
+import { Button } from "@app/ui/button";
 import { DescriptionList } from "@app/ui/description-list";
 import { GutterBox } from "@app/ui/gutter-box";
 
+import { ArrowBack } from "@app/ui/icons/arrow-back";
+import { RightArrow } from "@app/ui/icons/arrow-right";
 import { ProgressBar } from "@app/ui/progress-bar";
 import { Status } from "@app/ui/status";
 import { Caption, Heading1, Heading2 } from "@app/ui/typography";
@@ -26,9 +29,11 @@ type AuctionDetailViewType = {
 	closeAt: number;
 	claimAt?: Date;
 	onZero(): void;
+	onBack(): void;
 };
 
 export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
+	id,
 	name,
 	alert,
 	children,
@@ -47,6 +52,7 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 	actionTitle,
 	limit,
 	claimAt,
+	onBack,
 }) => {
 	const convertDate = useConvertDate();
 
@@ -76,6 +82,21 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 		<section className={styles.component}>
 			<GutterBox>
 				<div className={styles.wrapper}>
+					<div className={styles.navigation}>
+						<Button
+							variant="text"
+							color="primary-black"
+							onClick={onBack}
+							iconBefore={
+								<RightArrow style={{ width: 8, marginRight: 12, transform: "rotate(180deg)" }} />
+							}
+						>
+							Go Back
+						</Button>
+						<Caption Component="span" weight="medium">
+							#{id}
+						</Caption>
+					</div>
 					<Heading1 className={styles.title}>{name}</Heading1>
 					{alert && <div className={styles.alert}>{alert}</div>}
 					<div className={styles.content}>

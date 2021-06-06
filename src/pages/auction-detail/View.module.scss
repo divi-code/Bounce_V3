@@ -18,6 +18,18 @@
   background-color: rgba(var(--primary-white), 1);
 }
 
+.navigation {
+  position: absolute;
+  top: calc(var(--spacing-unit) * 5);
+  left: calc(var(--spacing-unit) * 6.5);
+  right: calc(var(--spacing-unit) * 6.5);
+
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .title {
   margin: 0;
   margin-bottom: calc(var(--spacing-unit) * 5);
