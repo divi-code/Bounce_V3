@@ -123,7 +123,7 @@ export const CreateAuction: FC<MaybeWithClassName & { type: POOL_TYPE }> = ({ ty
 		const fromAmount = numToWei(data.amount, tokenFrom.decimals, 0);
 		const toAmount = numToWei(data.swapRatio * data.amount, tokenTo.decimals, 0);
 
-		const limit = data.limit ? numToWei(data.limit, tokenFrom.decimals, 0) : "0";
+		const limit = data.limit ? numToWei(data.limit, tokenTo.decimals, 0) : "0";
 
 		try {
 			const tokenContract = getTokenContract(provider, tokenFrom.address);

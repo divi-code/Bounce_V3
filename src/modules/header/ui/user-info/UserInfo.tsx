@@ -82,17 +82,12 @@ export const UserInfoView: FC<ComponentType> = ({
 export const UserInfo = () => {
 	const [balance, setBalance] = useState("0");
 
-	const { active, account, chainId } = useWeb3React();
+	const { account } = useWeb3React();
 	const web3 = useWeb3();
 
 	useEffect(() => {
 		getEthBalance(web3, account).then((b) => setBalance(b));
 	}, [account, web3]);
-
-	console.log("balance", balance);
-	console.log("I am active", active);
-	console.log("address", account);
-	console.log("chainId", chainId);
 
 	const { disconnect: disconnectWallet } = useWalletConnection();
 

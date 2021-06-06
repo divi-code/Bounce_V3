@@ -136,3 +136,18 @@
 
   background-color: rgba(var(--primary-black), 1);
 }
+
+.claim {
+  display: grid;
+  align-content: space-between;
+
+  height: 100%;
+}
+
+.cta {
+  flex-direction: column !important;
+}
+
+.timer {
+  margin-top: calc(var(--spacing-unit) * 0.5);
+}

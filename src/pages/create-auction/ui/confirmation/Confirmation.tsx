@@ -112,9 +112,9 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 			declaim={tokenDecimal}
 			tokenTo={<Currency token={tokenTo} small={true} />}
 			swapRatio={`1 ${tokenFrom} = ${swapRatio} ${tokenTo}`}
-			amount={amount}
+			amount={amount * swapRatio}
 			allocation={
-				allocation === ALLOCATION_TYPE.limited ? `Limit ${limit} ${tokenFrom}` : "No Limits"
+				allocation === ALLOCATION_TYPE.limited ? `Limit ${limit} ${tokenTo}` : "No Limits"
 			}
 			whitelist={whitelist ? "Whitelist" : "Public"}
 			duration={`From ${convertDate(new Date(startPool), "long")} - To ${convertDate(

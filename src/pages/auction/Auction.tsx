@@ -1,6 +1,6 @@
 import { FORM_ERROR } from "final-form";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { fetchPoolSearch } from "@app/api/pool/api";
 import {
@@ -14,6 +14,7 @@ import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 import { DisplayPoolInfoType } from "@app/pages/auction/ui/card";
 import { weiToNum } from "@app/utils/bn/wei";
 import { getStatus, getSwapRatio, getProgress } from "@app/utils/pool";
+import { getBounceContract, getSwap1Amount } from "@app/web3/api/bounce/contract";
 import { PoolInfoType, queryPoolInformation } from "@app/web3/api/bounce/pool-search";
 import { useTokenQuery } from "@app/web3/api/tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
@@ -85,6 +86,8 @@ export const Auction = () => {
 				searchWindow
 			);
 			setPoolInformation(pools.filter(Boolean));
+
+			console.log("pools", pools);
 		})();
 	}, [chainId, searchWindow, provider, searchFilters]);
 
@@ -103,21 +106,28 @@ export const Auction = () => {
 					const from = await queryToken(pool.token0);
 					const to = await queryToken(pool.token1);
 
-					const fromAmount = pool.amountTotal0;
-					const toAmount = pool.amountTotal1;
+					const contract = getBounceContract(provider, POOL_ADDRESS_MAPPING[auctionType], chainId);
+
+					const toAmount = await getSwap1Amount(contract, pool.poolID);
+
+					const fromTotal = pool.amountTotal0;
+					const toTotal = pool.amountTotal1;
+
+					const openAt = pool.openAt * 1000;
+					const closeAt = pool.closeAt * 1000;
 
 					return {
 						href: `/auction/${auctionType}/${pool.poolID}`,
-						status: getStatus(pool.openAt, pool.closeAt, pool.amountSwap0, fromAmount),
+						status: getStatus(openAt, closeAt, toAmount, toTotal),
 						id: pool.poolID,
 						name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
 						address: from.address,
 						type: POOL_SHORT_NAME_MAPPING[auctionType],
 						token: from.symbol,
-						total: weiToNum(fromAmount, from.decimals, 0),
+						total: weiToNum(toTotal, to.decimals, 6),
 						currency: to.symbol,
-						price: getSwapRatio(fromAmount, toAmount, from.decimals, to.decimals),
-						fill: pool.amountSwap0 ? getProgress(pool.amountSwap0, fromAmount) : 0,
+						price: getSwapRatio(toTotal, fromTotal, to.decimals, from.decimals),
+						fill: toAmount ? getProgress(toAmount, toTotal, to.decimals) : 0,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));

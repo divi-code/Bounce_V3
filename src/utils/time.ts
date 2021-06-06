@@ -1,8 +1,7 @@
 const formatTime = (d: number, h: number, m: number, s: number) => `${d}d : ${h}h : ${m}m : ${s}s`;
 
 export const getDeltaTime = (time: number, to = Date.now()) => {
-	const correctedTime = time * 1000;
-	const delta = /*14*24*60*60*1000 -*/ (correctedTime - to) / 1000;
+	const delta = /*14*24*60*60*1000 -*/ (time - to) / 1000;
 
 	return delta > 0 ? delta : 0;
 };

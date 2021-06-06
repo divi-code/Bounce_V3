@@ -13,27 +13,45 @@ export const getStatus = (
 	openAt: string | number,
 	closeAt: string | number,
 	amount: string,
-	totalAmount: string
+	total: string
 ): POOL_STATUS => {
 	const nowTime = new Date();
-	const openTime = new Date(+openAt * 1000);
-	const closeTime = new Date(+closeAt * 1000);
+	const openTime = new Date(+openAt);
+	const closeTime = new Date(+closeAt);
 
-	if (nowTime > openTime) {
-		if (nowTime < closeTime) {
-			if (amount && totalAmount && isGreaterThanOrEqualTo(amount, totalAmount))
-				return POOL_STATUS.FILLED;
+	const isFilled = amount && total && isGreaterThanOrEqualTo(amount, total);
 
-			return POOL_STATUS.LIVE;
-		} else {
-			return POOL_STATUS.CLOSED;
-		}
-	} else {
+	const isOpen = nowTime > openTime;
+
+	const isClose = nowTime > closeTime;
+
+	if (!isOpen) {
 		return POOL_STATUS.COMING;
+	}
+
+	if (isOpen && !isClose && !isFilled) {
+		return POOL_STATUS.LIVE;
+	}
+
+	if (isOpen && !isClose && isFilled) {
+		return POOL_STATUS.FILLED;
+	}
+
+	if (isClose && !isFilled) {
+		return POOL_STATUS.CLOSED;
+	}
+
+	if (isClose && isFilled) {
+		return POOL_STATUS.FILLED;
 	}
 };
 
-export const getProgress = (amount, totalAmount) => +divide(amount, totalAmount, 0);
+export const getProgress = (amount: string, total: string, decimals: number): number => {
+	const convertedAmount = weiToNum(amount, decimals);
+	const convertedTotal = weiToNum(total, decimals);
+
+	return parseFloat(divide(convertedAmount, convertedTotal, 2)) * 100;
+};
 
 export const getSwapRatio = (
 	fromAmount: string,
@@ -41,8 +59,8 @@ export const getSwapRatio = (
 	fromDecimals: number,
 	toDecimals: number
 ): string => {
-	const from = weiToNum(fromAmount, fromDecimals);
-	const to = weiToNum(toAmount, toDecimals);
+	const from = weiToNum(fromAmount, fromDecimals, 6);
+	const to = weiToNum(toAmount, toDecimals, 6);
 
-	return divide(from, to, 2);
+	return divide(from, to, 6);
 };

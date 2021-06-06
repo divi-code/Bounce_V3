@@ -21,7 +21,7 @@ type AuctionDetailViewType = {
 	actionTitle: string;
 	alert?: ReactNode;
 	amount: string;
-	limit?: string;
+	limit?: number;
 	openAt: number;
 	closeAt: number;
 	claimAt?: Date;
@@ -59,8 +59,8 @@ export const AuctionDetailView: FC<DisplayPoolInfoType & AuctionDetailViewType> 
 		"Pool type": type,
 		"Auction amount": parseFloat(total).toFixed(2),
 		"Auction currency": <Currency token={currency} small />,
-		"Price per unit, $": parseFloat(price).toFixed(2),
-		"Allocation per Wallet": limit ? limit : "No",
+		"Price per unit, $": parseFloat(price),
+		"Allocation per Wallet": limit > 0 ? limit : "No",
 		"Delay Unlocking Token": claimAt ? convertDate(new Date(claimAt), "long") : "No",
 	};
 
