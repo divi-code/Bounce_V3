@@ -60,7 +60,10 @@ export const getBalance = async (contract: ContractType, account: string) => {
 	return contract.methods.balanceOf(account).call();
 };
 
-export const getPools = async (contract: ContractType, poolID: number) => {
+export const getPools = async (
+	contract: ContractType,
+	poolID: number
+): Promise<Omit<AuctionPoolType, "maxAmount1PerWallet" | "onlyBot">> => {
 	return contract.methods.pools(poolID).call();
 };
 
@@ -72,7 +75,7 @@ export const getSwap1Amount = async (contract: ContractType, poolID: number) => 
 	return contract.methods.amountSwap1P(poolID).call();
 };
 
-export const getLimitAmount = async (contract: ContractType, poolID: number) => {
+export const getLimitAmount = async (contract: ContractType, poolID: number): Promise<string> => {
 	return contract.methods.maxAmount1PerWalletP(poolID).call();
 };
 

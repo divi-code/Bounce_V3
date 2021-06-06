@@ -13,7 +13,7 @@ import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
 import { DisplayPoolInfoType } from "@app/pages/auction/ui/card";
 import { weiToNum } from "@app/utils/bn/wei";
-import { getStatus, getSwapRatio, getProgress } from "@app/utils/pool";
+import { getStatus, getSwapRatio, getProgress, getMatchedPool } from "@app/utils/pool";
 import { getBounceContract, getSwap1Amount } from "@app/web3/api/bounce/contract";
 import { PoolInfoType, queryPoolInformation } from "@app/web3/api/bounce/pool-search";
 import { useTokenQuery } from "@app/web3/api/tokens";
@@ -86,8 +86,6 @@ export const Auction = () => {
 				searchWindow
 			);
 			setPoolInformation(pools.filter(Boolean));
-
-			console.log("pools", pools);
 		})();
 	}, [chainId, searchWindow, provider, searchFilters]);
 
@@ -108,26 +106,18 @@ export const Auction = () => {
 
 					const contract = getBounceContract(provider, POOL_ADDRESS_MAPPING[auctionType], chainId);
 
-					const toAmount = await getSwap1Amount(contract, pool.poolID);
-
-					const fromTotal = pool.amountTotal0;
-					const toTotal = pool.amountTotal1;
-
-					const openAt = pool.openAt * 1000;
-					const closeAt = pool.closeAt * 1000;
+					const matchedPool = await getMatchedPool(
+						contract,
+						from,
+						to,
+						pool,
+						pool.poolID,
+						auctionType
+					);
 
 					return {
+						...matchedPool,
 						href: `/auction/${auctionType}/${pool.poolID}`,
-						status: getStatus(openAt, closeAt, toAmount, toTotal),
-						id: pool.poolID,
-						name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
-						address: from.address,
-						type: POOL_SHORT_NAME_MAPPING[auctionType],
-						token: from.symbol,
-						total: weiToNum(toTotal, to.decimals, 6),
-						currency: to.symbol,
-						price: getSwapRatio(toTotal, fromTotal, to.decimals, from.decimals),
-						fill: toAmount ? getProgress(toAmount, toTotal, to.decimals) : 0,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));
@@ -137,6 +127,7 @@ export const Auction = () => {
 	}, [
 		chainId,
 		poolInformation,
+		provider,
 		queryToken,
 		searchFilters,
 		searchFilters.auctionType,

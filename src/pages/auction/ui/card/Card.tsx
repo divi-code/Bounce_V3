@@ -25,9 +25,9 @@ export type DisplayPoolInfoType = {
 	address: string;
 	type: string;
 	token: string;
-	total: string;
+	total: number;
 	currency: string;
-	price: string;
+	price: number;
 	fill: number;
 };
 

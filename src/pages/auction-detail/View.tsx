@@ -15,12 +15,12 @@ import { walletConversion } from "@app/utils/convertWallet";
 
 import { POOL_STATUS } from "@app/utils/pool";
 
-import styles from "./AuctionDetail.module.scss";
+import styles from "./View.module.scss";
 
 type AuctionDetailViewType = {
 	actionTitle: string;
 	alert?: ReactNode;
-	amount: string;
+	amount: number;
 	limit?: number;
 	openAt: number;
 	closeAt: number;
@@ -28,7 +28,7 @@ type AuctionDetailViewType = {
 	onZero(): void;
 };
 
-export const AuctionDetailView: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
+export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 	name,
 	alert,
 	children,
@@ -57,9 +57,9 @@ export const AuctionDetailView: FC<DisplayPoolInfoType & AuctionDetailViewType> 
 
 	const AUCTION_INFORMATION = {
 		"Pool type": type,
-		"Auction amount": parseFloat(total).toFixed(2),
+		"Auction amount": total.toFixed(2),
 		"Auction currency": <Currency token={currency} small />,
-		"Price per unit, $": parseFloat(price),
+		"Price per unit, $": price,
 		"Allocation per Wallet": limit > 0 ? limit : "No",
 		"Delay Unlocking Token": claimAt ? convertDate(new Date(claimAt), "long") : "No",
 	};

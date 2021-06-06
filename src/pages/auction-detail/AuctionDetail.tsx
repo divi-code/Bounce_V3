@@ -1,34 +1,24 @@
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
-import { FormProps, FormSpy } from "react-final-form";
+import { FormProps } from "react-final-form";
 
 import { POOL_ADDRESS_MAPPING, POOL_TYPE } from "@app/api/pool/const";
-import { Currency } from "@app/modules/currency";
-import { Form } from "@app/modules/form";
-import { Label } from "@app/modules/label";
-import { TextField } from "@app/modules/text-field";
 import { Timer } from "@app/modules/timer";
-import { DisplayPoolInfoType } from "@app/pages/auction";
-import { AuctionDetailInfo } from "@app/pages/auction-detail/AuctionDetailInfo";
-import { AuctionDetailView } from "@app/pages/auction-detail/AuctionDetailView";
-import { getAlertForOwner } from "@app/pages/auction-detail/getAlerts";
 
-import { getMatchedPool } from "@app/pages/auction-detail/getMatchedPool";
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
-import { PrimaryButton } from "@app/ui/button";
-import { Spinner } from "@app/ui/spinner";
 import { Caption } from "@app/ui/typography";
 import { numToWei, weiToNum } from "@app/utils/bn/wei";
-import { POOL_STATUS } from "@app/utils/pool";
+import { getMatchedPool, MatchedPoolType, POOL_STATUS } from "@app/utils/pool";
 import { getDeltaTime } from "@app/utils/time";
-import { isNotGreaterThan } from "@app/utils/validation";
 import {
 	creatorClaim,
 	getBalance,
 	getBounceContract,
+	getCreatorClaimed,
 	getEthBalance,
 	getLimitAmount,
 	getMyAmount1,
+	getMyClaimed,
 	getPools,
 	getTokenContract,
 	getWhitelistedStatus,
@@ -45,14 +35,16 @@ import {
 } from "@app/web3/hooks/use-web3";
 
 import styles from "./AuctionDetail.module.scss";
+import { Claim } from "./Claim";
+import { PlaceBid } from "./PlaceBid";
+import { View } from "./View";
+import { getAlertForOwner } from "./getAlerts";
 
 type AlertType = {
 	title: string;
 	text: string;
 	type: ALERT_TYPE;
 };
-
-const FLOAT = "0.0001";
 
 enum OPERATION {
 	default = "default",
@@ -61,6 +53,11 @@ enum OPERATION {
 	approvalFailed = "approved-failed",
 	completed = "completed",
 	failed = "failed",
+}
+
+enum ACTION {
+	claim = "claim",
+	place = "place-bit",
 }
 
 export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
@@ -74,23 +71,17 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 	const account = useAccount();
 	const web3 = useWeb3();
 
-	const [pool, setPool] = useState<
-		DisplayPoolInfoType & {
-			amount: string;
-			openAt: number;
-			closeAt: number;
-			creator: string;
-			claimAt?: number;
-			limit?: string;
-		}
-	>();
-	const [isWhitelisted, setWhitelisted] = useState<boolean>(false);
-	const [myBid, setMyBid] = useState<number>(undefined);
-	const [myClaimed, setMyClaimed] = useState<boolean>(false);
+	const [pool, setPool] = useState<MatchedPoolType>();
+
+	const [userWhitelisted, setUserWhitelisted] = useState<boolean>(false);
+	const [userPlaced, setUserPlaced] = useState<boolean>(false);
+	const [userClaimed, setUserClaimed] = useState<boolean>(false);
 	const [creatorClaimed, setCreatorClaimed] = useState<boolean>(false);
-	const [myLimit, setMyLimit] = useState<number>(undefined);
-	const [myPool, setMyPool] = useState<boolean>(false);
-	const [alert, setAlert] = useState<AlertType | undefined>();
+
+	const [limited, setLimited] = useState<boolean>(undefined);
+	const [limit, setLimit] = useState<number>(undefined);
+
+	const [isCreator, setCreator] = useState<boolean>(false);
 	const [balance, setBalance] = useState<string | undefined>("");
 
 	const [to, setTo] = useState(undefined);
@@ -125,36 +116,26 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		const limit = await getLimitAmount(contract, poolID);
 		const bid = await getMyAmount1(contract, account, poolID);
 		const whitelistStatus = await getWhitelistedStatus(contract, poolID, account);
+		const creatorClaim = await getCreatorClaimed(contract, account, poolID);
+		const myClaim = await getMyClaimed(contract, account, poolID);
+
+		console.log("creatorClaim", creatorClaim);
+		console.log("myClaim", myClaim);
 
 		const matchedPool = await getMatchedPool(contract, from, to, pool, poolID, auctionType);
 
 		setPool(matchedPool);
 		setTo(to);
-		setMyBid(parseFloat(weiToNum(bid, to.decimals, 6)));
-		setMyClaimed(!!userClaim);
+		setUserPlaced(!!parseFloat(weiToNum(bid, to.decimals, 6)));
+		setUserClaimed(!!myClaim);
 		setCreatorClaimed(!!creatorClaim);
-		setWhitelisted(pool.whitelist ? whitelistStatus : true);
+		setUserWhitelisted(matchedPool.whitelist ? whitelistStatus : true);
+		setLimited(parseFloat(weiToNum(limit, to.decimals, 6)) > 0);
+		setCreator(pool.creator === account);
 
-		setMyLimit(
+		setLimit(
 			parseFloat(weiToNum(limit, to.decimals, 6)) - parseFloat(weiToNum(bid, to.decimals, 6))
 		);
-
-		if (pool.creator === account) {
-			setMyPool(true);
-		}
-
-		//set alerts
-
-		if (pool.creator === account) {
-			setAlert(
-				getAlertForOwner(
-					matchedPool.openAt,
-					matchedPool.closeAt,
-					matchedPool.amount,
-					matchedPool.total
-				)
-			);
-		}
 	}, [account, auctionType, contract, poolID, queryToken]);
 
 	const onRequestData = updateData;
@@ -171,16 +152,10 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		return () => clearInterval(tm);
 	}, [updateData]);
 
-	const getTitle = () => {
-		if (!myPool) {
-			if (myBid > 0) {
-				return "You Joined";
-			} else return "Join The Pool";
-		} else return "My Pool";
-	};
-
 	const [operation, setOperation] = useState(OPERATION.default);
 	const [lastOperation, setLastOperation] = useState<(() => void) | null>(null);
+
+	//place a bid
 
 	const bidAction: FormProps["onSubmit"] = async (values, form) => {
 		const operation = async () => {
@@ -209,6 +184,8 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		return operation();
 	};
 
+	//claim action for creator
+
 	const claimForCreator = async () => {
 		const operation = async () => {
 			try {
@@ -234,6 +211,8 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 
 		return operation();
 	};
+
+	//claim action for user
 
 	const claimForUser = async () => {
 		const operation = async () => {
@@ -267,9 +246,51 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		}
 	};
 
+	//set action
+
+	const [action, setAction] = useState<ACTION>(undefined);
+
+	useEffect(() => {
+		if (pool) {
+			if (isCreator) {
+				setAction(ACTION.claim);
+			} else if (pool.status === POOL_STATUS.FILLED || pool.status === POOL_STATUS.CLOSED) {
+				setAction(ACTION.claim);
+			} else {
+				setAction(ACTION.place);
+			}
+		}
+	}, [isCreator, pool]);
+
+	//set title
+
+	const [title, setTitle] = useState<string>(undefined);
+
+	useEffect(() => {
+		if (isCreator) {
+			setTitle("My Pool");
+		} else if (userPlaced) {
+			setTitle("You Joined");
+		} else {
+			setTitle("Join The Pool");
+		}
+	}, [userPlaced, isCreator]);
+
+	//set alerts
+
+	const [alert, setAlert] = useState<AlertType | undefined>();
+
+	useEffect(() => {
+		if (pool) {
+			if (isCreator) {
+				setAlert(getAlertForOwner(pool.openAt, pool.closeAt, pool.amount, pool.total));
+			}
+		}
+	}, [isCreator, pool]);
+
 	if (pool) {
 		return (
-			<AuctionDetailView
+			<View
 				status={pool.status}
 				id={pool.id}
 				address={pool.address}
@@ -284,48 +305,30 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 				openAt={+pool.openAt}
 				closeAt={+pool.closeAt}
 				onZero={onRequestData}
-				actionTitle={getTitle()}
+				actionTitle={title}
 				claimAt={pool.claimAt ? new Date(+pool.claimAt) : undefined}
-				limit={parseFloat(pool.limit)}
+				limit={pool.limit}
 				alert={alert && <Alert title={alert.title} text={alert.text} type={alert.type} />}
 			>
-				{myPool && (
-					<div className={styles.claim}>
-						<AuctionDetailInfo
-							token={pool.token}
-							price={pool.price}
-							currency={pool.currency}
-							amount={pool.amount}
-						/>
-						{pool.status === POOL_STATUS.CLOSED && (
-							<PrimaryButton
-								className={styles.cta}
-								size="large"
-								onClick={claimForCreator}
-								disabled={creatorClaimed || operation === OPERATION.loading}
-							>
-								{creatorClaimed ? "Tokens claimed" : "Claim your unswapped tokens"}
-							</PrimaryButton>
-						)}
-					</div>
-				)}
-				{!myPool && (pool.status === POOL_STATUS.FILLED || pool.status === POOL_STATUS.CLOSED) && (
-					<div className={styles.claim}>
-						<AuctionDetailInfo
-							token={pool.token}
-							price={pool.price}
-							currency={pool.currency}
-							amount={pool.amount}
-						/>
-						<PrimaryButton
-							className={styles.cta}
-							size="large"
-							disabled={
-								getDeltaTime(pool.claimAt) > 0 || operation === OPERATION.loading || myClaimed
-							}
-							onClick={claimForUser}
-						>
-							{myClaimed ? (
+				{action === ACTION.claim && (
+					<Claim
+						token={pool.token}
+						price={pool.price}
+						currency={pool.currency}
+						amount={pool.amount}
+						isNonAction={isCreator && pool.status !== POOL_STATUS.CLOSED}
+						disabled={
+							creatorClaimed ||
+							operation === OPERATION.loading ||
+							getDeltaTime(pool.claimAt) > 0 ||
+							userClaimed
+						}
+						loading={operation === OPERATION.loading}
+						onClick={isCreator ? claimForCreator : claimForUser}
+					>
+						{isCreator && (creatorClaimed ? "Tokens claimed" : "Claim your unswapped tokens")}
+						{!isCreator &&
+							(userClaimed ? (
 								"Tokens claimed"
 							) : (
 								<>
@@ -341,78 +344,39 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 										</Caption>
 									)}
 								</>
-							)}
-						</PrimaryButton>
-					</div>
+							))}
+					</Claim>
 				)}
-				{!myPool && (pool.status === POOL_STATUS.COMING || pool.status === POOL_STATUS.LIVE) && (
-					<Form onSubmit={bidAction} className={styles.form}>
-						<Label
-							label="Your Bid Amount"
-							Component="label"
-							after={
-								<>
-									Balance {parseFloat(balance).toFixed(2)} {pool.currency}
-								</>
-							}
-						>
-							<TextField
-								name="bid"
-								type="number"
-								step={FLOAT}
-								max={parseFloat(pool.limit) > 0 ? myLimit : undefined}
-								after={
-									<div className={styles.amount}>
-										<FormSpy>
-											{({ form }) => (
-												<button
-													className={styles.max}
-													onClick={() => form.change("bid", parseFloat(balance))}
-													type="button"
-												>
-													MAX
-												</button>
-											)}
-										</FormSpy>
-										<Currency token={pool.currency} />
-									</div>
-								}
-								validate={parseFloat(pool.limit) > 0 && isNotGreaterThan(myLimit)}
-							/>
-						</Label>
-						<PrimaryButton
-							className={styles.cta}
-							size="large"
-							submit
-							disabled={
-								operation === OPERATION.loading ||
-								pool.status === POOL_STATUS.COMING ||
-								!isWhitelisted
-							}
-						>
-							{operation === OPERATION.loading ? (
-								<Spinner size="small" />
-							) : isWhitelisted ? (
-								<>
-									Place a Bid{" "}
-									{pool.status === POOL_STATUS.COMING && (
-										<Caption
-											className={styles.timer}
-											Component="span"
-											style={{ color: "inherit" }}
-											weight="regular"
-										>
-											<Timer timer={pool.openAt} onZero={onRequestData} />
-										</Caption>
-									)}
-								</>
-							) : (
-								"You are not whitelisted"
+				{action === ACTION.place && (
+					<PlaceBid
+						currency={pool.currency}
+						balance={parseFloat(balance)}
+						limit={limit}
+						isLimit={limited}
+						disabled={
+							operation === OPERATION.loading ||
+							pool.status === POOL_STATUS.COMING ||
+							!userWhitelisted
+						}
+						loading={operation === OPERATION.loading}
+						onSubmit={bidAction}
+					>
+						<>
+							Place a Bid{" "}
+							{pool.status === POOL_STATUS.COMING && (
+								<Caption
+									className={styles.timer}
+									Component="span"
+									style={{ color: "inherit" }}
+									weight="regular"
+								>
+									<Timer timer={pool.openAt} onZero={onRequestData} />
+								</Caption>
 							)}
-						</PrimaryButton>
-					</Form>
+						</>
+					</PlaceBid>
 				)}
-			</AuctionDetailView>
+			</View>
 		);
 	}
 

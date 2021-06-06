@@ -1,7 +1,7 @@
 import { ALERT_TYPE } from "@app/ui/alert";
 import { isGreaterThanOrEqualTo } from "@app/utils/bn";
 
-export const getAlertForOwner = (open: number, close: number, amount: string, total: string) => {
+export const getAlertForOwner = (open: number, close: number, amount: number, total: number) => {
 	const nowTime = new Date();
 	const openTime = new Date(+open);
 	const closeTime = new Date(+close);
