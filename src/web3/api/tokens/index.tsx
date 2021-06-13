@@ -89,6 +89,7 @@ const generateTokenList = inboxed(
 			}, new Map<string, ExtendedTokenInfo>());
 
 			const allTokens = Array.from(m.values());
+			console.log("regenerated");
 
 			return allTokens.filter((token) => token.chainId === chainId);
 		}
@@ -98,7 +99,7 @@ const generateTokenList = inboxed(
 const mapToTokenLookup = kashe(
 	(tokens: ExtendedTokenInfo[]): TokenLookup<ExtendedTokenInfo> =>
 		tokens.reduce((acc, token) => {
-			acc[token.address] = token;
+			acc[token.address.toLowerCase()] = token;
 
 			return acc;
 		}, {} as TokenLookup<ExtendedTokenInfo>)
@@ -110,6 +111,7 @@ export const useAllTokens = (filter: (list: TokenList) => boolean) => {
 	const ether = getEtherChain(chainId);
 	const [customTokenList] = useLocallyDefinedTokens();
 
+	// note: cache is split on filter, then on ether
 	return generateTokenList(filter, ether, customTokenList, tokenList, chainId, filter);
 };
 
@@ -124,7 +126,7 @@ const passAll = () => true;
 export const useTokenSearch = () => {
 	const tokens = useAllTokensSearch(passAll);
 
-	return useCallback((address: string) => tokens[address], [tokens]);
+	return useCallback((address: string) => tokens[address.toLowerCase()], [tokens]);
 };
 
 const getCacheFrom = kashe(<T extends unknown>(_source: any): Record<string, T> => ({}));
@@ -138,7 +140,7 @@ const cachedERC20Query = async (
 	const token = await queryERC20Token(provider, address, chainID);
 
 	return {
-		...tokens[address],
+		...tokens[address.toLowerCase()],
 		...token,
 	};
 };
