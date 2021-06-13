@@ -1,6 +1,6 @@
 import { FORM_ERROR } from "final-form";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { fetchPoolSearch } from "@app/api/pool/api";
 import { POOL_ADDRESS_MAPPING } from "@app/api/pool/const";
@@ -28,14 +28,107 @@ const tryParseJSON = (tryThis: string, orThis: any): any => {
 
 const EMPTY_ARRAY = [];
 
+type SearchFilters = any;
+
+const useURLControl = (
+	searchFilters: SearchFilters,
+	provider: any,
+	onSubmit: (state: any) => void
+) => {
+	const router = useRouter();
+
+	// update URL
+	useEffect(
+		() => {
+			const { auctionType, ...rest } = searchFilters;
+
+			if (auctionType) {
+				const isEmpty = Object.keys(rest).length === 0;
+
+				const filters = isEmpty ? "" : `?filters=${encodeURIComponent(JSON.stringify(rest))}`;
+
+				router.push(`/auction/${auctionType}/${filters}`, undefined, {
+					shallow: true,
+				});
+			}
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[searchFilters]
+	);
+
+	// initial form state
+	const [initialSearchState] = useState(() => {
+		try {
+			return {
+				...tryParseJSON(decodeURIComponent(router.query.filters as string), {}),
+				auctionType: router.query.auctionType,
+			};
+		} catch (e) {
+			console.error(e);
+
+			return {};
+		}
+	});
+
+	const [fistView, setFirstView] = useState(true);
+
+	if (fistView && !searchFilters.auctionType && initialSearchState.auctionType && provider) {
+		// back button
+		setFirstView(false);
+		onSubmit(initialSearchState);
+	}
+
+	// read URL
+	useEffect(
+		() => {
+			if (initialSearchState.auctionType && provider && fistView) {
+				onSubmit(initialSearchState);
+				setFirstView(false);
+			}
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[provider]
+	);
+
+	return initialSearchState;
+};
+
+const LAST_QUERY = {
+	condition: -1,
+	page: 0,
+	searchFilters: null as any,
+	poolList: [] as any,
+	poolInformation: [] as any,
+	convertedPoolInformation: [] as any,
+};
+
+const useLastQuery = <T extends Record<string, any>>(q: T, params: T) => {
+	useEffect(() => {
+		Object.assign(q, params);
+	}, Object.values(params));
+};
+
 export const Auction = () => {
 	const provider = useWeb3Provider();
 	const chainId = useChainId();
-
-	const [poolList, setPoolList] = useState<number[]>([]);
 	const walletControl = useConnectWalletControl();
 
-	const [searchFilters, setSearchFilters] = useState<any>({});
+	const [poolList, setPoolList] = useState<number[]>([]);
+	const [poolInformation, setPoolInformation] = useState<PoolInfoType[]>([]);
+	const [searchFilters, setSearchFilters] = useState<SearchFilters>({});
+	const [page, setPage] = useState(0);
+	const [convertedPoolInformation, setConvertedPoolInformation] = useState<DisplayPoolInfoType[]>(
+		[]
+	);
+
+	useLastQuery(LAST_QUERY, {
+		condition: searchFilters,
+		poolList,
+		poolInformation,
+		convertedPoolInformation,
+		searchFilters,
+		page,
+	});
 
 	const onSubmit = async (values: any) => {
 		if (!provider) {
@@ -46,7 +139,18 @@ export const Auction = () => {
 			}
 		}
 
+		if (JSON.stringify(LAST_QUERY.condition) === JSON.stringify(values)) {
+			setSearchFilters(LAST_QUERY.searchFilters);
+			setPoolList(LAST_QUERY.poolList);
+			setPage(LAST_QUERY.page);
+			setPoolInformation(LAST_QUERY.poolInformation);
+			setConvertedPoolInformation(LAST_QUERY.convertedPoolInformation);
+
+			return;
+		}
+
 		setSearchFilters(values);
+		setPage(0);
 
 		const { auctionType, ...params } = values;
 
@@ -54,16 +158,12 @@ export const Auction = () => {
 		setPoolList(pools);
 	};
 
-	const [poolInformation, setPoolInformation] = useState<PoolInfoType[]>([]);
+	const searchWindow = useMemo(() => poolList.slice(page * WINDOW_SIZE, (page + 1) * WINDOW_SIZE), [
+		poolList,
+		page,
+	]);
 
-	const [searchWindow, setSearchWindow] = useState<number[]>([]);
-
-	const [page, setPage] = useState(0);
-
-	useEffect(() => {
-		setSearchWindow(poolList.slice(page * WINDOW_SIZE, (page + 1) * WINDOW_SIZE));
-	}, [page, poolList]);
-
+	// search
 	useEffect(() => {
 		const { auctionType } = searchFilters;
 
@@ -86,10 +186,6 @@ export const Auction = () => {
 
 	const queryToken = useTokenQuery();
 
-	const [convertedPoolInformation, setConvertedPoolInformation] = useState<DisplayPoolInfoType[]>(
-		[]
-	);
-
 	useEffect(() => {
 		const { auctionType } = searchFilters;
 
@@ -110,8 +206,6 @@ export const Auction = () => {
 						auctionType
 					);
 
-					console.log(matchedPool);
-
 					return {
 						...matchedPool,
 						href: `/auction/${auctionType}/${pool.poolID}`,
@@ -125,54 +219,13 @@ export const Auction = () => {
 		chainId,
 		poolInformation,
 		provider,
-		// queryToken,
+		queryToken,
 		searchFilters,
 		searchFilters.auctionType,
 		setConvertedPoolInformation,
 	]);
 
-	const router = useRouter();
-
-	useEffect(
-		() => {
-			const { auctionType, ...rest } = searchFilters;
-
-			if (auctionType) {
-				const isEmpty = Object.keys(rest).length === 0;
-
-				const filters = isEmpty ? "" : `?filters=${encodeURIComponent(JSON.stringify(rest))}`;
-
-				router.push(`/auction/${auctionType}/${filters}`, undefined, {
-					shallow: true,
-				});
-			}
-		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[searchFilters]
-	);
-
-	const [initialSearchState] = useState(() => {
-		try {
-			return {
-				...tryParseJSON(decodeURIComponent(router.query.filters as string), {}),
-				auctionType: router.query.auctionType,
-			};
-		} catch (e) {
-			console.error(e);
-
-			return {};
-		}
-	});
-
-	useEffect(
-		() => {
-			if (initialSearchState.auctionType && provider) {
-				onSubmit(initialSearchState);
-			}
-		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[provider]
-	);
+	const initialSearchState = useURLControl(searchFilters, provider, onSubmit);
 
 	return (
 		<AuctionView
