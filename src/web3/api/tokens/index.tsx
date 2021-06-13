@@ -80,7 +80,7 @@ export const useAllTokens = (filter: (list: TokenList) => boolean) => {
 			markAs(getDefaultTokens(), "default"),
 			...tokenList.filter(filter).map((list) => markAs(list.tokens, list.name)),
 		].reduce((acc, item) => {
-			item.forEach((token) => acc.set(`${token.symbol}-${token.chainId}`, token));
+			item.forEach((token) => acc.set(token.address, token));
 
 			return acc;
 		}, new Map<string, ExtendedTokenInfo>());
@@ -93,13 +93,13 @@ export const useAllTokens = (filter: (list: TokenList) => boolean) => {
 
 const passAll = () => true;
 
-const findTokenIn = (symbol: string, tokens: TokenInfo[]): TokenInfo | undefined =>
-	tokens.find((token) => token.symbol === symbol);
+const findTokenIn = (address: string, tokens: TokenInfo[]): TokenInfo | undefined =>
+	tokens.find((token) => token.address === address);
 
 export const useTokenSearch = () => {
 	const tokens = useAllTokens(passAll);
 
-	return useCallback((symbol: string) => findTokenIn(symbol, tokens), [tokens]);
+	return useCallback((address: string) => findTokenIn(address, tokens), [tokens]);
 };
 
 const getCacheFrom = kashe(<T extends unknown>(_source: any): Record<string, T> => ({}));

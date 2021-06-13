@@ -59,7 +59,15 @@ export const Currency: FC<MaybeWithClassName & { token: string; small?: boolean 
 	const findToken = useTokenSearch();
 	const tokenInfo = findToken(token);
 
-	return token ? (
-		<CurrencyView symbol={token} img={tokenInfo ? tokenInfo.logoURI : undefined} small={small} />
-	) : null;
+	if (!token) {
+		return null;
+	}
+
+	return (
+		<CurrencyView
+			symbol={tokenInfo.symbol}
+			img={tokenInfo ? tokenInfo.logoURI : undefined}
+			small={small}
+		/>
+	);
 };

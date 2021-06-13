@@ -19,13 +19,18 @@
 }
 
 .list {
-  display: grid;
-  grid-row-gap: calc(var(--spacing-unit) * 3);
+  position: relative;
 
   margin: 0;
   padding: 0;
 
   list-style: none;
+}
+
+.item {
+  position: absolute;
+  left: 0;
+  right: 0;
 }
 
 .footer {

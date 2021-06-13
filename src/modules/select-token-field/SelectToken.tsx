@@ -182,7 +182,7 @@ export const SelectToken: FC<
 		() =>
 			tokens.filter(filter).map((token) => {
 				return {
-					key: token.symbol,
+					key: token.address,
 					title: token.name,
 					currency: token.symbol,
 					img: token.logoURI,

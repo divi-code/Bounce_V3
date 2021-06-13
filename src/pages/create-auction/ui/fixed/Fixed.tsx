@@ -44,9 +44,11 @@ const FixedImp = () => {
 
 	useEffect(() => {
 		getBalance(tokenContract, account).then((b) =>
-			setBalance(weiToNum(b, findToken(tokenFrom).decimals, 0))
+			setBalance(weiToNum(b, findToken(tokenFrom).decimals, 6))
 		);
 	}, [tokenContract, account, findToken, tokenFrom]);
+
+	console.log("balance", balance);
 
 	const onSubmit = async (values: any) => {
 		addData({
@@ -65,7 +67,7 @@ const FixedImp = () => {
 		<FixedView
 			onSubmit={onSubmit}
 			tokenFrom={tokenFrom}
-			balance={balance}
+			balance={parseFloat(balance)}
 			initialValues={initialValues}
 		/>
 	);

@@ -8,6 +8,7 @@ import { Form } from "@app/modules/form";
 import { Label } from "@app/modules/label";
 import { RadioField } from "@app/modules/radio-field";
 import { SelectTokenField } from "@app/modules/select-token-field";
+import { Symbol } from "@app/modules/symbol/Symbol";
 import { TextField } from "@app/modules/text-field";
 
 import { PrimaryButton } from "@app/ui/button";
@@ -18,12 +19,14 @@ import { Body1 } from "@app/ui/typography";
 
 import { isNotGreaterThan } from "@app/utils/validation";
 
+import { useTokenSearch } from "@app/web3/api/tokens";
+
 import styles from "./Fixed.module.scss";
 
 type FixedViewType = {
 	onSubmit(values): void;
 	tokenFrom: string;
-	balance: string;
+	balance: number;
 	initialValues: any;
 };
 
@@ -54,7 +57,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 				{(props) => (
 					<Label Component="label" label="Swap Ratio">
 						<Body1 Component="div" className={styles.swap}>
-							1 {tokenFrom} ={"\u00a0"}
+							1 <Symbol token={tokenFrom} /> ={"\u00a0"}
 							<TextField
 								type="number"
 								name="swapRatio"
@@ -73,7 +76,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 				tooltip="Create new item"
 				after={
 					<span className={styles.balance}>
-						Balance: {parseFloat(balance).toFixed(2)} {tokenFrom}
+						Balance: {balance} <Symbol token={tokenFrom} />
 					</span>
 				}
 			>
@@ -88,7 +91,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 								{({ form }) => (
 									<button
 										className={styles.max}
-										onClick={() => form.change("amount", parseFloat(balance))}
+										onClick={() => form.change("amount", balance)}
 										type="button"
 									>
 										MAX
@@ -99,7 +102,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 						</div>
 					}
 					required
-					validate={balance && isNotGreaterThan(parseFloat(balance))}
+					validate={balance && isNotGreaterThan(balance)}
 				/>
 			</Label>
 			<Label Component="div" label="Allocation per Wallet" tooltip="Create new item">

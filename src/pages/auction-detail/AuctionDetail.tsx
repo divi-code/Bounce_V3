@@ -330,12 +330,11 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 						amount={pool.amount}
 						isNonAction={isCreator && pool.status !== POOL_STATUS.CLOSED}
 						disabled={
-							creatorClaimed ||
 							operation === OPERATION.loading ||
 							getDeltaTime(pool.claimAt) > 0 ||
-							userClaimed ||
-							!userWhitelisted ||
-							!userPlaced
+							(isCreator && creatorClaimed) ||
+							(!isCreator && !userPlaced) ||
+							(!isCreator && !userWhitelisted)
 						}
 						loading={operation === OPERATION.loading}
 						onClick={isCreator ? claimForCreator : claimForUser}

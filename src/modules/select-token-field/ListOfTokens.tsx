@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { ChangeEvent, FC, useMemo, useState } from "react";
-import { StrollableContainer } from "react-stroller";
+import { StrollableContainer, StrollerState } from "react-stroller";
 
 import { uid } from "react-uid";
 
@@ -22,6 +22,39 @@ type ListOfTokensType = {
 	onChange(item: any): void;
 	onManage(): void;
 };
+
+const LINE_HEIGHT = 64;
+
+const getDataWindow = <T extends any>(
+	tableData: T[],
+	height: number,
+	scrollTop: number,
+	clientHeight: number
+) => {
+	const n = Math.ceil(clientHeight / height);
+	const start = Math.max(0, Math.floor(scrollTop / height));
+	const n2 = Math.ceil(n / 2);
+	const dataStart = Math.max(0, start - n2);
+
+	return (fn: (a: { data: T[]; start: number; n: number }) => React.ReactNode) =>
+		fn({
+			data: tableData.slice(dataStart, dataStart + n + n),
+			start: dataStart,
+			n: n * 2,
+		});
+};
+
+const SizeHolder: FC<{ lineCount: number }> = ({ lineCount, children }) => (
+	<div
+		style={{
+			height: lineCount * LINE_HEIGHT,
+			position: "relative",
+			overflow: "hidden",
+		}}
+	>
+		{children}
+	</div>
+);
 
 export const ListOfTokens: FC<ListOfTokensType> = ({
 	active,
@@ -59,27 +92,44 @@ export const ListOfTokens: FC<ListOfTokensType> = ({
 			</div>
 			<div className={styles.scroll}>
 				<StrollableContainer bar={ScrollBar} draggable>
-					<ul className={styles.list}>
-						{listOfTokens.map((option) => {
-							const checked = option === active;
+					<SizeHolder lineCount={listOfTokens.length}>
+						<StrollerState>
+							{({ clientHeight, scrollTop }) =>
+								getDataWindow(
+									listOfTokens,
+									LINE_HEIGHT,
+									scrollTop,
+									clientHeight
+								)(({ data: windowData, start }) => (
+									<ul className={styles.list}>
+										{windowData.map((option, index) => {
+											const checked = option === active;
 
-							return (
-								<li key={uid(option)}>
-									<Label
-										className={classNames(styles.input, checked && styles.active)}
-										onChange={onChange}
-										reference={option}
-										title={option.title}
-										currency={option.currency}
-										img={option.img}
-										id={uid(option)}
-										name={name}
-										checked={checked}
-									/>
-								</li>
-							);
-						})}
-					</ul>
+											return (
+												<li
+													key={uid(option)}
+													className={styles.item}
+													style={{ top: (start + index) * LINE_HEIGHT, height: LINE_HEIGHT }}
+												>
+													<Label
+														className={classNames(styles.input, checked && styles.active)}
+														onChange={onChange}
+														reference={option}
+														title={option.title}
+														currency={option.currency}
+														img={option.img}
+														id={uid(option)}
+														name={name}
+														checked={checked}
+													/>
+												</li>
+											);
+										})}
+									</ul>
+								))
+							}
+						</StrollerState>
+					</SizeHolder>
 				</StrollableContainer>
 			</div>
 			<div className={styles.footer}>
