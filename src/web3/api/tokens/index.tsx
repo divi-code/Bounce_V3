@@ -80,7 +80,7 @@ export const useAllTokens = (filter: (list: TokenList) => boolean) => {
 			markAs(getDefaultTokens(), "default"),
 			...tokenList.filter(filter).map((list) => markAs(list.tokens, list.name)),
 		].reduce((acc, item) => {
-			item.forEach((token) => acc.set(token.address, token));
+			item.forEach((token) => acc.set(`${token.address}-${token.chainId}`, token));
 
 			return acc;
 		}, new Map<string, ExtendedTokenInfo>());
@@ -94,7 +94,7 @@ export const useAllTokens = (filter: (list: TokenList) => boolean) => {
 const passAll = () => true;
 
 const findTokenIn = (address: string, tokens: TokenInfo[]): TokenInfo | undefined =>
-	tokens.find((token) => token.address === address);
+	tokens.find((token) => token.address.toLowerCase() === address.toLowerCase());
 
 export const useTokenSearch = () => {
 	const tokens = useAllTokens(passAll);

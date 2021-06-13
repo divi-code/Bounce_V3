@@ -99,6 +99,13 @@ const useDateState = (
 		}
 	});
 
+const asTwoDigitNumber = (value: string | number) => {
+	const fixedNumber = typeof value === "string" ? parseFloat(value) : value;
+
+	if (fixedNumber >= 10) return fixedNumber;
+	else return `0${fixedNumber}`;
+};
+
 export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 	name,
 	initialValue,
@@ -279,9 +286,11 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 				error={error}
 			>
 				{calendarValue
-					? `${to2DigitOrNothing(day)}.${to2DigitOrNothing(month)}.${to2DigitOrNothing(
-							year
-					  )} ${hours}:${minutes}`
+					? `${to2DigitOrNothing(day)}.${to2DigitOrNothing(month)}.${to2DigitOrNothing(year)} ${
+							hours !== "" ? asTwoDigitNumber(hours) : ""
+					  }${hours !== "" || minutes !== "" ? ":" : ""}${
+							minutes !== "" ? asTwoDigitNumber(minutes) : ""
+					  }`
 					: placeholder}
 				<Icon />
 			</FieldFrame>

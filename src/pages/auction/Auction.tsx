@@ -1,20 +1,15 @@
 import { FORM_ERROR } from "final-form";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { fetchPoolSearch } from "@app/api/pool/api";
-import {
-	POOL_ADDRESS_MAPPING,
-	POOL_SHORT_NAME_MAPPING,
-	POOL_SPECIFIC_NAME_MAPPING,
-} from "@app/api/pool/const";
+import { POOL_ADDRESS_MAPPING } from "@app/api/pool/const";
 
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
 import { DisplayPoolInfoType } from "@app/pages/auction/ui/card";
-import { weiToNum } from "@app/utils/bn/wei";
-import { getStatus, getSwapRatio, getProgress, getMatchedPool } from "@app/utils/pool";
-import { getBounceContract, getSwap1Amount } from "@app/web3/api/bounce/contract";
+import { getMatchedPool } from "@app/utils/pool";
+import { getBounceContract } from "@app/web3/api/bounce/contract";
 import { PoolInfoType, queryPoolInformation } from "@app/web3/api/bounce/pool-search";
 import { useTokenQuery } from "@app/web3/api/tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
@@ -114,6 +109,8 @@ export const Auction = () => {
 						pool.poolID,
 						auctionType
 					);
+
+					console.log(matchedPool);
 
 					return {
 						...matchedPool,

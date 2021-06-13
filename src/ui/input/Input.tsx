@@ -85,6 +85,7 @@ export const Input: FC<InputType & MaybeWithClassName> = ({
 					onFocus={onInputFocused}
 					onBlur={onInputBlur}
 					autoComplete="off"
+					onWheel={(e) => e.currentTarget.blur()}
 					{...inputProps}
 				/>
 				{after}

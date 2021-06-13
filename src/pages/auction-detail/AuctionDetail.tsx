@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
 import { FormProps } from "react-final-form";
@@ -299,6 +300,8 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		}
 	}, [creatorClaimed, isCreator, pool, userClaimed, userPlaced, userWhitelisted]);
 
+	const { back: goBack } = useRouter();
+
 	if (pool) {
 		return (
 			<View
@@ -320,7 +323,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 				claimAt={pool.claimAt ? new Date(+pool.claimAt) : undefined}
 				limit={pool.limit}
 				alert={alert && <Alert title={alert.title} text={alert.text} type={alert.type} />}
-				onBack={() => null}
+				onBack={() => goBack()}
 			>
 				{action === ACTION.claim && (
 					<Claim

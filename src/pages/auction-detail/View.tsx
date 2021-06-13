@@ -8,7 +8,6 @@ import { Button } from "@app/ui/button";
 import { DescriptionList } from "@app/ui/description-list";
 import { GutterBox } from "@app/ui/gutter-box";
 
-import { ArrowBack } from "@app/ui/icons/arrow-back";
 import { RightArrow } from "@app/ui/icons/arrow-right";
 import { ProgressBar } from "@app/ui/progress-bar";
 import { Status } from "@app/ui/status";
@@ -63,7 +62,7 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 
 	const AUCTION_INFORMATION = {
 		"Pool type": type,
-		"Auction amount": total.toFixed(2),
+		"Auction amount": total,
 		"Auction currency": <Currency token={currency} small />,
 		"Price per unit, $": price,
 		"Allocation per Wallet": limit > 0 ? limit : "No",
