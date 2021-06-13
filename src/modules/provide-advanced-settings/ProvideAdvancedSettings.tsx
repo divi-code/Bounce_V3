@@ -101,7 +101,6 @@ export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSet
 						>
 							{props.values.delayToken.includes("unlock") && (
 								<DateField
-									key={props.values.claimStart}
 									placeholder="10.01.2021"
 									name="claimStart"
 									min={getDateIntervalStart(new Date(props.values.startPool)).toString()}

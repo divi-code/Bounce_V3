@@ -93,8 +93,10 @@ export const useAllTokens = (filter: (list: TokenList) => boolean) => {
 
 const passAll = () => true;
 
-const findTokenIn = (address: string, tokens: TokenInfo[]): TokenInfo | undefined =>
-	tokens.find((token) => token.address.toLowerCase() === address.toLowerCase());
+const findTokenIn = (address: string | undefined, tokens: TokenInfo[]): TokenInfo | undefined =>
+	address
+		? tokens.find((token) => token.address.toLowerCase() === address.toLowerCase())
+		: undefined;
 
 export const useTokenSearch = () => {
 	const tokens = useAllTokens(passAll);
