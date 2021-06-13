@@ -1,7 +1,7 @@
 import { TokenInfo, TokenList } from "@uniswap/token-lists";
 import { useWeb3React } from "@web3-react/core";
-import { kashe } from "kashe";
-import { createContext, FC, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { kashe, inboxed } from "kashe";
+import { createContext, FC, useCallback, useContext, useEffect, useState } from "react";
 
 import { AbstractProvider } from "web3-core";
 
@@ -14,7 +14,7 @@ import { getEtherChain } from "../eth/token/token";
 import resolveENSContentHash from "./ens/ens";
 import getTokenList from "./get-token-list";
 import { DEFAULT_LIST_OF_LISTS } from "./lists";
-import { getDefaultTokens, useFilterApplicableTokens } from "./use-default-token-list";
+import { getDefaultTokens } from "./use-default-token-list";
 
 const tokenListContent = createContext<TokenList[]>([]);
 
@@ -66,6 +66,43 @@ const markAs = (tokenList: TokenInfo[], name: string) =>
 	tokenList.map((token) => ({ ...token, source: name }));
 
 type ExtendedTokenInfo = TokenInfo & { source: string };
+type TokenLookup<T extends TokenInfo> = Record<string, T>;
+
+const generateTokenList = inboxed(
+	kashe(
+		(
+			ether: TokenInfo,
+			customTokenList: TokenInfo[],
+			tokenList: TokenList[],
+			chainId: number,
+			filter: (list: TokenList) => boolean
+		): ExtendedTokenInfo[] => {
+			const m = [
+				markAs([ether], "native"),
+				markAs(customTokenList, "custom"),
+				markAs(getDefaultTokens(), "default"),
+				...tokenList.filter(filter).map((list) => markAs(list.tokens, list.name)),
+			].reduce((acc, item) => {
+				item.forEach((token) => acc.set(`${token.address}-${token.chainId}`, token));
+
+				return acc;
+			}, new Map<string, ExtendedTokenInfo>());
+
+			const allTokens = Array.from(m.values());
+
+			return allTokens.filter((token) => token.chainId === chainId);
+		}
+	)
+);
+
+const mapToTokenLookup = kashe(
+	(tokens: ExtendedTokenInfo[]): TokenLookup<ExtendedTokenInfo> =>
+		tokens.reduce((acc, token) => {
+			acc[token.address] = token;
+
+			return acc;
+		}, {} as TokenLookup<ExtendedTokenInfo>)
+);
 
 export const useAllTokens = (filter: (list: TokenList) => boolean) => {
 	const tokenList = useTokenList();
@@ -73,35 +110,21 @@ export const useAllTokens = (filter: (list: TokenList) => boolean) => {
 	const ether = getEtherChain(chainId);
 	const [customTokenList] = useLocallyDefinedTokens();
 
-	const allTokens = useMemo(() => {
-		const m = [
-			markAs([ether], "native"),
-			markAs(customTokenList, "custom"),
-			markAs(getDefaultTokens(), "default"),
-			...tokenList.filter(filter).map((list) => markAs(list.tokens, list.name)),
-		].reduce((acc, item) => {
-			item.forEach((token) => acc.set(`${token.address}-${token.chainId}`, token));
+	return generateTokenList(filter, ether, customTokenList, tokenList, chainId, filter);
+};
 
-			return acc;
-		}, new Map<string, ExtendedTokenInfo>());
+export const useAllTokensSearch = (filter: (list: TokenList) => boolean) => {
+	const tokens = useAllTokens(filter);
 
-		return Array.from(m.values());
-	}, [ether, customTokenList, tokenList, filter]);
-
-	return useFilterApplicableTokens(allTokens, chainId);
+	return mapToTokenLookup(tokens);
 };
 
 const passAll = () => true;
 
-const findTokenIn = (address: string | undefined, tokens: TokenInfo[]): TokenInfo | undefined =>
-	address
-		? tokens.find((token) => token.address.toLowerCase() === address.toLowerCase())
-		: undefined;
-
 export const useTokenSearch = () => {
-	const tokens = useAllTokens(passAll);
+	const tokens = useAllTokensSearch(passAll);
 
-	return useCallback((address: string) => findTokenIn(address, tokens), [tokens]);
+	return useCallback((address: string) => tokens[address], [tokens]);
 };
 
 const getCacheFrom = kashe(<T extends unknown>(_source: any): Record<string, T> => ({}));
@@ -110,12 +133,12 @@ const cachedERC20Query = async (
 	provider: AbstractProvider,
 	address,
 	chainID: number,
-	tokens: TokenInfo[]
+	tokens: TokenLookup<TokenInfo>
 ) => {
 	const token = await queryERC20Token(provider, address, chainID);
 
 	return {
-		...findTokenIn(token.symbol, tokens),
+		...tokens[address],
 		...token,
 	};
 };
@@ -123,7 +146,7 @@ const cachedERC20Query = async (
 const STABLE_REF = {};
 
 export const useTokenQuery = () => {
-	const tokens = useAllTokens(passAll);
+	const tokens = useAllTokensSearch(passAll);
 	const provider = useWeb3Provider();
 	const chainId = useChainId();
 

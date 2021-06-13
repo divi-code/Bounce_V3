@@ -125,7 +125,7 @@ export const Auction = () => {
 		chainId,
 		poolInformation,
 		provider,
-		queryToken,
+		// queryToken,
 		searchFilters,
 		searchFilters.auctionType,
 		setConvertedPoolInformation,

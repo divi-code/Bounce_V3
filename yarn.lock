@@ -8901,10 +8901,10 @@ junk@^3.1.0:
   resolved "https://registry.yarnpkg.com/junk/-/junk-3.1.0.tgz#31499098d902b7e98c5d9b9c80f43457a88abfa1"
   integrity sha512-pBxcB3LFc8QVgdggvZWyeys+hnrNWg4OcZIU/1X59k5jQdLBlCsYGRQaz234SqoRLTCgMH00fY0xRJH+F9METQ==
 
-kashe@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/kashe/-/kashe-1.0.3.tgz#f9b16e5dd08e9f9ce837e7a72e2cb4848665947c"
-  integrity sha512-O6njWM3zPy6lpvjiDBLkNuIYH0GnJpm9xxEayl3P2chsffyjYn9cKJdTJlglDnknfc4dBarN1dhn1gT5lU7Vkg==
+kashe@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/kashe/-/kashe-1.0.4.tgz#72f538d641f220eb4533a050f1f39b3acac7fafb"
+  integrity sha512-d4N2iljhOrTUszc+fRdfaFRPeu0+hZNbSlXnuTdVcN+IWFMByTNmQzA3SKb1bWctNVXi5RmYQYQjOWqu1mDXpw==
   dependencies:
     function-double "^1.0.4"
     reselect "^4.0.0"

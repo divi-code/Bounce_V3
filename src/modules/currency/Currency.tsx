@@ -59,7 +59,7 @@ export const Currency: FC<MaybeWithClassName & { token: string; small?: boolean 
 	const findToken = useTokenSearch();
 	const tokenInfo = findToken(token);
 
-	if (!token) {
+	if (!tokenInfo) {
 		return null;
 	}
 
