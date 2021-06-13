@@ -1,0 +1,8 @@
+.component {
+  display: grid;
+  grid-row-gap: calc(var(--spacing-unit) * 3);
+}
+
+.title {
+  margin: 0;
+}

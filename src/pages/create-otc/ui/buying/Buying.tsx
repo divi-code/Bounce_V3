@@ -10,27 +10,25 @@ import { getBalance, getTokenContract } from "@app/web3/api/bounce/erc";
 import { useTokenSearch } from "@app/web3/api/tokens";
 import { useWeb3Provider } from "@app/web3/hooks/use-web3";
 
-import { ALLOCATION_TYPE, FixedView } from "./FixedView";
+import { BuyingView } from "./BuyingView";
 
-type FixedInType = {
+type BuyingInType = {
 	tokenFrom: string;
 };
 
-export type FixedOutType = {
+export type BuyingOutType = {
 	tokenTo: string;
-	swapRatio: number;
+	unitPrice: number;
 	amount: number;
-	allocation: ALLOCATION_TYPE;
-	limit?: number;
-	fixedFormValues: any;
+	buyingFormValues: any;
 };
 
-const FixedImp = () => {
-	const { moveForward, addData, data } = useFlowControl<FixedOutType>();
-	const { tokenFrom } = useFlowData<FixedInType>();
+const BuyingImp = () => {
+	const { moveForward, addData, data } = useFlowControl<BuyingOutType>();
+	const { tokenFrom } = useFlowData<BuyingInType>();
 	const initialValues = useMemo(
-		() => ({ tokenFrom, allocation: "limited", ...data.fixedFormValues }),
-		[data.fixedFormValues, tokenFrom]
+		() => ({ tokenFrom, allocation: "limited", ...data.buyingFormValues }),
+		[data.buyingFormValues, tokenFrom]
 	);
 
 	const findToken = useTokenSearch();
@@ -53,18 +51,16 @@ const FixedImp = () => {
 	const onSubmit = async (values: any) => {
 		addData({
 			tokenTo: values.tokenTo,
-			swapRatio: parseFloat(values.swapRatio),
+			unitPrice: parseFloat(values.unitPrice),
 			amount: parseFloat(values.amount),
-			allocation: values.allocation,
-			limit: parseFloat(values.limit),
-			fixedFormValues: values,
+			buyingFormValues: values,
 		});
 
 		moveForward();
 	};
 
 	return (
-		<FixedView
+		<BuyingView
 			onSubmit={onSubmit}
 			tokenFrom={tokenFrom}
 			balance={parseFloat(balance)}
@@ -73,6 +69,6 @@ const FixedImp = () => {
 	);
 };
 
-export const Fixed = defineFlowStep<FixedInType, FixedOutType, {}>({
-	Body: FixedImp,
+export const Buying = defineFlowStep<BuyingInType, BuyingOutType, {}>({
+	Body: BuyingImp,
 });

@@ -2,32 +2,32 @@ import { useWeb3React } from "@web3-react/core";
 import { useRouter } from "next/router";
 import { FC, useEffect, useMemo, useState } from "react";
 
-import { POOL_ADDRESS_MAPPING, POOL_TYPE } from "@app/api/pool/const";
+import { OTC_TYPE } from "@app/api/otc/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
-import { CreateFlowForAuction } from "@app/modules/create-flow-for-auction";
+import { CreateFlowForOtc } from "@app/modules/create-flow-for-otc";
 import { defineFlow } from "@app/modules/flow/definition";
 
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
 import { numToWei } from "@app/utils/bn/wei";
 import { getTokenContract } from "@app/web3/api/bounce/erc";
 import {
-	approveAuctionPool,
-	createAuctionPool,
-	getAllowance,
-	getBouncePoolContract,
-} from "@app/web3/api/bounce/pool";
+	approveOtcPool,
+	createOtcPool,
+	getBounceOtcContract,
+	getOtcAllowance,
+} from "@app/web3/api/bounce/otc";
 
 import { useTokenSearch } from "@app/web3/api/tokens";
 import { useWeb3Provider } from "@app/web3/hooks/use-web3";
 
-import styles from "./CreateAuction.module.scss";
+import styles from "./CreateOTC.module.scss";
+import { Buying } from "./ui/buying";
 import { Confirmation, ConfirmationInType } from "./ui/confirmation";
-import { Fixed } from "./ui/fixed";
 import { Settings } from "./ui/settings";
 import { Token } from "./ui/token";
 
-const FIXED_STEPS = defineFlow(Token, Fixed, Settings, Confirmation);
+const BUYING_STEPS = defineFlow(Token, Buying, Settings, Confirmation);
 
 enum OPERATION {
 	default = "default",
@@ -75,15 +75,16 @@ const Effector: FC<{ onMount(): void }> = ({ onMount }) => {
 	return null;
 };
 
-export const CreateFixedAuction: FC<MaybeWithClassName> = () => {
-	const type = POOL_TYPE.fixed;
+export const CreateBuyingOTC: FC<MaybeWithClassName> = () => {
+	const type = OTC_TYPE.buy;
 	const provider = useWeb3Provider();
 	const { account, chainId } = useWeb3React();
 
-	const contract = useMemo(
-		() => getBouncePoolContract(provider, POOL_ADDRESS_MAPPING[type], chainId),
-		[type, chainId, provider]
-	);
+	const contract = useMemo(() => getBounceOtcContract(provider, chainId), [
+		type,
+		chainId,
+		provider,
+	]);
 
 	const findToken = useTokenSearch();
 	const { push: routerPush } = useRouter();
@@ -97,28 +98,15 @@ export const CreateFixedAuction: FC<MaybeWithClassName> = () => {
 		const tokenTo = findToken(data.tokenTo);
 
 		const fromAmount = numToWei(data.amount, tokenFrom.decimals, 0);
-		const toAmount = numToWei(data.swapRatio * data.amount, tokenTo.decimals, 0);
-
-		const limit = data.limit ? numToWei(data.limit, tokenTo.decimals, 0) : "0";
+		const toAmount = numToWei(data.unitPrice * data.amount, tokenTo.decimals, 0);
 
 		try {
 			const tokenContract = getTokenContract(provider, tokenFrom.address);
 
-			const allowance = await getAllowance(
-				tokenContract,
-				POOL_ADDRESS_MAPPING[type],
-				chainId,
-				account
-			);
+			const allowance = await getOtcAllowance(tokenContract, chainId, account);
 
 			if (allowance < data.amount) {
-				const result = await approveAuctionPool(
-					tokenContract,
-					POOL_ADDRESS_MAPPING[type],
-					chainId,
-					account,
-					fromAmount
-				);
+				const result = await approveOtcPool(tokenContract, chainId, account, fromAmount);
 
 				if (!result.status) {
 					setOperation(OPERATION.error);
@@ -129,7 +117,7 @@ export const CreateFixedAuction: FC<MaybeWithClassName> = () => {
 
 			setOperation(OPERATION.confirm);
 
-			await createAuctionPool(
+			await createOtcPool(
 				contract,
 				account,
 				{
@@ -140,10 +128,7 @@ export const CreateFixedAuction: FC<MaybeWithClassName> = () => {
 					amountTotal0: fromAmount,
 					amountTotal1: toAmount,
 					openAt: +data.startPool / 1000,
-					closeAt: +data.endPool / 1000,
-					claimAt: +data.claimStart / 1000,
 					enableWhiteList: data.whitelist,
-					maxAmount1PerWallet: limit,
 					onlyBot: false,
 				},
 				data.whiteListList
@@ -178,9 +163,9 @@ export const CreateFixedAuction: FC<MaybeWithClassName> = () => {
 
 	return (
 		<div className={styles.component}>
-			<CreateFlowForAuction
+			<CreateFlowForOtc
 				type={type}
-				steps={FIXED_STEPS}
+				steps={BUYING_STEPS}
 				onComplete={onComplete}
 				alert={
 					<>

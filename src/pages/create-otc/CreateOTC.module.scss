@@ -1,0 +1,7 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  display: grid;
+  margin: calc(var(--spacing-unit) * 5) 0;
+}

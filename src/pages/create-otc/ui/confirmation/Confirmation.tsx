@@ -1,19 +1,19 @@
 import classNames from "classnames";
 import { FC, ReactNode } from "react";
 
-import { POOL_SHORT_NAME_MAPPING, POOL_SPECIFIC_NAME_MAPPING } from "@app/api/pool/const";
+import { OTC_SHORT_NAME_MAPPING } from "@app/api/otc/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { useConvertDate } from "@app/hooks/use-convert-data";
 import { Currency } from "@app/modules/currency";
 import { defineFlowStep } from "@app/modules/flow/definition";
 import { useFlowData } from "@app/modules/flow/hooks";
 import { Symbol } from "@app/modules/symbol/Symbol";
+import { BuyingOutType } from "@app/pages/create-otc/ui/buying";
 import { DescriptionList } from "@app/ui/description-list";
 
 import { Heading3 } from "@app/ui/typography";
 import { walletConversion } from "@app/utils/convertWallet";
 
-import { ALLOCATION_TYPE, FixedOutType } from "../fixed";
 import { SettingsOutType } from "../settings";
 import { TokenOutType } from "../token";
 
@@ -26,12 +26,10 @@ type ConfirmationType = {
 	tokenFrom: ReactNode;
 	declaim: string;
 	tokenTo: ReactNode;
-	swapRatio: ReactNode;
+	unitPrice: ReactNode;
 	amount: number;
-	allocation: string;
 	whitelist: string;
-	duration: string;
-	delay: string;
+	start: string;
 };
 
 type CommonType = {
@@ -46,12 +44,10 @@ export const ConfirmationView: FC<MaybeWithClassName & ConfirmationType & Common
 	tokenFrom,
 	declaim,
 	tokenTo,
-	swapRatio,
+	unitPrice,
 	amount,
-	allocation,
 	whitelist,
-	duration,
-	delay,
+	start,
 }) => {
 	const TOKEN_DATA = {
 		"Contact address": address,
@@ -61,29 +57,27 @@ export const ConfirmationView: FC<MaybeWithClassName & ConfirmationType & Common
 
 	const PARAMETERS_DATA = {
 		"Pool type": type,
-		To: tokenTo,
-		"Swap Ratio": swapRatio,
-		Amount: amount,
-		"Allocation per Wallet": allocation,
+		"Desired Amount": amount,
+		"Receipt Currency": tokenTo,
+		"Unit Price": unitPrice,
 	};
 
 	const SETTINGS_DATA = {
 		Participations: whitelist,
-		"Pool duration": duration,
-		"Delay Unlocking Token": delay,
+		"Start time": start,
 	};
 
 	return (
 		<div className={classNames(className, styles.component)}>
 			<Heading3 className={styles.title}>{name}</Heading3>
 			<DescriptionList title="Token Information" data={TOKEN_DATA} />
-			<DescriptionList title="Auction Parameters" data={PARAMETERS_DATA} />
+			<DescriptionList title="OTC Parameters" data={PARAMETERS_DATA} />
 			<DescriptionList title="Advanced Setting" data={SETTINGS_DATA} />
 		</div>
 	);
 };
 
-export type ConfirmationInType = TokenOutType & SettingsOutType & FixedOutType;
+export type ConfirmationInType = TokenOutType & SettingsOutType & BuyingOutType;
 
 export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 	const {
@@ -92,42 +86,30 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 		tokenFrom,
 		tokenDecimal,
 		tokenTo,
-		swapRatio,
+		unitPrice,
 		amount,
-		allocation,
-		limit,
 		whitelist,
 		startPool,
-		endPool,
-		delayClaim,
-		claimStart,
 	} = useFlowData<ConfirmationInType>();
 
 	const convertDate = useConvertDate();
 
 	return (
 		<ConfirmationView
-			name={`${poolName} ${POOL_SPECIFIC_NAME_MAPPING[type]}`}
+			name={`${poolName} OTC Pool`}
 			address={walletConversion(tokenFromAddress)}
 			tokenFrom={<Currency token={tokenFrom} small={true} />}
 			declaim={tokenDecimal}
 			tokenTo={<Currency token={tokenTo} small={true} />}
-			swapRatio={
+			unitPrice={
 				<>
-					1 <Symbol token={tokenFrom} /> = {swapRatio} <Symbol token={tokenTo} />
+					1 <Symbol token={tokenFrom} /> = {unitPrice} <Symbol token={tokenTo} />
 				</>
 			}
-			amount={amount * swapRatio}
-			allocation={
-				allocation === ALLOCATION_TYPE.limited ? `Limit ${limit} ${tokenTo}` : "No Limits"
-			}
+			amount={amount * unitPrice}
 			whitelist={whitelist ? "Whitelist" : "Public"}
-			duration={`From ${convertDate(new Date(startPool), "long")} - To ${convertDate(
-				new Date(endPool),
-				"long"
-			)}`}
-			delay={delayClaim ? convertDate(new Date(claimStart), "long") : "No"}
-			type={POOL_SHORT_NAME_MAPPING[type]}
+			start={convertDate(new Date(startPool), "long")}
+			type={OTC_SHORT_NAME_MAPPING[type]}
 		/>
 	);
 };

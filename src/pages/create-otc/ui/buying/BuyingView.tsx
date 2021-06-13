@@ -6,36 +6,27 @@ import { MaybeWithClassName } from "@app/helper/react/types";
 import { Currency } from "@app/modules/currency";
 import { Form } from "@app/modules/form";
 import { Label } from "@app/modules/label";
-import { RadioField } from "@app/modules/radio-field";
 import { SelectTokenField } from "@app/modules/select-token-field";
 import { Symbol } from "@app/modules/symbol/Symbol";
 import { TextField } from "@app/modules/text-field";
 
+import { Alert, ALERT_TYPE } from "@app/ui/alert";
 import { PrimaryButton } from "@app/ui/button";
-import { FoldableSection } from "@app/ui/foldable-section";
 import { RightArrow2 } from "@app/ui/icons/arrow-right-2";
-import { RadioGroup } from "@app/ui/radio-group";
 import { Body1 } from "@app/ui/typography";
 
-import { isNotGreaterThan } from "@app/utils/validation";
+import styles from "./Buying.module.scss";
 
-import styles from "./Fixed.module.scss";
-
-type FixedViewType = {
+type BuyingViewType = {
 	onSubmit(values): void;
 	tokenFrom: string;
 	balance: number;
 	initialValues: any;
 };
 
-export enum ALLOCATION_TYPE {
-	noLimits = "no-limits",
-	limited = "limited",
-}
-
 const FLOAT = "0.0001";
 
-export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
+export const BuyingView: FC<MaybeWithClassName & BuyingViewType> = ({
 	onSubmit,
 	tokenFrom,
 	balance,
@@ -43,31 +34,21 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 }) => {
 	return (
 		<Form onSubmit={onSubmit} className={styles.form} initialValues={initialValues}>
-			<div className={styles.group}>
-				<Label Component="div" label="From">
-					<SelectTokenField name="tokenFrom" required readOnly />
-				</Label>
-				<Label Component="div" label="To">
-					<SelectTokenField name="tokenTo" placeholder="Select a token" required />
-				</Label>
-			</div>
-			<FormSpy subscription={{ values: true }}>
-				{(props) => (
-					<Label Component="label" label="Swap Ratio">
-						<Body1 Component="div" className={styles.swap}>
-							1 <Symbol token={tokenFrom} /> ={"\u00a0"}
-							<TextField
-								type="number"
-								name="swapRatio"
-								step={FLOAT}
-								placeholder="0.00"
-								after={<Currency token={props.values.tokenTo} />}
-								required
-							/>
-						</Body1>
-					</Label>
-				)}
-			</FormSpy>
+			<Alert
+				title={
+					<span
+						style={{
+							display: "inline-grid",
+							gridAutoFlow: "column",
+							alignItems: "center",
+							gridColumnGap: 12,
+						}}
+					>
+						You are buying <Currency token={tokenFrom} />
+					</span>
+				}
+				type={ALERT_TYPE.default}
+			/>
 			<Label
 				Component="label"
 				label="Amount"
@@ -100,33 +81,35 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 						</div>
 					}
 					required
-					validate={balance && isNotGreaterThan(balance)}
 				/>
 			</Label>
-			<Label Component="div" label="Allocation per Wallet" tooltip="Create new item">
-				<RadioGroup count={2} fixed={true}>
-					<RadioField name="allocation" label="No Limits" value={ALLOCATION_TYPE.noLimits} />
-					<RadioField name="allocation" label="Limited" value={ALLOCATION_TYPE.limited} />
-				</RadioGroup>
+
+			<Label Component="div" label="Receipt Currency">
+				<SelectTokenField
+					name="tokenTo"
+					placeholder="Select a token you want to be paid"
+					required
+				/>
 			</Label>
 
 			<FormSpy subscription={{ values: true }}>
 				{(props) => (
-					<FoldableSection open={props.values.allocation === "limited"} timeout={300} ssr>
-						<Label Component="label" label="Limit">
+					<Label Component="label" label="Unit Price">
+						<Body1 Component="div" className={styles.swap}>
+							1 <Symbol token={tokenFrom} /> ={"\u00a0"}
 							<TextField
-								type="text"
-								name="limit"
-								key={props.values.allocation}
-								placeholder="0.00"
+								type="number"
+								name="unitPrice"
 								step={FLOAT}
+								placeholder="0.00"
 								after={<Currency token={props.values.tokenTo} />}
-								required={props.values.allocation === "limited"}
+								required
 							/>
-						</Label>
-					</FoldableSection>
+						</Body1>
+					</Label>
 				)}
 			</FormSpy>
+
 			<FormSpy>
 				{(form) => (
 					<PrimaryButton

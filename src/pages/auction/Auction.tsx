@@ -9,7 +9,7 @@ import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
 import { DisplayPoolInfoType } from "@app/pages/auction/ui/card";
 import { getMatchedPool } from "@app/utils/pool";
-import { getBounceContract } from "@app/web3/api/bounce/contract";
+import { getBouncePoolContract } from "@app/web3/api/bounce/pool";
 import { PoolInfoType, queryPoolInformation } from "@app/web3/api/bounce/pool-search";
 import { useTokenQuery } from "@app/web3/api/tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
@@ -195,7 +195,11 @@ export const Auction = () => {
 					const from = await queryToken(pool.token0);
 					const to = await queryToken(pool.token1);
 
-					const contract = getBounceContract(provider, POOL_ADDRESS_MAPPING[auctionType], chainId);
+					const contract = getBouncePoolContract(
+						provider,
+						POOL_ADDRESS_MAPPING[auctionType],
+						chainId
+					);
 
 					const matchedPool = await getMatchedPool(
 						contract,

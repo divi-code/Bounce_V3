@@ -14,21 +14,20 @@ import { Caption } from "@app/ui/typography";
 import { numToWei, weiToNum } from "@app/utils/bn/wei";
 import { getMatchedPool, MatchedPoolType, POOL_STATUS } from "@app/utils/pool";
 import { getDeltaTime } from "@app/utils/time";
+import { getBalance, getTokenContract } from "@app/web3/api/bounce/erc";
 import {
 	creatorClaim,
-	getBalance,
-	getBounceContract,
+	getBouncePoolContract,
 	getCreatorClaimed,
 	getEthBalance,
 	getLimitAmount,
 	getMyAmount1,
 	getMyClaimed,
 	getPools,
-	getTokenContract,
 	getWhitelistedStatus,
 	swapContracts,
 	userClaim,
-} from "@app/web3/api/bounce/contract";
+} from "@app/web3/api/bounce/pool";
 import { useTokenQuery } from "@app/web3/api/tokens";
 import {
 	useAccount,
@@ -91,7 +90,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 	const [to, setTo] = useState(undefined);
 
 	const contract = useMemo(
-		() => getBounceContract(provider, POOL_ADDRESS_MAPPING[auctionType], chainId),
+		() => getBouncePoolContract(provider, POOL_ADDRESS_MAPPING[auctionType], chainId),
 		[auctionType, chainId, provider]
 	);
 

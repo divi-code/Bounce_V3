@@ -1,0 +1,18 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.form {
+  display: grid;
+  grid-row-gap: calc(var(--spacing-unit) * 5);
+}
+
+.period {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: start;
+  grid-column-gap: calc(var(--spacing-unit) * 2.5);
+}
+
+.submit {
+  margin-top: calc(var(--spacing-unit) * 0.5);
+}

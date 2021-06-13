@@ -1,11 +1,8 @@
-import React, { ChangeEvent, FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 
 import { FormSpy } from "react-final-form";
 
-import { useCallbackState } from "use-callback-state";
-
 import { MaybeWithClassName } from "@app/helper/react/types";
-import { useControlPopUp } from "@app/hooks/use-control-popup";
 import { useResizeObserver } from "@app/hooks/use-resize-observer";
 import { DateField } from "@app/modules/date-field";
 import { Form } from "@app/modules/form";
@@ -18,7 +15,7 @@ import { WhiteListPopUp } from "@app/modules/whitelist-pop-up";
 import { PrimaryButton } from "@app/ui/button";
 import { RadioGroup } from "@app/ui/radio-group";
 
-import styles from "./ProvideAdvancedSettings.module.scss";
+import styles from "./ProvideAdvancedSettingsForAuction.module.scss";
 
 type ProvideAdvancedSettingsType = {
 	onSubmit(values): void;
@@ -34,10 +31,9 @@ const getDateIntervalStart = (from: Date) => {
 	return new Date(from.getFullYear(), from.getMonth(), from.getDate());
 };
 
-export const ProvideAdvancedSettings: FC<MaybeWithClassName & ProvideAdvancedSettingsType> = ({
-	onSubmit,
-	initialValues,
-}) => {
+export const ProvideAdvancedSettingsForAuction: FC<
+	MaybeWithClassName & ProvideAdvancedSettingsType
+> = ({ onSubmit, initialValues }) => {
 	const [blockRef, setBlockRef] = useState<HTMLElement | null>(null);
 
 	const [blockWidth, setBlockWidth] = useState(0);

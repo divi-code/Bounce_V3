@@ -1,6 +1,6 @@
 import classNames from "classnames";
 
-import { CSSProperties, FC } from "react";
+import { CSSProperties, FC, ReactNode } from "react";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
@@ -14,9 +14,9 @@ export enum ALERT_TYPE {
 }
 
 type AlertType = {
-	title: string;
+	title?: ReactNode;
 	type: ALERT_TYPE;
-	text?: string;
+	text?: ReactNode;
 	style?: CSSProperties;
 };
 
@@ -38,7 +38,11 @@ export const Alert: FC<AlertType & MaybeWithClassName> = ({
 			className={classNames(className, styles.component, styles[type])}
 			style={{ ...style, "--color": COLORS[type] } as CSSProperties}
 		>
-			<span className={classNames(styles.title, styles[`${type}Title`])}>{title}</span>{" "}
+			{title && (
+				<>
+					<span className={classNames(styles.title, styles[`${type}Title`])}>{title}</span>{" "}
+				</>
+			)}
 			{text && <span className={styles.text}>{text}</span>}
 		</div>
 	);

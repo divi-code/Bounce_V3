@@ -12,7 +12,7 @@ import { ShortLogo } from "@app/ui/icons/short-logo";
 import { weiToNum } from "@app/utils/bn/wei";
 import { walletConversion } from "@app/utils/convertWallet";
 
-import { getEthBalance } from "@app/web3/api/bounce/contract";
+import { getEthBalance } from "@app/web3/api/bounce/erc";
 import { useWalletConnection } from "@app/web3/hooks/use-connection";
 import { useWeb3 } from "@app/web3/hooks/use-web3";
 
