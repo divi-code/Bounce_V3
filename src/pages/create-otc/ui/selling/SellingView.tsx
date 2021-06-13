@@ -15,9 +15,11 @@ import { PrimaryButton } from "@app/ui/button";
 import { RightArrow2 } from "@app/ui/icons/arrow-right-2";
 import { Body1 } from "@app/ui/typography";
 
-import styles from "./Buying.module.scss";
+import { isNotGreaterThan } from "@app/utils/validation";
 
-type BuyingViewType = {
+import styles from "./Selling.module.scss";
+
+type SellingViewType = {
 	onSubmit(values): void;
 	tokenFrom: string;
 	balance: number;
@@ -26,7 +28,7 @@ type BuyingViewType = {
 
 const FLOAT = "0.0001";
 
-export const BuyingView: FC<MaybeWithClassName & BuyingViewType> = ({
+export const SellingView: FC<MaybeWithClassName & SellingViewType> = ({
 	onSubmit,
 	tokenFrom,
 	balance,
@@ -44,7 +46,7 @@ export const BuyingView: FC<MaybeWithClassName & BuyingViewType> = ({
 							gridColumnGap: 12,
 						}}
 					>
-						You are buying <Currency token={tokenFrom} />
+						You are selling <Currency token={tokenFrom} />
 					</span>
 				}
 				type={ALERT_TYPE.default}
@@ -81,11 +83,16 @@ export const BuyingView: FC<MaybeWithClassName & BuyingViewType> = ({
 						</div>
 					}
 					required
+					validate={balance && isNotGreaterThan(balance)}
 				/>
 			</Label>
 
 			<Label Component="div" label="Receipt Currency">
-				<SelectTokenField name="tokenTo" placeholder="Select a token you want to pay" required />
+				<SelectTokenField
+					name="tokenTo"
+					placeholder="Select a token you want to be paid"
+					required
+				/>
 			</Label>
 
 			<FormSpy subscription={{ values: true }}>

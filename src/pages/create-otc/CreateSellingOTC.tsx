@@ -22,12 +22,12 @@ import { useTokenSearch } from "@app/web3/api/tokens";
 import { useWeb3Provider } from "@app/web3/hooks/use-web3";
 
 import styles from "./CreateOTC.module.scss";
-import { Buying } from "./ui/buying";
-import { Confirmation, BuyingConfirmationType } from "./ui/confirmation";
+import { Confirmation, SellingConfirmationType } from "./ui/confirmation";
+import { Selling } from "./ui/selling";
 import { Settings } from "./ui/settings";
 import { Token } from "./ui/token";
 
-const BUYING_STEPS = defineFlow(Token, Buying, Settings, Confirmation);
+const SELLING_STEPS = defineFlow(Token, Selling, Settings, Confirmation);
 
 enum OPERATION {
 	default = "default",
@@ -75,8 +75,8 @@ const Effector: FC<{ onMount(): void }> = ({ onMount }) => {
 	return null;
 };
 
-export const CreateBuyingOTC: FC<MaybeWithClassName> = () => {
-	const type = OTC_TYPE.buy;
+export const CreateSellingOTC: FC<MaybeWithClassName> = () => {
+	const type = OTC_TYPE.sell;
 	const provider = useWeb3Provider();
 	const { account, chainId } = useWeb3React();
 
@@ -91,7 +91,7 @@ export const CreateBuyingOTC: FC<MaybeWithClassName> = () => {
 
 	const [operation, setOperation] = useState(OPERATION.default);
 
-	const onComplete = async (data: BuyingConfirmationType) => {
+	const onComplete = async (data: SellingConfirmationType) => {
 		setOperation(OPERATION.approval);
 
 		const tokenFrom = findToken(data.tokenFrom);
@@ -165,7 +165,7 @@ export const CreateBuyingOTC: FC<MaybeWithClassName> = () => {
 		<div className={styles.component}>
 			<CreateFlowForOtc
 				type={type}
-				steps={BUYING_STEPS}
+				steps={SELLING_STEPS}
 				onComplete={onComplete}
 				alert={
 					<>

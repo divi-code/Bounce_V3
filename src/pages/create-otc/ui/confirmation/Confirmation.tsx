@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { FC, ReactNode } from "react";
 
-import { OTC_SHORT_NAME_MAPPING } from "@app/api/otc/const";
+import { OTC_SHORT_NAME_MAPPING, OTC_TYPE } from "@app/api/otc/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { useConvertDate } from "@app/hooks/use-convert-data";
 import { Currency } from "@app/modules/currency";
@@ -9,6 +9,7 @@ import { defineFlowStep } from "@app/modules/flow/definition";
 import { useFlowData } from "@app/modules/flow/hooks";
 import { Symbol } from "@app/modules/symbol/Symbol";
 import { BuyingOutType } from "@app/pages/create-otc/ui/buying";
+import { Selling, SellingOutType } from "@app/pages/create-otc/ui/selling";
 import { DescriptionList } from "@app/ui/description-list";
 
 import { Heading3 } from "@app/ui/typography";
@@ -77,7 +78,10 @@ export const ConfirmationView: FC<MaybeWithClassName & ConfirmationType & Common
 	);
 };
 
-export type ConfirmationInType = TokenOutType & SettingsOutType & BuyingOutType;
+export type BuyingConfirmationType = TokenOutType & SettingsOutType & BuyingOutType;
+export type SellingConfirmationType = TokenOutType & SettingsOutType & SellingOutType;
+
+export type ConfirmationInType = BuyingConfirmationType | SellingConfirmationType;
 
 export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 	const {
