@@ -4,6 +4,9 @@ import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { FormProps } from "react-final-form";
 
 import { POOL_ADDRESS_MAPPING, POOL_TYPE } from "@app/api/pool/const";
+import { useControlPopUp } from "@app/hooks/use-control-popup";
+import { FailedPopUp } from "@app/modules/failed";
+import { SuccessPopUp } from "@app/modules/success";
 import { Timer } from "@app/modules/timer";
 
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
@@ -131,6 +134,8 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		setLimited(parseFloat(weiToNum(limit, to.decimals, 6)) > 0);
 		setCreator(pool.creator === account);
 
+		console.log("MyBid", userBid);
+
 		setLimit(
 			parseFloat(weiToNum(limit, to.decimals, 6)) - parseFloat(weiToNum(userBid, to.decimals, 6))
 		);
@@ -244,6 +249,26 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		}
 	};
 
+	//success place a bid
+	const { popUp: successPopUp, close: successClose, open: successOpen } = useControlPopUp();
+
+	useEffect(() => {
+		if (operation === OPERATION.completed) {
+			successOpen();
+		}
+	}, [successOpen, operation]);
+
+	//failed
+	const { popUp: failedPopUp, close: failedClose, open: failedOpen } = useControlPopUp();
+
+	useEffect(() => {
+		if (operation === OPERATION.failed) {
+			failedOpen();
+		} else {
+			failedClose();
+		}
+	}, [operation, failedOpen, failedClose]);
+
 	//set action
 
 	const [action, setAction] = useState<ACTION>(undefined);
@@ -304,95 +329,120 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 
 	if (pool) {
 		return (
-			<View
-				status={pool.status}
-				id={pool.id}
-				address={pool.address}
-				type={pool.type}
-				token={pool.token}
-				total={pool.total}
-				amount={pool.amount}
-				name={pool.name}
-				currency={pool.currency}
-				price={pool.price}
-				fill={pool.fill}
-				openAt={+pool.openAt}
-				closeAt={+pool.closeAt}
-				onZero={onRequestData}
-				actionTitle={title}
-				claimAt={pool.claimAt ? new Date(+pool.claimAt) : undefined}
-				limit={pool.limit}
-				alert={alert && <Alert title={alert.title} text={alert.text} type={alert.type} />}
-				onBack={() => goBack()}
-			>
-				{action === ACTION.claim && (
-					<Claim
-						token={pool.token}
-						price={pool.price}
-						currency={pool.currency}
-						amount={pool.amount}
-						isNonAction={isCreator && pool.status !== POOL_STATUS.CLOSED}
-						disabled={
-							operation === OPERATION.loading ||
-							getDeltaTime(pool.claimAt) > 0 ||
-							(isCreator && creatorClaimed) ||
-							(!isCreator && !userPlaced) ||
-							(!isCreator && !userWhitelisted)
-						}
-						loading={operation === OPERATION.loading}
-						onClick={isCreator ? claimForCreator : claimForUser}
-					>
-						{isCreator && (creatorClaimed ? "Tokens claimed" : "Claim your unswapped tokens")}
-						{!isCreator &&
-							(userClaimed ? (
-								"Tokens claimed"
-							) : (
-								<>
-									Claim Token
-									{getDeltaTime(pool.claimAt) > 0 && (
-										<Caption
-											className={styles.timer}
-											Component="span"
-											style={{ color: "inherit" }}
-											weight="regular"
-										>
-											<Timer timer={pool.claimAt} onZero={onRequestData} />
-										</Caption>
-									)}
-								</>
-							))}
-					</Claim>
-				)}
-				{action === ACTION.place && (
-					<PlaceBid
-						currency={pool.currency}
-						balance={parseFloat(balance)}
-						limit={limit}
-						isLimit={limited}
-						disabled={
-							operation === OPERATION.loading ||
-							pool.status === POOL_STATUS.COMING ||
-							!userWhitelisted
-						}
-						loading={operation === OPERATION.loading}
-						onSubmit={bidAction}
-					>
-						<>
-							Place a Bid{" "}
-							{pool.status === POOL_STATUS.COMING && (
-								<Caption
-									className={styles.timer}
-									Component="span"
-									style={{ color: "inherit" }}
-									weight="regular"
-								>
-									<Timer timer={pool.openAt} onZero={onRequestData} />
-								</Caption>
-							)}
-						</>
-					</PlaceBid>
-				)}
-			</View>
+			<>
+				<View
+					status={pool.status}
+					id={pool.id}
+					address={pool.address}
+					type={pool.type}
+					token={pool.token}
+					total={pool.total}
+					amount={pool.amount}
+					name={pool.name}
+					currency={pool.currency}
+					price={pool.price}
+					fill={pool.fill}
+					openAt={+pool.openAt}
+					closeAt={+pool.closeAt}
+					onZero={onRequestData}
+					actionTitle={title}
+					claimAt={pool.claimAt ? new Date(+pool.claimAt) : undefined}
+					limit={pool.limit}
+					alert={alert && <Alert title={alert.title} text={alert.text} type={alert.type} />}
+					onBack={() => goBack()}
+				>
+					{action === ACTION.claim && (
+						<Claim
+							token={pool.token}
+							price={pool.price}
+							currency={pool.currency}
+							amount={pool.amount}
+							isNonAction={
+								(pool.status !== POOL_STATUS.CLOSED && isCreator) ||
+								(pool.status === POOL_STATUS.FILLED && !userPlaced && !isCreator) ||
+								(pool.status === POOL_STATUS.CLOSED && !userPlaced && !isCreator)
+							}
+							disabled={
+								operation === OPERATION.loading ||
+								getDeltaTime(pool.claimAt) > 0 ||
+								(isCreator && creatorClaimed) ||
+								(!isCreator && !userPlaced) ||
+								(!isCreator && !userWhitelisted)
+							}
+							loading={operation === OPERATION.loading}
+							onClick={isCreator ? claimForCreator : claimForUser}
+						>
+							{isCreator && (creatorClaimed ? "Tokens claimed" : "Claim your unswapped tokens")}
+							{!isCreator &&
+								(userClaimed ? (
+									"Tokens claimed"
+								) : (
+									<>
+										Claim Token
+										{getDeltaTime(pool.claimAt) > 0 && (
+											<Caption
+												className={styles.timer}
+												Component="span"
+												style={{ color: "inherit" }}
+												weight="regular"
+											>
+												<Timer timer={pool.claimAt} onZero={onRequestData} />
+											</Caption>
+										)}
+									</>
+								))}
+						</Claim>
+					)}
+					{action === ACTION.place && (
+						<PlaceBid
+							currency={pool.currency}
+							balance={parseFloat(balance)}
+							limit={limit}
+							isLimit={limited}
+							disabled={
+								operation === OPERATION.loading ||
+								pool.status === POOL_STATUS.COMING ||
+								!userWhitelisted
+							}
+							loading={operation === OPERATION.loading}
+							onSubmit={bidAction}
+						>
+							<>
+								Place a Bid{" "}
+								{pool.status === POOL_STATUS.COMING && (
+									<Caption
+										className={styles.timer}
+										Component="span"
+										style={{ color: "inherit" }}
+										weight="regular"
+									>
+										<Timer timer={pool.openAt} onZero={onRequestData} />
+									</Caption>
+								)}
+							</>
+						</PlaceBid>
+					)}
+				</View>
+				{failedPopUp.defined ? (
+					<FailedPopUp
+						control={failedPopUp}
+						close={() => {
+							failedClose();
+							setOperation(OPERATION.default);
+						}}
+						onClick={tryAgainAction}
+					/>
+				) : null}
+				{successPopUp.defined ? (
+					<SuccessPopUp
+						control={successPopUp}
+						close={() => {
+							successClose();
+							setOperation(OPERATION.default);
+						}}
+					/>
+				) : null}
+			</>
 		);
 	}
 

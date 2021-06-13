@@ -2,6 +2,7 @@ import { FC, ReactNode } from "react";
 
 import { useConvertDate } from "@app/hooks/use-convert-data";
 import { Currency } from "@app/modules/currency";
+import { Symbol } from "@app/modules/symbol/Symbol";
 import { Timer } from "@app/modules/timer";
 import { DisplayPoolInfoType } from "@app/pages/auction";
 import { Button } from "@app/ui/button";
@@ -115,7 +116,7 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 									Auction progress
 								</Caption>
 								<Caption Component="span" weight="regular">
-									{amount} {currency} / {total} {currency}
+									{amount} <Symbol token={currency} /> / {total} <Symbol token={currency} />
 								</Caption>
 								<ProgressBar className={styles.bar} status={status} fillInPercentage={fill} />
 							</div>

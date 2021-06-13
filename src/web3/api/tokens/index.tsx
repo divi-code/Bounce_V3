@@ -126,7 +126,9 @@ const passAll = () => true;
 export const useTokenSearch = () => {
 	const tokens = useAllTokensSearch(passAll);
 
-	return useCallback((address: string) => tokens[address.toLowerCase()], [tokens]);
+	return useCallback((address: string) => (address ? tokens[address.toLowerCase()] : undefined), [
+		tokens,
+	]);
 };
 
 const getCacheFrom = kashe(<T extends unknown>(_source: any): Record<string, T> => ({}));

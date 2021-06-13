@@ -6,6 +6,7 @@ import { WithChildren } from "@app/helper/react/types";
 import { Currency } from "@app/modules/currency";
 import { Form } from "@app/modules/form";
 import { Label } from "@app/modules/label";
+import { Symbol } from "@app/modules/symbol/Symbol";
 import { TextField } from "@app/modules/text-field";
 
 import { PrimaryButton } from "@app/ui/button";
@@ -43,7 +44,7 @@ export const PlaceBid: FC<AuctionDetailPlaceBidType & WithChildren> = ({
 				Component="label"
 				after={
 					<>
-						Balance {balance.toFixed(2)} {currency}
+						Balance {balance} {<Symbol token={currency} />}
 					</>
 				}
 			>

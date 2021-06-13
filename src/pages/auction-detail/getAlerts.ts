@@ -131,6 +131,30 @@ export const getAlertForUsers = (
 			};
 		}
 
+		if (isClose && isFilled && !isPlaced) {
+			return {
+				title: "Auction filled.",
+				text: "This auction is finished, please visit other live auctions.",
+				type: ALERT_TYPE.default,
+			};
+		}
+
+		if (isClose && isFilled && isPlaced && !isClaimed) {
+			return {
+				title: "Auction filled.",
+				text: "This auction is finished, please claim your token.",
+				type: ALERT_TYPE.default,
+			};
+		}
+
+		if (isClose && isFilled && isPlaced && isClaimed) {
+			return {
+				title: "Auction filled.",
+				text: "This auction is finished",
+				type: ALERT_TYPE.default,
+			};
+		}
+
 		if (isClose && !isFilled && !isPlaced) {
 			return {
 				title: "Auction closed.",

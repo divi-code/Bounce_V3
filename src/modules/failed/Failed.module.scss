@@ -1,0 +1,33 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+
+  min-height: 18.75rem;
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--secondary-font);
+  font-size: 2.125rem;
+  font-weight: var(--medium);
+}
+
+.text {
+  margin: 0;
+  margin-top: var(--spacing-unit);
+
+  font-family: var(--primary-font);
+  font-size: 1.25rem;
+  font-weight: var(--regular);
+  color: rgba(var(--text), 0.6);
+  text-align: center;
+}
+
+.buttons {
+  margin-top: 3.25rem;
+}

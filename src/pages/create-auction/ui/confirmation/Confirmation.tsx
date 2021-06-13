@@ -7,6 +7,7 @@ import { useConvertDate } from "@app/hooks/use-convert-data";
 import { Currency } from "@app/modules/currency";
 import { defineFlowStep } from "@app/modules/flow/definition";
 import { useFlowData } from "@app/modules/flow/hooks";
+import { Symbol } from "@app/modules/symbol/Symbol";
 import { DescriptionList } from "@app/ui/description-list";
 
 import { Heading3 } from "@app/ui/typography";
@@ -111,7 +112,9 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 			tokenFrom={<Currency token={tokenFrom} small={true} />}
 			declaim={tokenDecimal}
 			tokenTo={<Currency token={tokenTo} small={true} />}
-			swapRatio={`1 ${tokenFrom} = ${swapRatio} ${tokenTo}`}
+			swapRatio={`1 ${(<Symbol token={tokenFrom} />)} = ${swapRatio} ${(
+				<Symbol token={tokenTo} />
+			)}`}
 			amount={amount * swapRatio}
 			allocation={
 				allocation === ALLOCATION_TYPE.limited ? `Limit ${limit} ${tokenTo}` : "No Limits"
