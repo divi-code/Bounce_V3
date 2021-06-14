@@ -9,6 +9,7 @@ import { CreateFlowForAuction } from "@app/modules/create-flow-for-auction";
 import { defineFlow } from "@app/modules/flow/definition";
 
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
+import { isLessThan } from "@app/utils/bn";
 import { numToWei } from "@app/utils/bn/wei";
 import { getTokenContract } from "@app/web3/api/bounce/erc";
 import {
@@ -111,7 +112,7 @@ export const CreateFixedAuction: FC<MaybeWithClassName> = () => {
 				account
 			);
 
-			if (allowance < data.amount) {
+			if (isLessThan(allowance, fromAmount)) {
 				const result = await approveAuctionPool(
 					tokenContract,
 					POOL_ADDRESS_MAPPING[type],

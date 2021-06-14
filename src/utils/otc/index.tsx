@@ -1,14 +1,10 @@
 import { TokenInfo } from "@uniswap/token-lists";
 import { Contract as ContractType } from "web3-eth-contract";
 
-import {
-	POOL_SHORT_NAME_MAPPING,
-	POOL_SPECIFIC_NAME_MAPPING,
-	POOL_TYPE,
-} from "@app/api/pool/const";
+import { OTC_SHORT_NAME_MAPPING, OTC_TYPE } from "@app/api/otc/const";
 import { divide, isGreaterThanOrEqualTo } from "@app/utils/bn";
 import { weiToNum } from "@app/utils/bn/wei";
-import { AuctionPoolType, getLimitAmount, getSwap1Amount } from "@app/web3/api/bounce/pool";
+import { OtcPoolType, getSwap1Amount } from "@app/web3/api/bounce/otc";
 
 export enum POOL_STATUS {
 	COMING = "coming",
@@ -18,39 +14,23 @@ export enum POOL_STATUS {
 	ERROR = "error",
 }
 
-export const getStatus = (
-	openAt: string | number,
-	closeAt: string | number,
-	amount: string,
-	total: string
-): POOL_STATUS => {
+export const getStatus = (openAt: string | number, amount: string, total: string): POOL_STATUS => {
 	const nowTime = new Date();
 	const openTime = new Date(+openAt);
-	const closeTime = new Date(+closeAt);
 
 	const isFilled = amount && total && isGreaterThanOrEqualTo(amount, total);
 
 	const isOpen = nowTime > openTime;
 
-	const isClose = nowTime > closeTime;
-
 	if (!isOpen) {
 		return POOL_STATUS.COMING;
 	}
 
-	if (isOpen && !isClose && !isFilled) {
+	if (isOpen && !isFilled) {
 		return POOL_STATUS.LIVE;
 	}
 
-	if (isOpen && !isClose && isFilled) {
-		return POOL_STATUS.FILLED;
-	}
-
-	if (isClose && !isFilled) {
-		return POOL_STATUS.CLOSED;
-	}
-
-	if (isClose && isFilled) {
+	if (isOpen && isFilled) {
 		return POOL_STATUS.FILLED;
 	}
 };
@@ -74,7 +54,7 @@ export const getSwapRatio = (
 	return divide(from, to, 6);
 };
 
-export type MatchedPoolType = {
+export type MatchedOTCType = {
 	status: POOL_STATUS;
 	id: number;
 	name: string;
@@ -87,37 +67,30 @@ export type MatchedPoolType = {
 	price: number;
 	fill: number;
 	openAt: number;
-	closeAt: number;
-	creator: string;
-	claimAt: number;
-	limit: number;
 	whitelist: boolean;
 };
 
-export const getMatchedPool = async (
+export const getMatchedOTCPool = async (
 	contract: ContractType,
 	from: TokenInfo,
 	to: TokenInfo,
-	pool: Omit<AuctionPoolType, "maxAmount1PerWallet" | "onlyBot">,
+	pool: Omit<OtcPoolType, "onlyBot">,
 	id: number,
-	auctionType: POOL_TYPE
-): Promise<MatchedPoolType> => {
+	otcType: OTC_TYPE
+): Promise<MatchedOTCType> => {
 	const toAmount = await getSwap1Amount(contract, id);
-	const limit = await getLimitAmount(contract, id);
 
 	const fromTotal = pool.amountTotal0;
 	const toTotal = pool.amountTotal1;
 
 	const openAt = pool.openAt * 1000;
-	const closeAt = pool.closeAt * 1000;
-	const claimAt = pool.claimAt * 1000;
 
 	return {
-		status: getStatus(openAt, closeAt, toAmount, toTotal),
+		status: getStatus(openAt, toAmount, toTotal),
 		id: id,
-		name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
+		name: `${pool.name} OTC`,
 		address: from.address,
-		type: POOL_SHORT_NAME_MAPPING[auctionType],
+		type: OTC_SHORT_NAME_MAPPING[otcType],
 		token: from.address,
 		total: parseFloat(weiToNum(toTotal, to.decimals, 6)),
 		amount: toAmount ? parseFloat(weiToNum(toAmount, to.decimals, 6)) : 0,
@@ -125,10 +98,6 @@ export const getMatchedPool = async (
 		price: parseFloat(getSwapRatio(toTotal, fromTotal, to.decimals, from.decimals)),
 		fill: getProgress(toAmount, toTotal, to.decimals),
 		openAt: openAt,
-		closeAt: closeAt,
-		creator: pool.creator,
-		claimAt: claimAt > closeAt ? claimAt : closeAt,
-		limit: parseFloat(weiToNum(limit, to.decimals, 6)),
 		whitelist: pool.enableWhiteList,
 	};
 };

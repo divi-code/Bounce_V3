@@ -48,8 +48,6 @@ const FixedImp = () => {
 		);
 	}, [tokenContract, account, findToken, tokenFrom]);
 
-	console.log("balance", balance);
-
 	const onSubmit = async (values: any) => {
 		addData({
 			tokenTo: values.tokenTo,

@@ -1,8 +1,9 @@
 import classNames from "classnames";
-import { CSSProperties, FC } from "react";
+import { FC } from "react";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
+import { Currency } from "@app/modules/currency";
 import { NavLink } from "@app/ui/button";
 
 import { DescriptionList } from "@app/ui/description-list";
@@ -16,21 +17,20 @@ import { POOL_STATUS } from "@app/utils/pool";
 
 import styles from "./Card.module.scss";
 
-type CardType = {
+export type DisplayOTCInfoType = {
 	href?: string;
 	status: POOL_STATUS;
-	id: string;
+	id: number;
 	name: string;
 	address: string;
 	type: string;
-	tokenCurrency: string;
-	tokenSymbol: string;
-	acceptableCurrency: string;
-	otcPrice: string;
-	fillInPercentage: number;
+	currency: string;
+	token: string;
+	price: number;
+	fill: number;
 };
 
-export const Card: FC<CardType & MaybeWithClassName> = ({
+export const Card: FC<DisplayOTCInfoType & MaybeWithClassName> = ({
 	className,
 	status,
 	href,
@@ -38,11 +38,10 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 	name,
 	address,
 	type,
-	tokenSymbol,
-	tokenCurrency,
-	acceptableCurrency,
-	otcPrice,
-	fillInPercentage,
+	token,
+	currency,
+	price,
+	fill,
 }) => {
 	const STATUS: Record<POOL_STATUS, string> = {
 		[POOL_STATUS.COMING]: "Coming soon",
@@ -55,14 +54,12 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 	const TOKEN_INFORMATION = {
 		"Contact address": walletConversion(address),
 		"OTC type": type,
-		"Token symbol": (
-			<span style={{ "--icon": `url("${tokenSymbol}")` } as CSSProperties}>{tokenCurrency}</span>
-		),
+		"Token symbol": <Currency token={token} small />,
 	};
 
 	const OTC_INFORMATION = {
-		"Acceptable currency": acceptableCurrency,
-		"Price per unit, $": otcPrice,
+		"Acceptable currency": <Currency token={currency} small />,
+		"Price per unit, $": price,
 	};
 
 	return (
@@ -80,7 +77,7 @@ export const Card: FC<CardType & MaybeWithClassName> = ({
 				data={TOKEN_INFORMATION}
 			/>
 			<DescriptionList className={styles.otc} title="OTC Offer" data={OTC_INFORMATION} />
-			<ProgressBar className={styles.bar} fillInPercentage={fillInPercentage} status={status} />
+			<ProgressBar className={styles.bar} fillInPercentage={fill} status={status} />
 		</NavLink>
 	);
 };

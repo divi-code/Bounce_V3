@@ -1,0 +1,10 @@
+.component {
+  display: grid;
+  align-content: space-between;
+
+  height: 100%;
+}
+
+.button {
+  flex-direction: column !important;
+}

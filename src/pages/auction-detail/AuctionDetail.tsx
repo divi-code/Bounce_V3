@@ -14,14 +14,13 @@ import { Caption } from "@app/ui/typography";
 import { numToWei, weiToNum } from "@app/utils/bn/wei";
 import { getMatchedPool, MatchedPoolType, POOL_STATUS } from "@app/utils/pool";
 import { getDeltaTime } from "@app/utils/time";
-import { getBalance, getTokenContract } from "@app/web3/api/bounce/erc";
+import { getBalance, getEthBalance, getTokenContract } from "@app/web3/api/bounce/erc";
 import {
 	creatorClaim,
 	getBouncePoolContract,
 	getCreatorClaimed,
-	getEthBalance,
 	getLimitAmount,
-	getMyAmount1,
+	getMyAmount0,
 	getMyClaimed,
 	getPools,
 	getWhitelistedStatus,
@@ -117,7 +116,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		const from = await queryToken(pool.token0);
 		const to = await queryToken(pool.token1);
 		const limit = await getLimitAmount(contract, poolID);
-		const userBid = await getMyAmount1(contract, account, poolID);
+		const userBid = await getMyAmount0(contract, account, poolID);
 		const whitelistStatus = await getWhitelistedStatus(contract, poolID, account);
 		const creatorClaim = await getCreatorClaimed(contract, account, poolID);
 		const userClaim = await getMyClaimed(contract, account, poolID);
@@ -132,8 +131,6 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		setUserWhitelisted(matchedPool.whitelist ? whitelistStatus : true);
 		setLimited(parseFloat(weiToNum(limit, to.decimals, 6)) > 0);
 		setCreator(pool.creator === account);
-
-		console.log("MyBid", userBid);
 
 		setLimit(
 			parseFloat(weiToNum(limit, to.decimals, 6)) - parseFloat(weiToNum(userBid, to.decimals, 6))

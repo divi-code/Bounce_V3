@@ -9,6 +9,7 @@ import { CreateFlowForOtc } from "@app/modules/create-flow-for-otc";
 import { defineFlow } from "@app/modules/flow/definition";
 
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
+import { isLessThan } from "@app/utils/bn";
 import { numToWei } from "@app/utils/bn/wei";
 import { getTokenContract } from "@app/web3/api/bounce/erc";
 import {
@@ -80,11 +81,7 @@ export const CreateSellingOTC: FC<MaybeWithClassName> = () => {
 	const provider = useWeb3Provider();
 	const { account, chainId } = useWeb3React();
 
-	const contract = useMemo(() => getBounceOtcContract(provider, chainId), [
-		type,
-		chainId,
-		provider,
-	]);
+	const contract = useMemo(() => getBounceOtcContract(provider, chainId), [chainId, provider]);
 
 	const findToken = useTokenSearch();
 	const { push: routerPush } = useRouter();
@@ -105,7 +102,9 @@ export const CreateSellingOTC: FC<MaybeWithClassName> = () => {
 
 			const allowance = await getOtcAllowance(tokenContract, chainId, account);
 
-			if (allowance < data.amount) {
+			console.log("allowance", allowance);
+
+			if (isLessThan(allowance, fromAmount)) {
 				const result = await approveOtcPool(tokenContract, chainId, account, fromAmount);
 
 				if (!result.status) {
@@ -117,12 +116,23 @@ export const CreateSellingOTC: FC<MaybeWithClassName> = () => {
 
 			setOperation(OPERATION.confirm);
 
+			console.log({
+				name: data.poolName,
+				token0: tokenFrom.address,
+				token1: tokenTo.address,
+				amountTotal0: fromAmount,
+				amountTotal1: toAmount,
+				openAt: +data.startPool / 1000,
+				enableWhiteList: data.whitelist,
+				onlyBot: false,
+				poolType: 0,
+			});
+
 			await createOtcPool(
 				contract,
 				account,
 				{
 					name: data.poolName,
-					creator: account,
 					token0: tokenFrom.address,
 					token1: tokenTo.address,
 					amountTotal0: fromAmount,
@@ -130,6 +140,7 @@ export const CreateSellingOTC: FC<MaybeWithClassName> = () => {
 					openAt: +data.startPool / 1000,
 					enableWhiteList: data.whitelist,
 					onlyBot: false,
+					poolType: 0,
 				},
 				data.whiteListList
 			)
@@ -142,7 +153,7 @@ export const CreateSellingOTC: FC<MaybeWithClassName> = () => {
 					setOperation(OPERATION.success);
 
 					const poolId = r.events.Created.returnValues[0];
-					routerPush(`/auction/${type}/${poolId}`);
+					routerPush(`/otc/${type}/${poolId}`);
 				})
 				.on("error", (e) => {
 					console.error("error", e);

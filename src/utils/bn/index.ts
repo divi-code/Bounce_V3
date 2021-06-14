@@ -10,6 +10,14 @@ export const isGreaterThanOrEqualTo = (value1: Numeric, value2: Numeric): boolea
 	return new BigNumber(value1).isGreaterThanOrEqualTo(new BigNumber(value2));
 };
 
+export const isLessThan = (value1: Numeric, value2: Numeric): boolean => {
+	return new BigNumber(value1).isLessThan(new BigNumber(value2));
+};
+
+export const isLessThanOrEqualTo = (value1: Numeric, value2: Numeric): boolean => {
+	return new BigNumber(value1).isLessThanOrEqualTo(new BigNumber(value2));
+};
+
 export const isEqualTo = (value1: Numeric, value2: Numeric): boolean => {
 	return new BigNumber(value1).isEqualTo(new BigNumber(value2));
 };

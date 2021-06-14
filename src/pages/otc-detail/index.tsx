@@ -1,0 +1,1 @@
+export { OTCDetail } from "./OTCDetail";
