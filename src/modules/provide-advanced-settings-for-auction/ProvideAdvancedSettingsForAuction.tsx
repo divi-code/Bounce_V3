@@ -7,7 +7,7 @@ import { useResizeObserver } from "@app/hooks/use-resize-observer";
 import { DateField } from "@app/modules/date-field";
 import { Form } from "@app/modules/form";
 import { Label } from "@app/modules/label";
-import { OnOffField } from "@app/modules/on-off-field ";
+import { OnOffField } from "@app/modules/on-off-field";
 import { RadioField } from "@app/modules/radio-field";
 import { TextField } from "@app/modules/text-field";
 
