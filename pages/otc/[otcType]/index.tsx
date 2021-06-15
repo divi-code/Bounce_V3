@@ -20,9 +20,9 @@ const OTCPage = pageWithLayout(
 );
 
 export function getStaticProps(context) {
-	const { auctionType } = context.params;
+	const { otcType } = context.params;
 
-	if (![OTC_TYPE.buy, OTC_TYPE.sell].includes(auctionType)) {
+	if (![OTC_TYPE.buy, OTC_TYPE.sell].includes(otcType)) {
 		return {
 			props: {},
 			notFound: true,
@@ -36,7 +36,7 @@ export function getStaticProps(context) {
 
 export async function getStaticPaths() {
 	return {
-		paths: [{ params: { auctionType: OTC_TYPE.buy } }, { params: { auctionType: OTC_TYPE.sell } }],
+		paths: [{ params: { otcType: OTC_TYPE.buy } }, { params: { otcType: OTC_TYPE.sell } }],
 		fallback: false,
 	};
 }

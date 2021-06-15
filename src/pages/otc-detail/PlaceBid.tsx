@@ -6,7 +6,7 @@ import { WithChildren } from "@app/helper/react/types";
 import { Currency } from "@app/modules/currency";
 import { Form } from "@app/modules/form";
 import { Label } from "@app/modules/label";
-import { Symbol } from "@app/modules/symbol/Symbol";
+import { Symbol } from "@app/modules/symbol";
 import { TextField } from "@app/modules/text-field";
 
 import { PrimaryButton } from "@app/ui/button";

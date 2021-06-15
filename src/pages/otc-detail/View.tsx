@@ -1,9 +1,8 @@
 import { FC, ReactNode } from "react";
 
 import { Currency } from "@app/modules/currency";
-import { Symbol } from "@app/modules/symbol/Symbol";
+import { Symbol } from "@app/modules/symbol";
 import { Timer } from "@app/modules/timer";
-import { DisplayPoolInfoType } from "@app/pages/auction";
 import { DisplayOTCInfoType } from "@app/pages/otc/ui/card";
 import { Button } from "@app/ui/button";
 import { DescriptionList } from "@app/ui/description-list";

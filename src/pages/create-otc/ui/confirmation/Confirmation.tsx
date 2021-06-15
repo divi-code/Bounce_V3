@@ -7,9 +7,9 @@ import { useConvertDate } from "@app/hooks/use-convert-data";
 import { Currency } from "@app/modules/currency";
 import { defineFlowStep } from "@app/modules/flow/definition";
 import { useFlowData } from "@app/modules/flow/hooks";
-import { Symbol } from "@app/modules/symbol/Symbol";
+import { Symbol } from "@app/modules/symbol";
 import { BuyingOutType } from "@app/pages/create-otc/ui/buying";
-import { Selling, SellingOutType } from "@app/pages/create-otc/ui/selling";
+import { SellingOutType } from "@app/pages/create-otc/ui/selling";
 import { DescriptionList } from "@app/ui/description-list";
 
 import { Heading3 } from "@app/ui/typography";
@@ -28,7 +28,7 @@ type ConfirmationType = {
 	declaim: string;
 	tokenTo: ReactNode;
 	unitPrice: ReactNode;
-	amount: number;
+	amount: ReactNode;
 	whitelist: string;
 	start: string;
 };
@@ -110,7 +110,17 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 					1 <Symbol token={tokenFrom} /> = {unitPrice} <Symbol token={tokenTo} />
 				</>
 			}
-			amount={amount * unitPrice}
+			amount={
+				type === OTC_TYPE.sell ? (
+					<>
+						{amount * unitPrice} <Symbol token={tokenTo} />
+					</>
+				) : (
+					<>
+						{amount} <Symbol token={tokenFrom} />
+					</>
+				)
+			}
 			whitelist={whitelist ? "Whitelist" : "Public"}
 			start={convertDate(new Date(startPool), "long")}
 			type={OTC_SHORT_NAME_MAPPING[type]}

@@ -7,7 +7,7 @@ import { useConvertDate } from "@app/hooks/use-convert-data";
 import { Currency } from "@app/modules/currency";
 import { defineFlowStep } from "@app/modules/flow/definition";
 import { useFlowData } from "@app/modules/flow/hooks";
-import { Symbol } from "@app/modules/symbol/Symbol";
+import { Symbol } from "@app/modules/symbol";
 import { DescriptionList } from "@app/ui/description-list";
 
 import { Heading3 } from "@app/ui/typography";

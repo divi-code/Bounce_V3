@@ -1,1 +1,1 @@
-export { Symbol } from "./Currency";
+export { Symbol } from "./Symbol";

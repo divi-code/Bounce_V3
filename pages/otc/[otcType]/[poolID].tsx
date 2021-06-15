@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 
+import { OTC_TYPE } from "@app/api/otc/const";
 import { Layout } from "@app/layout";
 import NoSsr from "@app/modules/no-ssr/NoSsr";
 import { RequireConnectedWallet } from "@app/modules/require-connected-wallet";
@@ -9,13 +10,13 @@ import { pageWithLayout } from "@app/utils/pageInLayout";
 const OtcViewPage = pageWithLayout(
 	() => {
 		const {
-			query: { poolID },
+			query: { otcType, poolID },
 		} = useRouter();
 
 		return (
 			<NoSsr>
 				<RequireConnectedWallet>
-					<OTCDetail poolID={+poolID} />
+					<OTCDetail poolID={+poolID} otcType={otcType as OTC_TYPE} />
 				</RequireConnectedWallet>
 			</NoSsr>
 		);

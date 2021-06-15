@@ -116,18 +116,6 @@ export const CreateSellingOTC: FC<MaybeWithClassName> = () => {
 
 			setOperation(OPERATION.confirm);
 
-			console.log({
-				name: data.poolName,
-				token0: tokenFrom.address,
-				token1: tokenTo.address,
-				amountTotal0: fromAmount,
-				amountTotal1: toAmount,
-				openAt: +data.startPool / 1000,
-				enableWhiteList: data.whitelist,
-				onlyBot: false,
-				poolType: 0,
-			});
-
 			await createOtcPool(
 				contract,
 				account,

@@ -1,10 +1,11 @@
 import { TokenInfo } from "@uniswap/token-lists";
 import { Contract as ContractType } from "web3-eth-contract";
 
-import { OTC_SHORT_NAME_MAPPING, OTC_TYPE } from "@app/api/otc/const";
+import { OTC_TYPE } from "@app/api/otc/const";
 import { divide, isGreaterThanOrEqualTo } from "@app/utils/bn";
 import { weiToNum } from "@app/utils/bn/wei";
-import { OtcPoolType, getSwap1Amount } from "@app/web3/api/bounce/otc";
+import { getSwap1Amount, OtcPoolType } from "@app/web3/api/bounce/otc";
+import { OTCPoolInfoType } from "@app/web3/api/bounce/otc-search";
 
 export enum POOL_STATUS {
 	COMING = "coming",
@@ -70,13 +71,17 @@ export type MatchedOTCType = {
 	whitelist: boolean;
 };
 
+const MATCHED_TYPE = {
+	0: OTC_TYPE.sell,
+	1: OTC_TYPE.buy,
+};
+
 export const getMatchedOTCPool = async (
 	contract: ContractType,
 	from: TokenInfo,
 	to: TokenInfo,
 	pool: Omit<OtcPoolType, "onlyBot">,
-	id: number,
-	otcType: OTC_TYPE
+	id: number
 ): Promise<MatchedOTCType> => {
 	const toAmount = await getSwap1Amount(contract, id);
 
@@ -90,7 +95,7 @@ export const getMatchedOTCPool = async (
 		id: id,
 		name: `${pool.name} OTC`,
 		address: from.address,
-		type: OTC_SHORT_NAME_MAPPING[otcType],
+		type: MATCHED_TYPE[pool.poolType],
 		token: from.address,
 		total: parseFloat(weiToNum(toTotal, to.decimals, 6)),
 		amount: toAmount ? parseFloat(weiToNum(toAmount, to.decimals, 6)) : 0,

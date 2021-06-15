@@ -7,7 +7,7 @@ import { Currency } from "@app/modules/currency";
 import { Form } from "@app/modules/form";
 import { Label } from "@app/modules/label";
 import { SelectTokenField } from "@app/modules/select-token-field";
-import { Symbol } from "@app/modules/symbol/Symbol";
+import { Symbol } from "@app/modules/symbol";
 import { TextField } from "@app/modules/text-field";
 
 import { Alert, ALERT_TYPE } from "@app/ui/alert";

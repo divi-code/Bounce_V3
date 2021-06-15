@@ -11,12 +11,10 @@ export const Default = () => {
 				tokenFrom="ETH"
 				declaim="18"
 				tokenTo="ETH"
-				swapRatio={`1 ETH = 10 ETH`}
-				amount={100}
-				allocation="No Limits"
+				unitPrice={`1 ETH = 10 ETH`}
+				amount={"100 ETH"}
 				whitelist="Yes"
-				duration="From - To"
-				delay="No"
+				start="Start"
 				type="Fixed Swap Auction"
 			/>
 		</div>

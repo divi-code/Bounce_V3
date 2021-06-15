@@ -38,7 +38,7 @@ const MATCHED_TYPE = {
 	1: OTC_TYPE.buy,
 };
 
-export const OTCDetail: FC<{ poolID: number }> = ({ poolID }) => {
+export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID, otcType }) => {
 	const provider = useWeb3Provider();
 	const chainId = useChainId();
 	const queryToken = useTokenQuery();
@@ -87,14 +87,7 @@ export const OTCDetail: FC<{ poolID: number }> = ({ poolID }) => {
 		const from = await queryToken(pool.token0);
 		const to = await queryToken(pool.token1);
 
-		const matchedPool = await getMatchedOTCPool(
-			contract,
-			from,
-			to,
-			pool,
-			poolID,
-			MATCHED_TYPE[pool.poolType]
-		);
+		const matchedPool = await getMatchedOTCPool(contract, from, to, pool, poolID);
 
 		setPool(matchedPool);
 		setType(MATCHED_TYPE[pool.poolType]);
