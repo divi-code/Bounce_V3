@@ -5,8 +5,6 @@ import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { Button } from "@app/ui/button";
 
-import { Body1 } from "@app/ui/typography";
-
 import styles from "./Calendar.module.scss";
 import { DayPanelHead } from "./DayPanelHead";
 
@@ -17,17 +15,7 @@ import { getYMD } from "./utils";
 
 const minDateOfTwo = (d1: Date, d2: Date) => (d1 < d2 ? d1 : d2);
 
-export type QuickNavType =
-	| "today"
-	| "tomorrow"
-	| "in-2-days"
-	| "in-5-days"
-	| "in-7-days"
-	| "in-10-days";
-
 interface Props {
-	quickNav?: Array<QuickNavType>;
-	label: string;
 	value?: Date;
 	selection?: DateInterval;
 	selected?: Date;
@@ -55,8 +43,6 @@ const Switch = (props: SVGAttributes<SVGElement>) => (
 
 export const Calendar: FC<Props & MaybeWithClassName> = ({
 	className,
-	label,
-	quickNav,
 	selection,
 	selected,
 	minDate,
@@ -100,18 +86,6 @@ export const Calendar: FC<Props & MaybeWithClassName> = ({
 		contentRef.current && contentRef.current.focus();
 	};
 
-	const setToday = () => {
-		const newDate = new Date();
-		setCalendarValue(newDate);
-		pickDate(newDate);
-	};
-
-	const setInXDays = (x: number) => {
-		const newDate = new Date(Date.now() + x * 24 * 60 * 60 * 1000);
-		setCalendarValue(newDate);
-		pickDate(newDate);
-	};
-
 	const moveLeft = () => {
 		if (month > 0) {
 			setMonth(month - 1);
@@ -145,39 +119,6 @@ export const Calendar: FC<Props & MaybeWithClassName> = ({
 
 	return (
 		<div className={classNames(className, styles.component)} style={{ ...style, "--gap": gap }}>
-			<Body1 className={styles.header} Component="div">
-				{label}
-				{quickNav && quickNav.includes("today") && (
-					<button className={styles.control} type="button" onClick={setToday}>
-						Today
-					</button>
-				)}
-				{quickNav && quickNav.includes("tomorrow") && (
-					<button className={styles.control} type="button" onClick={() => setInXDays(1)}>
-						Tomorrow
-					</button>
-				)}
-				{quickNav && quickNav.includes("in-2-days") && (
-					<button className={styles.control} type="button" onClick={() => setInXDays(2)}>
-						In 2 days
-					</button>
-				)}
-				{quickNav && quickNav.includes("in-5-days") && (
-					<button className={styles.control} type="button" onClick={() => setInXDays(5)}>
-						In 5 days
-					</button>
-				)}
-				{quickNav && quickNav.includes("in-7-days") && (
-					<button className={styles.control} type="button" onClick={() => setInXDays(7)}>
-						In 7 days
-					</button>
-				)}
-				{quickNav && quickNav.includes("in-10-days") && (
-					<button className={styles.control} type="button" onClick={() => setInXDays(10)}>
-						In 10 days
-					</button>
-				)}
-			</Body1>
 			<div className={styles.month}>
 				<Button
 					className={classNames(styles.switch, styles.prev)}

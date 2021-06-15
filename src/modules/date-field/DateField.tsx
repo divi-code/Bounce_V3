@@ -3,9 +3,8 @@ import { Field } from "react-final-form";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
-import { QuickNavType } from "@app/ui/calendar";
 import { DateInterval } from "@app/ui/calendar/types";
-import { DatePicker, DropdownPositionType } from "@app/ui/date-picker";
+import { DatePicker, DropdownPositionType, QuickNavType } from "@app/ui/date-picker";
 import { isRequired } from "@app/utils/validation";
 
 type DateFieldType = {

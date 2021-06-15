@@ -7,8 +7,6 @@ const nope = () => null;
 
 export const Default = () => (
 	<Calendar
-		label="Choose end date"
-		quickNav={["today", "tomorrow", "in-2-days"]}
 		selection={{}}
 		onChange={nope}
 		minDate={stripHours(new Date())}

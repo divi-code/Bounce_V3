@@ -17,7 +17,7 @@ import { Input } from "@app/ui/input";
 import { Body1 } from "@app/ui/typography";
 import { dateToISODate, endOfTheDay, to2DigitOrNothing } from "@app/ui/utils/dateFormatter";
 
-import { Calendar, QuickNavType } from "../calendar";
+import { Calendar } from "../calendar";
 
 import styles from "./DatePicker.module.scss";
 
@@ -43,6 +43,14 @@ const Icon = (props) => (
 );
 
 export type DropdownPositionType = "left" | "right";
+
+export type QuickNavType =
+	| "today"
+	| "tomorrow"
+	| "in-2-days"
+	| "in-5-days"
+	| "in-7-days"
+	| "in-10-days";
 
 type DatePickerType = {
 	initialValue?: Date;
@@ -217,7 +225,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 	const topRef = useRef<HTMLDivElement>(null);
 	useOnClickOutside([topRef], closeByClickAway, on);
 
-	const [hours, onHoursChange] = useCallbackState(
+	const [hours, onHoursChange, setHours] = useCallbackState(
 		initialValue ? initialValue.getHours() : "",
 		(event: ChangeEvent<HTMLInputElement>, prev) => {
 			const realValue = event.target.value;
@@ -232,7 +240,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 		}
 	);
 
-	const [minutes, onMinutesChange] = useCallbackState(
+	const [minutes, onMinutesChange, setMinutes] = useCallbackState(
 		initialValue ? initialValue.getMinutes() : "",
 		(event: ChangeEvent<HTMLInputElement>, prev) => {
 			const realValue = event.target.value;
@@ -267,6 +275,22 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[hours, minutes, calendarValue]
 	);
+
+	const setToday = () => {
+		const newDate = new Date();
+		setCalendarValue(newDate);
+
+		const shiftedDate = new Date(+newDate + /* +10m */ 10 * 60 * 1000);
+		setHours(shiftedDate.getHours());
+		setMinutes(shiftedDate.getMinutes());
+	};
+
+	const setInXDays = (x: number) => {
+		const newDate = new Date(Date.now() + x * 24 * 60 * 60 * 1000);
+		setCalendarValue(newDate);
+		setHours(0);
+		setMinutes(0);
+	};
 
 	return (
 		<div className={classNames(className, styles.component)} ref={topRef}>
@@ -317,9 +341,40 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 				>
 					{on && (
 						<div className={styles.calendar}>
+							<Body1 className={styles.header} Component="div">
+								{labels[0]}
+								{quickNav && quickNav.includes("today") && (
+									<button className={styles.control} type="button" onClick={setToday}>
+										Today
+									</button>
+								)}
+								{quickNav && quickNav.includes("tomorrow") && (
+									<button className={styles.control} type="button" onClick={() => setInXDays(1)}>
+										Tomorrow
+									</button>
+								)}
+								{quickNav && quickNav.includes("in-2-days") && (
+									<button className={styles.control} type="button" onClick={() => setInXDays(2)}>
+										In 2 days
+									</button>
+								)}
+								{quickNav && quickNav.includes("in-5-days") && (
+									<button className={styles.control} type="button" onClick={() => setInXDays(5)}>
+										In 5 days
+									</button>
+								)}
+								{quickNav && quickNav.includes("in-7-days") && (
+									<button className={styles.control} type="button" onClick={() => setInXDays(7)}>
+										In 7 days
+									</button>
+								)}
+								{quickNav && quickNav.includes("in-10-days") && (
+									<button className={styles.control} type="button" onClick={() => setInXDays(10)}>
+										In 10 days
+									</button>
+								)}
+							</Body1>
 							<Calendar
-								label={labels[0]}
-								quickNav={quickNav}
 								disableEmptyDays={false}
 								value={calendarValue}
 								minDate={min ? new Date(min) : undefined}
@@ -331,7 +386,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 							/>
 
 							<div className={styles.time}>
-								<Body1 Component="span">{labels[0]}</Body1>
+								<Body1 Component="span">{labels[1]}</Body1>
 								<Input
 									name="hours"
 									type="number"

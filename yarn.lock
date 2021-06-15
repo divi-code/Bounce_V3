@@ -13887,10 +13887,10 @@ use-callback-ref@^1.2.1, use-callback-ref@^1.2.3, use-callback-ref@^1.2.5:
   resolved "https://registry.yarnpkg.com/use-callback-ref/-/use-callback-ref-1.2.5.tgz#6115ed242cfbaed5915499c0a9842ca2912f38a5"
   integrity sha512-gN3vgMISAgacF7sqsLPByqoePooY3n2emTH59Ur5d/M8eg4WTWu1xp8i8DHjohftIyEx0S08RiYxbffr4j8Peg==
 
-use-callback-state@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/use-callback-state/-/use-callback-state-1.1.1.tgz#24dcaa8c63619afd3d6ad23aa8f96be0a7932d99"
-  integrity sha512-H70E/pjEtD+WtElijadD7pHB6TqELfzS4eLXN9e52UnrVWfk5BK9ecnSt9qqkcQgGqOuIBsNTseP9XCl4MPAwg==
+use-callback-state@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/use-callback-state/-/use-callback-state-1.2.0.tgz#96cbd02c677a04f625f008b61d3753a120dc5809"
+  integrity sha512-Aq5ZfKG3nX4rImmINIXulkxAr6ULtT9OA64uyBmOK7ag6f8rJTQUR8eieoijHyS44blNsBL/rzL/c/7q/kX1hg==
   dependencies:
     tslib "^1.9.3 || ^2.0.0"
 

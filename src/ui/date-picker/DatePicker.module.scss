@@ -47,6 +47,57 @@
   visibility: visible;
 }
 
+.header {
+  position: relative;
+
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  grid-column-gap: var(--spacing-unit);
+
+  padding-bottom: calc(var(--spacing-unit) * 2);
+}
+
+.header::before {
+  position: absolute;
+  bottom: 0;
+  left: calc(var(--spacing-unit) * -2);
+  right: calc(var(--spacing-unit) * -2);
+  content: "";
+
+  display: block;
+  height: 1px;
+
+  background-color: rgba(var(--primary-black), 0.1);
+}
+
+.control {
+  min-height: 2.5rem;
+
+  font-family: var(--primary-font);
+  font-weight: var(--regular);
+  font-size: var(--body-1);
+  color: rgba(var(--primary-black), 1);
+
+  border: 0;
+  border-radius: 0.75rem;
+
+  background-color: #ececec;
+
+  cursor: pointer;
+
+  transition-timing-function: linear;
+  transition-duration: 250ms;
+  transition-property: background-color, color;
+
+  &:hover,
+  &:focus {
+    color: rgba(var(--primary-white), 1);
+
+    background-color: rgba(var(--primary-black), 1);
+  }
+}
+
 .calendar {
   padding: calc(var(--spacing-unit) * 2);
 
