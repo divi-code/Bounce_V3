@@ -15,6 +15,8 @@ import { WhiteListPopUp } from "@app/modules/whitelist-pop-up";
 import { PrimaryButton } from "@app/ui/button";
 import { RadioGroup } from "@app/ui/radio-group";
 
+import { isNotGreaterThan, isNotLongerThan } from "@app/utils/validation";
+
 import styles from "./ProvideAdvancedSettingsForAuction.module.scss";
 
 type ProvideAdvancedSettingsType = {
@@ -42,7 +44,7 @@ export const ProvideAdvancedSettingsForAuction: FC<
 	return (
 		<Form onSubmit={onSubmit} className={styles.form} initialValues={initialValues}>
 			<Label Component="div" label="Pool Name">
-				<TextField type="text" name="poolName" required />
+				<TextField type="text" name="poolName" required validate={isNotLongerThan(15)} />
 			</Label>
 			<div ref={setBlockRef}>
 				<div className={styles.period}>
