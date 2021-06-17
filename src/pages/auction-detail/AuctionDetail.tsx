@@ -11,12 +11,15 @@ import { Timer } from "@app/modules/timer";
 
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
 import { Caption } from "@app/ui/typography";
+import { isLessThan } from "@app/utils/bn";
 import { numToWei, weiToNum } from "@app/utils/bn/wei";
 import { getMatchedPool, MatchedPoolType, POOL_STATUS } from "@app/utils/pool";
 import { getDeltaTime } from "@app/utils/time";
 import { getBalance, getEthBalance, getTokenContract } from "@app/web3/api/bounce/erc";
 import {
+	approveAuctionPool,
 	creatorClaim,
+	getAllowance,
 	getBouncePoolContract,
 	getCreatorClaimed,
 	getLimitAmount,
@@ -88,21 +91,29 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 
 	const [to, setTo] = useState(undefined);
 
+	const [isETH, setETH] = useState(false);
+
 	const contract = useMemo(
 		() => getBouncePoolContract(provider, POOL_ADDRESS_MAPPING[auctionType], chainId),
 		[auctionType, chainId, provider]
 	);
 
 	useEffect(() => {
+		if (to && to.address === "0x0000000000000000000000000000000000000000") {
+			setETH(true);
+		}
+	}, [to]);
+
+	useEffect(() => {
 		if (to) {
-			if (to.symbol !== "ETH") {
+			if (!isETH) {
 				const tokenContract = getTokenContract(provider, to.address);
 				getBalance(tokenContract, account).then((b) => setBalance(weiToNum(b, to.decimals, 6)));
 			} else {
 				getEthBalance(web3, account).then((b) => setBalance(weiToNum(b, to.decimals, 6)));
 			}
 		}
-	}, [account, to, provider, web3]);
+	}, [account, to, provider, web3, isETH]);
 
 	const updateData = useCallback(async () => {
 		if (!contract) {
@@ -159,8 +170,37 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 	const bidAction: FormProps["onSubmit"] = async (values, form) => {
 		const operation = async () => {
 			try {
+				const value = numToWei(values.bid, to.decimals, 0);
 				setOperation(OPERATION.loading);
-				await swapContracts(contract, numToWei(values.bid, to.decimals, 0), account, poolID);
+				console.log("value", value);
+
+				const tokenContract = getTokenContract(provider, to.address);
+
+				const allowance = await getAllowance(
+					tokenContract,
+					POOL_ADDRESS_MAPPING[auctionType],
+					chainId,
+					account
+				);
+
+				if (isLessThan(allowance, value)) {
+					const result = await approveAuctionPool(
+						tokenContract,
+						POOL_ADDRESS_MAPPING[auctionType],
+						chainId,
+						account,
+						value
+					);
+
+					if (!result.status) {
+						setOperation(OPERATION.approvalFailed);
+
+						return;
+					}
+				}
+
+				await swapContracts(contract, value, account, poolID, !isETH ? "0" : value);
+
 				setOperation(OPERATION.completed);
 				await updateData();
 				form.change("bid", undefined);

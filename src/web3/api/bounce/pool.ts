@@ -135,13 +135,17 @@ export const swapContracts = async (
 	contract: ContractType,
 	amount: string,
 	account: string,
-	index: number
+	index: number,
+	sendAmount: string
 ) => {
 	const action = contract.methods.swap(index, amount);
 
-	action.estimateGas();
+	action.estimateGas({
+		index,
+		amount,
+	});
 
-	return action.send({ from: account, value: amount });
+	return action.send({ from: account, value: sendAmount });
 };
 
 export const creatorClaim = async (contract: ContractType, account: string, index: number) => {
