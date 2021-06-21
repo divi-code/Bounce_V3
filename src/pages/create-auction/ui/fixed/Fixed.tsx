@@ -29,7 +29,7 @@ const FixedImp = () => {
 	const { moveForward, addData, data } = useFlowControl<FixedOutType>();
 	const { tokenFrom } = useFlowData<FixedInType>();
 	const initialValues = useMemo(
-		() => ({ tokenFrom, allocation: "limited", ...data.fixedFormValues }),
+		() => ({ allocation: "limited", ...data.fixedFormValues, tokenFrom }),
 		[data.fixedFormValues, tokenFrom]
 	);
 

@@ -10,11 +10,11 @@ export interface FlowControl<T extends object = any> {
 	data: any;
 	validationStatus: any;
 
-	moveForward(): void;
-
-	moveBack(): void;
-
 	addData(data: Partial<T>): void;
+
+	moveForward(): void;
+	moveBack(): void;
+	moveToStep(step: number): void;
 
 	onMoveForward(cb: FlowSubmitCallback): void;
 }

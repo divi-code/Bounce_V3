@@ -30,6 +30,10 @@ export function Flow<T extends object = {}, P extends object = {}>({
 	const hasNextStep = step < steps.length - 1;
 
 	const moveStepBack = useCallback(() => setStep((prevStep) => Math.max(0, prevStep - 1)), []);
+	const moveToStep = useCallback(
+		(step: number) => setStep(Math.max(0, Math.min(step, steps.length - 1))),
+		[steps.length]
+	);
 
 	const moveStepForward = useCallback(() => {
 		if (hasNextStep) {
@@ -77,6 +81,7 @@ export function Flow<T extends object = {}, P extends object = {}>({
 				return moveStepForward();
 			},
 			moveBack: moveStepBack,
+			moveToStep,
 			addData,
 			onMoveForward: setSubmitAction,
 		}),
@@ -86,6 +91,7 @@ export function Flow<T extends object = {}, P extends object = {}>({
 			validationStatus,
 			moveStepBack,
 			moveStepForward,
+			moveToStep,
 			step,
 			stepProps,
 			steps,

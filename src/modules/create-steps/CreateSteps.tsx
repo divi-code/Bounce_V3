@@ -17,14 +17,14 @@ type CreateStepsType = {
 	type: string;
 	currentStep: number;
 	moveForward(): void;
-	moveBack(): void;
+	moveToStep(step: number): void;
 };
 
 export const CreateSteps: FC<CreateStepsType & MaybeWithClassName & WithChildren> = ({
 	className,
 	title,
 	type,
-	moveBack,
+	moveToStep,
 	currentStep,
 	count,
 	children,
@@ -59,7 +59,7 @@ export const CreateSteps: FC<CreateStepsType & MaybeWithClassName & WithChildren
 											styles.navigation,
 											index === currentStep && styles.active
 										)}
-										onClick={moveBack}
+										onClick={() => moveToStep(index)}
 										disabled={index >= currentStep}
 									>
 										{index + 1}

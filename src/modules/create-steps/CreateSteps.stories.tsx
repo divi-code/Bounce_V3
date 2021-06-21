@@ -6,7 +6,7 @@ export const Default = () => {
 			<CreateSteps
 				count={2}
 				currentStep={1}
-				moveBack={() => alert("Back")}
+				moveToStep={() => alert("Back")}
 				moveForward={() => alert("Back")}
 				type="Sell OTC"
 				title="Advanced Setting"

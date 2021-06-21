@@ -62,18 +62,26 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID, o
 
 	const [to, setTo] = useState(undefined);
 
+	const [isETH, setETH] = useState(undefined);
+
+	useEffect(() => {
+		if (to && to.address === "0x0000000000000000000000000000000000000000") {
+			setETH(true);
+		}
+	}, [to]);
+
 	const contract = useMemo(() => getBounceOtcContract(provider, chainId), [chainId, provider]);
 
 	useEffect(() => {
 		if (to) {
-			if (to.symbol !== "ETH") {
+			if (!isETH) {
 				const tokenContract = getTokenContract(provider, to.address);
 				getBalance(tokenContract, account).then((b) => setBalance(weiToNum(b, to.decimals, 6)));
 			} else {
 				getEthBalance(web3, account).then((b) => setBalance(weiToNum(b, to.decimals, 6)));
 			}
 		}
-	}, [account, to, provider, web3]);
+	}, [account, to, provider, web3, isETH]);
 
 	const updateData = useCallback(async () => {
 		if (!contract) {
@@ -114,9 +122,11 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID, o
 
 	const bidAction: FormProps["onSubmit"] = async (values, form) => {
 		const operation = async () => {
+			const value = numToWei(values.bid, to.decimals, 0);
+
 			try {
 				setOperation(OPERATION.loading);
-				await swapContracts(contract, numToWei(values.bid, to.decimals, 0), account, poolID);
+				await swapContracts(contract, value, account, poolID, isETH ? "0" : value);
 				setOperation(OPERATION.completed);
 				await updateData();
 				form.change("bid", undefined);

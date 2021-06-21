@@ -39,7 +39,7 @@ export const CreateFlowForOtc: FC<CreateFlowType & MaybeWithClassName> = ({
 			innerClassName={styles.innerStep}
 			type={type}
 		>
-			{(body, { currentStep, isLastStep, moveBack, moveForward }) => {
+			{(body, { currentStep, isLastStep, moveBack, moveToStep, moveForward }) => {
 				return (
 					<>
 						{!isLastStep ? (
@@ -49,7 +49,7 @@ export const CreateFlowForOtc: FC<CreateFlowType & MaybeWithClassName> = ({
 								type={OTC_CREATE_NAME_MAPPING[type]}
 								currentStep={currentStep}
 								moveForward={moveForward}
-								moveBack={moveBack}
+								moveToStep={moveToStep}
 							>
 								{body}
 							</CreateSteps>
