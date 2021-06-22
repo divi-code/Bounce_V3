@@ -15,7 +15,7 @@ import { WhiteListPopUp } from "@app/modules/whitelist-pop-up";
 import { PrimaryButton } from "@app/ui/button";
 import { RadioGroup } from "@app/ui/radio-group";
 
-import { isNotGreaterThan, isNotLongerThan } from "@app/utils/validation";
+import { isNotLongerThan } from "@app/utils/validation";
 
 import styles from "./ProvideAdvancedSettingsForAuction.module.scss";
 

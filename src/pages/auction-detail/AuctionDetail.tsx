@@ -174,28 +174,30 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 				setOperation(OPERATION.loading);
 				console.log("value", value);
 
-				const tokenContract = getTokenContract(provider, to.address);
+				if (!isETH) {
+					const tokenContract = getTokenContract(provider, to.address);
 
-				const allowance = await getAllowance(
-					tokenContract,
-					POOL_ADDRESS_MAPPING[auctionType],
-					chainId,
-					account
-				);
-
-				if (isLessThan(allowance, value)) {
-					const result = await approveAuctionPool(
+					const allowance = await getAllowance(
 						tokenContract,
 						POOL_ADDRESS_MAPPING[auctionType],
 						chainId,
-						account,
-						value
+						account
 					);
 
-					if (!result.status) {
-						setOperation(OPERATION.approvalFailed);
+					if (isLessThan(allowance, value)) {
+						const result = await approveAuctionPool(
+							tokenContract,
+							POOL_ADDRESS_MAPPING[auctionType],
+							chainId,
+							account,
+							value
+						);
 
-						return;
+						if (!result.status) {
+							setOperation(OPERATION.approvalFailed);
+
+							return;
+						}
 					}
 				}
 
@@ -394,6 +396,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 							currency={pool.currency}
 							amount={pool.amount}
 							isNonAction={
+								userClaimed ||
 								(pool.status !== POOL_STATUS.CLOSED && isCreator) ||
 								(pool.status === POOL_STATUS.FILLED && !userPlaced && !isCreator) ||
 								(pool.status === POOL_STATUS.CLOSED && !userPlaced && !isCreator)

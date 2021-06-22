@@ -15,7 +15,7 @@ import { PrimaryButton } from "@app/ui/button";
 import { RightArrow2 } from "@app/ui/icons/arrow-right-2";
 import { Body1 } from "@app/ui/typography";
 
-import { composeValidators, isEqualZero, isNotGreaterThan } from "@app/utils/validation";
+import { isEqualZero } from "@app/utils/validation";
 
 import styles from "./Buying.module.scss";
 

@@ -6,7 +6,7 @@ import { useControlPopUp } from "@app/hooks/use-control-popup";
 import { PrimaryButton } from "@app/ui/button";
 import { PopUpContainer } from "@app/ui/pop-up-container";
 
-import { Body1 } from "@app/ui/typography";
+import { Body1, Heading1, Heading2 } from "@app/ui/typography";
 
 import styles from "./WhiteListPopUp.module.scss";
 
@@ -21,8 +21,12 @@ type ContentType = {
 export const Content: FC<ContentType> = ({ value, setValue, setList }) => {
 	return (
 		<div className={styles.component}>
+			<Heading1 Component="h2" className={styles.title}>
+				Import whitelist
+			</Heading1>
 			<Body1 className={styles.text}>
-				Enter one address on each line. You can entry 300 addresses as maximum.
+				Enter one address on each line. You can entry 300
+				<br /> addresses as maximum.
 			</Body1>
 			<textarea
 				className={styles.textarea}
@@ -64,7 +68,6 @@ export const WhiteListPopUp: FC<{
 			visible={popUp.defined}
 			onClose={close}
 			maxWidth={640}
-			title="Import whitelist"
 			withoutClose
 		>
 			<Content value={value} setValue={setValue} setList={setList} />
