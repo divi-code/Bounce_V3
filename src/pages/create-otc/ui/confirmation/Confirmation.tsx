@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import classNames from "classnames";
 import { FC, ReactNode } from "react";
 
@@ -113,7 +114,8 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 			amount={
 				type === OTC_TYPE.sell ? (
 					<>
-						{amount * unitPrice} <Symbol token={tokenTo} />
+						{new BigNumber(amount).multipliedBy(new BigNumber(unitPrice)).toString()}{" "}
+						<Symbol token={tokenTo} />
 					</>
 				) : (
 					<>

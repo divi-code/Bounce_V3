@@ -1,4 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
+import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
 import { FC, useEffect, useMemo, useState } from "react";
 
@@ -95,7 +96,11 @@ export const CreateSellingOTC: FC<MaybeWithClassName> = () => {
 		const tokenTo = findToken(data.tokenTo);
 
 		const fromAmount = numToWei(data.amount, tokenFrom.decimals, 0);
-		const toAmount = numToWei(data.unitPrice * data.amount, tokenTo.decimals, 0);
+		const toAmount = numToWei(
+			new BigNumber(data.amount).multipliedBy(new BigNumber(data.unitPrice)).toNumber(),
+			tokenTo.decimals,
+			0
+		);
 
 		try {
 			const tokenContract = getTokenContract(provider, tokenFrom.address);

@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import classNames from "classnames";
 import { FC, ReactNode } from "react";
 
@@ -27,7 +28,7 @@ type ConfirmationType = {
 	declaim: string;
 	tokenTo: ReactNode;
 	swapRatio: ReactNode;
-	amount: number;
+	amount: string;
 	allocation: string;
 	whitelist: string;
 	duration: string;
@@ -117,7 +118,7 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 					1 <Symbol token={tokenFrom} /> = {swapRatio} <Symbol token={tokenTo} />
 				</>
 			}
-			amount={amount * swapRatio}
+			amount={new BigNumber(amount).multipliedBy(new BigNumber(swapRatio)).toString()}
 			allocation={
 				allocation === ALLOCATION_TYPE.limited ? `Limit ${limit} ${tokenTo}` : "No Limits"
 			}

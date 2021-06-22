@@ -1,4 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
+import BigNumber from "bignumber.js";
 import { useRouter } from "next/router";
 import { FC, useEffect, useMemo, useState } from "react";
 
@@ -98,7 +99,11 @@ export const CreateFixedAuction: FC<MaybeWithClassName> = () => {
 		const tokenTo = findToken(data.tokenTo);
 
 		const fromAmount = numToWei(data.amount, tokenFrom.decimals, 0);
-		const toAmount = numToWei(data.swapRatio * data.amount, tokenTo.decimals, 0);
+		const toAmount = numToWei(
+			new BigNumber(data.amount).multipliedBy(new BigNumber(data.swapRatio)).toNumber(),
+			tokenTo.decimals,
+			0
+		);
 
 		const limit = data.limit ? numToWei(data.limit, tokenTo.decimals, 0) : "0";
 
