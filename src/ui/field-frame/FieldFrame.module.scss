@@ -30,7 +30,7 @@
   cursor: pointer;
 
   &:hover,
-  &:focus,
+  #{mixin.$when-focus-rings-enabled} &:focus,
   &.focus {
     border: 1px solid rgba(var(--primary-black), 0.4);
   }

@@ -56,11 +56,6 @@
   transition-timing-function: linear;
   transition-property: border-color;
   transition-duration: 250ms;
-
-  &:hover,
-  &:focus {
-    border-color: rgba(var(--pink), 1);
-  }
 }
 
 .icon {

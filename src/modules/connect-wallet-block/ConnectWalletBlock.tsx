@@ -18,7 +18,8 @@ export const ConnectWalletBlock: FC<MaybeWithClassName> = ({ className }) => {
 			<GutterBox className={styles.wrapper}>
 				<Heading1 className={styles.title}>Connect your wallet</Heading1>
 				<Body1 className={styles.text}>
-					The content of this page is only available with the connected wallet
+					The content of this page is only available
+					<br /> with the connected wallet
 				</Body1>
 				<PrimaryButton className={styles.button} size="large" onClick={open}>
 					Connect your wallet

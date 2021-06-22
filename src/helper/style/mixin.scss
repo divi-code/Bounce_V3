@@ -45,3 +45,5 @@
     @content;
   }
 }
+
+$when-focus-rings-enabled: ":where([data-focus-rings])";

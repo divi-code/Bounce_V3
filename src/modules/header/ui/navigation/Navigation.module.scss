@@ -1,3 +1,5 @@
+@use "../../../../helper/style/mixin";
+
 .component {}
 
 .list {
@@ -18,7 +20,7 @@
   padding: 1.5rem 0;
 
   &:hover .dropdown,
-  &:focus .dropdown {
+  #{mixin.$when-focus-rings-enabled} &:focus .dropdown {
     opacity: 1;
     visibility: visible;
   }
@@ -86,7 +88,7 @@
   transition-property: background-color;
 
   &:hover,
-  &:focus {
+  #{mixin.$when-focus-rings-enabled} &:focus {
     background-color: #ededed;
   }
 }

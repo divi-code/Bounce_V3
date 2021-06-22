@@ -21,6 +21,8 @@
 .text {
   margin: 0;
   margin-top: calc(var(--spacing-unit) * 2);
+
+  text-align: center;
 }
 
 .button {
