@@ -12,7 +12,7 @@ export const Default = () => {
 				declaim="18"
 				tokenTo="ETH"
 				swapRatio={`1 ETH = 10 ETH`}
-				amount={100}
+				amount="100"
 				allocation="No Limits"
 				whitelist="Yes"
 				duration="From - To"

@@ -3,6 +3,7 @@ import { FC } from "react";
 
 import { uid } from "react-uid";
 
+import { OTC_TYPE } from "@app/api/otc/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { Form } from "@app/modules/form";
@@ -34,28 +35,12 @@ type OTCType = {
 
 const LIST = [
 	{
-		label: "All Auctions Types",
-		key: "all",
+		label: "I want to buy",
+		key: OTC_TYPE.sell,
 	},
 	{
-		label: "Fixed Swap Auction",
-		key: "fixed",
-	},
-	{
-		label: "Sealed-Bid Auction",
-		key: "sealed-bid",
-	},
-	{
-		label: "English Auction",
-		key: "english",
-	},
-	{
-		label: "Dutch Auction",
-		key: "dutch",
-	},
-	{
-		label: "Lottery Auction",
-		key: "lottery",
+		label: "I want to sell",
+		key: OTC_TYPE.buy,
 	},
 ];
 
