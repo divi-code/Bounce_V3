@@ -29,7 +29,7 @@ type ConfirmationType = {
 	tokenTo: ReactNode;
 	swapRatio: ReactNode;
 	amount: string;
-	allocation: string;
+	allocation: ReactNode;
 	whitelist: string;
 	duration: string;
 	delay: string;
@@ -120,7 +120,13 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 			}
 			amount={new BigNumber(amount).multipliedBy(new BigNumber(swapRatio)).toString()}
 			allocation={
-				allocation === ALLOCATION_TYPE.limited ? `Limit ${limit} ${tokenTo}` : "No Limits"
+				allocation === ALLOCATION_TYPE.limited ? (
+					<>
+						Limit {limit} <Symbol token={tokenTo} />
+					</>
+				) : (
+					"No Limits"
+				)
 			}
 			whitelist={whitelist ? "Whitelist" : "Public"}
 			duration={`From ${convertDate(new Date(startPool), "long")} - To ${convertDate(

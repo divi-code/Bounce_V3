@@ -17,7 +17,7 @@ import { RightArrow2 } from "@app/ui/icons/arrow-right-2";
 import { RadioGroup } from "@app/ui/radio-group";
 import { Body1 } from "@app/ui/typography";
 
-import { isNotGreaterThan } from "@app/utils/validation";
+import { composeValidators, isEqualZero, isNotGreaterThan } from "@app/utils/validation";
 
 import styles from "./Fixed.module.scss";
 
@@ -62,6 +62,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 								step={FLOAT}
 								placeholder="0.00"
 								after={<Currency token={props.values.tokenTo} />}
+								validate={isEqualZero}
 								required
 							/>
 						</Body1>
@@ -100,7 +101,9 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 						</div>
 					}
 					required
-					validate={balance && isNotGreaterThan(balance)}
+					validate={
+						balance ? composeValidators(isNotGreaterThan(balance), isEqualZero) : isEqualZero
+					}
 				/>
 			</Label>
 			<Label Component="div" label="Allocation per Wallet" tooltip="Create new item">

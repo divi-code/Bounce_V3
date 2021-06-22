@@ -9,6 +9,10 @@ export const isNotGreaterThan = (max: number) => (value: string): string | undef
 	return +value > max ? "You have exceeded the limit." : undefined;
 };
 
+export const isEqualZero = (value: string): string | undefined => {
+	return +value === 0 ? "Should be a more than 0" : undefined;
+};
+
 export const isNotLongerThan = (max: number) => (value: string): string | undefined => {
 	return value.length > max ? `Should be a less than ${max} symbols` : undefined;
 };
