@@ -94,7 +94,7 @@ export const UserInfo = () => {
 	return (
 		<UserInfoView
 			address={account}
-			ethBalance={weiToNum(balance, 18, 2)}
+			ethBalance={weiToNum(balance, 18, 4)}
 			onLogout={disconnectWallet}
 		/>
 	);
