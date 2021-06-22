@@ -15,6 +15,8 @@ import { PrimaryButton } from "@app/ui/button";
 import { RightArrow2 } from "@app/ui/icons/arrow-right-2";
 import { Body1 } from "@app/ui/typography";
 
+import { composeValidators, isEqualZero, isNotGreaterThan } from "@app/utils/validation";
+
 import styles from "./Buying.module.scss";
 
 type BuyingViewType = {
@@ -80,6 +82,7 @@ export const BuyingView: FC<MaybeWithClassName & BuyingViewType> = ({
 							<Currency token={tokenFrom} />
 						</div>
 					}
+					validate={isEqualZero}
 					required
 				/>
 			</Label>
@@ -99,6 +102,7 @@ export const BuyingView: FC<MaybeWithClassName & BuyingViewType> = ({
 								step={FLOAT}
 								placeholder="0.00"
 								after={<Currency token={props.values.tokenTo} />}
+								validate={isEqualZero}
 								required
 							/>
 						</Body1>

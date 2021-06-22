@@ -15,7 +15,7 @@ import { PrimaryButton } from "@app/ui/button";
 import { RightArrow2 } from "@app/ui/icons/arrow-right-2";
 import { Body1 } from "@app/ui/typography";
 
-import { isNotGreaterThan } from "@app/utils/validation";
+import { composeValidators, isEqualZero, isNotGreaterThan } from "@app/utils/validation";
 
 import styles from "./Selling.module.scss";
 
@@ -83,7 +83,9 @@ export const SellingView: FC<MaybeWithClassName & SellingViewType> = ({
 						</div>
 					}
 					required
-					validate={balance && isNotGreaterThan(balance)}
+					validate={
+						balance ? composeValidators(isNotGreaterThan(balance), isEqualZero) : isEqualZero
+					}
 				/>
 			</Label>
 
@@ -106,6 +108,7 @@ export const SellingView: FC<MaybeWithClassName & SellingViewType> = ({
 								step={FLOAT}
 								placeholder="0.00"
 								after={<Currency token={props.values.tokenTo} />}
+								validate={isEqualZero}
 								required
 							/>
 						</Body1>
