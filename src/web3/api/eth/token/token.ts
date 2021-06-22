@@ -1,5 +1,6 @@
 import { TokenInfo } from "@uniswap/token-lists";
 
+import ETHER from "./assets/eth.svg";
 import { makeToken } from "./utils";
 
 import { WETH9 } from "./weth9";
@@ -13,7 +14,8 @@ export const getEtherChain = (chainId: number): TokenInfo => {
 			"0x0000000000000000000000000000000000000000",
 			18,
 			"ETH",
-			"Ether"
+			"Ether",
+			ETHER
 		);
 	}
 

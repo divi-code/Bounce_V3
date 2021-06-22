@@ -9,6 +9,7 @@ import { useTokenSearch } from "@app/web3/api/tokens";
 import { uriToHttp } from "@app/web3/api/tokens/ens/helpers";
 
 import styles from "./Currency.module.scss";
+import EMPTY from "./assets/empty.svg";
 
 type CurrencyType = {
 	symbol: string;
@@ -37,7 +38,7 @@ export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClas
 		<Caption
 			className={classNames(className, styles.component, styles.small)}
 			Component="span"
-			style={logoIsOk ? ({ "--icon": `url(${img})` } as CSSProperties) : {}}
+			style={{ "--icon": img && logoIsOk ? `url(${img})` : `url(${EMPTY})` } as CSSProperties}
 		>
 			{symbol}
 		</Caption>
@@ -45,7 +46,7 @@ export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClas
 		<Body1
 			className={classNames(className, styles.component)}
 			Component="span"
-			style={logoIsOk ? ({ "--icon": `url(${img})` } as CSSProperties) : {}}
+			style={{ "--icon": img && logoIsOk ? `url(${img})` : `url(${EMPTY})` } as CSSProperties}
 		>
 			{symbol}
 		</Body1>

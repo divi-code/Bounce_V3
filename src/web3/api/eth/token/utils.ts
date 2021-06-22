@@ -5,14 +5,15 @@ export const makeToken = (
 	address: string,
 	decimals: number,
 	symbol: string,
-	name: string
+	name: string,
+	logoURI: string
 ): TokenInfo => ({
 	chainId,
 	address,
 	decimals,
 	symbol,
 	name,
-
+	logoURI,
 	// isNative: true,
 });
 
@@ -21,7 +22,8 @@ export const makeTokenMap = (
 	address: string,
 	decimals: number,
 	symbol: string,
-	name: string
+	name: string,
+	logoURI: string
 ) => ({
-	[chainId]: makeToken(chainId, address, decimals, symbol, name),
+	[chainId]: makeToken(chainId, address, decimals, symbol, name, logoURI),
 });

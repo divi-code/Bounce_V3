@@ -28,3 +28,15 @@ export function isValidUsername(value: string): string | undefined {
 export function isDecimalNumber(value: string): string | undefined {
 	return value.match(/[^\d^.]/) ? "Should be a number" : undefined;
 }
+
+export function isDateRequired(date: Date): string | undefined {
+	if (!date) {
+		return isRequired(null);
+	}
+
+	if (date.getSeconds() === 30) {
+		return "Missing hours and minutes";
+	}
+
+	return undefined;
+}

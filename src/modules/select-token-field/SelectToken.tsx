@@ -23,6 +23,7 @@ import { useAllTokens, useTokenList } from "@app/web3/api/tokens";
 
 import { ListOfTokens } from "./ListOfTokens";
 import styles from "./SelectToken.module.scss";
+import EMPTY from "./assets/empty.svg";
 
 type SelectTokenType = {
 	value?: string;
@@ -119,7 +120,7 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 							className={styles.value}
 							style={
 								{
-									"--icon": `url("${active.img}")`,
+									"--icon": active.img ? `url("${active.img}")` : `url(${EMPTY})`,
 									"--show-icon": active.img !== undefined ? "block" : "none",
 								} as CSSProperties
 							}

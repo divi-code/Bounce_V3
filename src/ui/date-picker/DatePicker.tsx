@@ -268,8 +268,14 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 				const year = calendarValue.getFullYear();
 				const month = calendarValue.getMonth();
 				const day = calendarValue.getDate();
-				const newDate = new Date(year, month, day, +hours, +minutes);
-				onChange(newDate);
+
+				if (hours && minutes) {
+					const newDate = new Date(year, month, day, +hours, +minutes, 0);
+					onChange(newDate);
+				} else {
+					const newDate = new Date(year, month, day, +hours, +minutes, 30);
+					onChange(newDate);
+				}
 			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps

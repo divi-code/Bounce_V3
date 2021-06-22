@@ -1,8 +1,6 @@
 import { TokenInfo } from "@uniswap/token-lists";
 import { useMemo } from "react";
 
-import { useChainId } from "@app/web3/hooks/use-web3";
-
 import defaultList from "./defaultList.json";
 
 export const getDefaultTokens = (): TokenInfo[] => {

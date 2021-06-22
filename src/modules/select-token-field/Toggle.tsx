@@ -7,6 +7,7 @@ import { OnOff } from "@app/ui/on-off";
 import { Body1, Caption } from "@app/ui/typography";
 
 import styles from "./Toggle.module.scss";
+import EMPTY from "./assets/empty.svg";
 
 interface ToggleProps<T> {
 	className?: string;
@@ -28,7 +29,11 @@ export const Toggle: FC<ToggleProps<any>> = ({
 	reference,
 	onChange,
 }) => {
-	const handleOnChange = useCallback(() => onChange(reference, !checked), [onChange, reference]);
+	const handleOnChange = useCallback(() => onChange(reference, !checked), [
+		checked,
+		onChange,
+		reference,
+	]);
 	const [imageIsOk, setImageIsOk] = useState(true);
 
 	useEffect(() => {
@@ -40,7 +45,7 @@ export const Toggle: FC<ToggleProps<any>> = ({
 	return (
 		<li
 			className={classNames(className, styles.component)}
-			style={imageIsOk ? ({ "--icon": `url(${img})` } as CSSProperties) : {}}
+			style={{ "--icon": img && imageIsOk ? `url(${img})` : `url(${EMPTY})` } as CSSProperties}
 		>
 			<Body1 Component="span" className={styles.name}>
 				{name}

@@ -6,6 +6,7 @@ import { Body1, Caption } from "@app/ui/typography";
 import { uriToHttp } from "@app/web3/api/tokens/ens/helpers";
 
 import styles from "./Label.module.scss";
+import EMPTY from "./assets/empty.svg";
 
 interface LabelProps<T> {
 	className?: string;
@@ -58,7 +59,9 @@ export const Label: FC<LabelProps<any>> = ({
 			<label
 				htmlFor={id}
 				className={styles.label}
-				style={imageIsOk ? ({ "--icon": `url(${realImage})` } as CSSProperties) : {}}
+				style={
+					{ "--icon": img && imageIsOk ? `url(${realImage})` : `url(${EMPTY})` } as CSSProperties
+				}
 			>
 				<Body1 Component="span">{currency}</Body1>
 				<Caption Component="span" lighten={80}>
