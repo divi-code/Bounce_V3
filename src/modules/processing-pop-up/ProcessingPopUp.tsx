@@ -101,6 +101,7 @@ export const ProcessingPopUp: FC<
 			onClose={close}
 			maxWidth={640}
 			withoutClose
+			scrollable={false}
 		>
 			<Content onClose={close} {...props} />
 			<control.DefinePresent />

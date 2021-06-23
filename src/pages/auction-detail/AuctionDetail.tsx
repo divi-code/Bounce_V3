@@ -133,17 +133,6 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		}
 	}, [to]);
 
-	useEffect(() => {
-		if (to) {
-			if (!isETH) {
-				const tokenContract = getTokenContract(provider, to.address);
-				getBalance(tokenContract, account).then((b) => setBalance(weiToNum(b, to.decimals, 6)));
-			} else {
-				getEthBalance(web3, account).then((b) => setBalance(weiToNum(b, to.decimals, 6)));
-			}
-		}
-	}, [account, to, provider, web3, isETH]);
-
 	const updateData = useCallback(async () => {
 		if (!contract) {
 			return;
@@ -175,7 +164,14 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		setLimit(
 			parseFloat(weiToNum(limit, to.decimals, 6)) - parseFloat(weiToNum(userBid, to.decimals, 6))
 		);
-	}, [account, auctionType, contract, poolID, queryToken]);
+
+		if (!isETH) {
+			const tokenContract = getTokenContract(provider, to.address);
+			getBalance(tokenContract, account).then((b) => setBalance(weiToNum(b, to.decimals, 6)));
+		} else {
+			getEthBalance(web3, account).then((b) => setBalance(weiToNum(b, to.decimals, 4)));
+		}
+	}, [account, auctionType, contract, isETH, poolID, provider, queryToken, web3]);
 
 	const onRequestData = updateData;
 
@@ -486,7 +482,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 					{action === ACTION.place && (
 						<PlaceBid
 							currency={pool.currency}
-							balance={parseFloat(balance)}
+							balance={balance}
 							limit={limit}
 							isLimit={limited}
 							disabled={

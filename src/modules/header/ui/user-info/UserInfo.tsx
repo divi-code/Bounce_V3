@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
@@ -85,9 +85,19 @@ export const UserInfo = () => {
 	const { account } = useWeb3React();
 	const web3 = useWeb3();
 
-	useEffect(() => {
+	const updateData = useCallback(async () => {
 		getEthBalance(web3, account).then((b) => setBalance(b));
 	}, [account, web3]);
+
+	useEffect(() => {
+		const tm = setInterval(() => {
+			updateData();
+		}, 2000);
+
+		return () => {
+			clearInterval(tm);
+		};
+	}, [updateData]);
 
 	const { disconnect: disconnectWallet } = useWalletConnection();
 

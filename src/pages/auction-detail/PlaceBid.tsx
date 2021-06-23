@@ -21,7 +21,7 @@ type AuctionDetailPlaceBidType = {
 	disabled: boolean;
 	loading: boolean;
 	currency: string;
-	balance: number;
+	balance: string;
 	onSubmit(values: Record<string, any>, form: FormApi): void;
 };
 
@@ -70,7 +70,6 @@ export const PlaceBid: FC<AuctionDetailPlaceBidType & WithChildren> = ({
 						</div>
 					}
 					validate={isLimit && isNotGreaterThan(limit)}
-					required
 				/>
 			</Label>
 			<PrimaryButton className={styles.button} size="large" submit disabled={disabled}>
