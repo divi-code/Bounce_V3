@@ -131,7 +131,7 @@ export const createAuctionPool = (
 	return action.send({ from: account });
 };
 
-export const swapContracts = async (
+export const swapContracts = (
 	contract: ContractType,
 	amount: string,
 	account: string,
@@ -148,7 +148,7 @@ export const swapContracts = async (
 	return action.send({ from: account, value: sendAmount });
 };
 
-export const creatorClaim = async (contract: ContractType, account: string, index: number) => {
+export const creatorClaim = (contract: ContractType, account: string, index: number) => {
 	const action = contract.methods.creatorClaim(index);
 
 	action.estimateGas();
@@ -156,7 +156,7 @@ export const creatorClaim = async (contract: ContractType, account: string, inde
 	return action.send({ from: account });
 };
 
-export const userClaim = async (contract: ContractType, account: string, index: number) => {
+export const userClaim = (contract: ContractType, account: string, index: number) => {
 	const action = contract.methods.userClaim(index);
 
 	action.estimateGas();

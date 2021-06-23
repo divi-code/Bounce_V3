@@ -5,8 +5,7 @@ import { FormProps } from "react-final-form";
 
 import { POOL_ADDRESS_MAPPING, POOL_TYPE } from "@app/api/pool/const";
 import { useControlPopUp } from "@app/hooks/use-control-popup";
-import { FailedPopUp } from "@app/modules/failed";
-import { SuccessPopUp } from "@app/modules/success";
+import { ProcessingPopUp } from "@app/modules/processing-pop-up";
 import { Timer } from "@app/modules/timer";
 
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
@@ -54,16 +53,46 @@ type AlertType = {
 enum OPERATION {
 	default = "default",
 	loading = "loading",
+	pending = "pending",
+	confirmed = "confirmed",
 	approved = "approved",
-	approvalFailed = "approved-failed",
-	completed = "completed",
+	placed = "completed",
+	claimed = "claimed",
 	failed = "failed",
+	canceled = "canceled",
 }
 
 enum ACTION {
 	claim = "claim",
 	place = "place-bit",
 }
+
+const TITLE = {
+	[OPERATION.loading]: "Loading",
+	[OPERATION.approved]: "Bounce requests wallet approval",
+	[OPERATION.confirmed]: "Bounce requests wallet interaction",
+	[OPERATION.pending]: "Bounce waiting for transaction settlement",
+	[OPERATION.placed]: "Congratulations!",
+	[OPERATION.claimed]: "Settlement",
+	[OPERATION.failed]: "Transaction failed on Bounce",
+	[OPERATION.canceled]: "Transaction canceled on Bounce",
+};
+
+const CONTENT = {
+	[OPERATION.loading]: "Loading process..",
+	[OPERATION.approved]: "Please manually interact with your wallet",
+	[OPERATION.confirmed]:
+		"Please open your wallet and confirm in the transaction activity to proceed your order",
+	[OPERATION.pending]:
+		"Bounce is engaging with blockchain transaction, please wait patiently for on-chain transaction settlement",
+	[OPERATION.placed]:
+		"You have successfully participated in this prediction. Please come back to check results when the prediction pool is closed",
+	[OPERATION.claimed]:
+		"Thanks for using Bounce Finance to create your auction. Your last auction is settled and you can create another one.",
+	[OPERATION.failed]:
+		"Oops! Your transaction is failed for on-chain approval and settlement. Please initiate another transaction",
+	[OPERATION.canceled]: "Sorry! Your transaction is canceled. Please try again.",
+};
 
 export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 	poolID,
@@ -170,9 +199,9 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 	const bidAction: FormProps["onSubmit"] = async (values, form) => {
 		const operation = async () => {
 			try {
+				setOperation(OPERATION.approved);
+
 				const value = numToWei(values.bid, to.decimals, 0);
-				setOperation(OPERATION.loading);
-				console.log("value", value);
 
 				if (!isETH) {
 					const tokenContract = getTokenContract(provider, to.address);
@@ -194,27 +223,37 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 						);
 
 						if (!result.status) {
-							setOperation(OPERATION.approvalFailed);
+							setOperation(OPERATION.failed);
 
 							return;
 						}
 					}
 				}
 
-				await swapContracts(contract, value, account, poolID, !isETH ? "0" : value);
+				setOperation(OPERATION.confirmed);
 
-				setOperation(OPERATION.completed);
-				await updateData();
-				form.change("bid", undefined);
-				setLastOperation(null);
+				await swapContracts(contract, value, account, poolID, !isETH ? "0" : value)
+					.on("transactionHash", (h) => {
+						console.log("hash", h);
+						setOperation(OPERATION.pending);
+					})
+					.on("receipt", (r) => {
+						console.log("receipt", r);
+						setOperation(OPERATION.placed);
+						updateData();
+						form.change("bid", undefined);
+						setLastOperation(null);
+					})
+					.on("error", (e) => {
+						console.error("error", e);
+						setOperation(OPERATION.failed);
+					});
 			} catch (e) {
-				console.error("failed to place a bit", e);
-				setOperation(OPERATION.failed);
-
-				return {
-					// report to final form
-					error: "error",
-				};
+				if (e.code === 4001) {
+					setOperation(OPERATION.canceled);
+				} else {
+					setOperation(OPERATION.failed);
+				}
 			} finally {
 				// close modal
 			}
@@ -231,18 +270,30 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		const operation = async () => {
 			try {
 				setOperation(OPERATION.loading);
-				await creatorClaim(contract, account, poolID);
-				setOperation(OPERATION.completed);
-				await updateData();
-				setLastOperation(null);
-			} catch (e) {
-				console.error("failed to claim", e);
-				setOperation(OPERATION.failed);
 
-				return {
-					// report to final form
-					error: "error",
-				};
+				await creatorClaim(contract, account, poolID)
+					.on("transactionHash", (h) => {
+						console.log("hash", h);
+						setOperation(OPERATION.pending);
+					})
+					.on("receipt", (r) => {
+						console.log("receipt", r);
+						setOperation(OPERATION.claimed);
+						updateData();
+						setLastOperation(null);
+					})
+					.on("error", (e) => {
+						console.error("error", e);
+						setOperation(OPERATION.failed);
+					});
+			} catch (e) {
+				if (e.code === 4001) {
+					setOperation(OPERATION.canceled);
+				} else {
+					setOperation(OPERATION.failed);
+				}
+
+				console.log("err", e);
 			} finally {
 				// close modal
 			}
@@ -259,18 +310,30 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		const operation = async () => {
 			try {
 				setOperation(OPERATION.loading);
-				await userClaim(contract, account, poolID);
-				setOperation(OPERATION.completed);
-				await updateData();
-				setLastOperation(null);
-			} catch (e) {
-				console.error("failed to stake", e);
-				setOperation(OPERATION.failed);
 
-				return {
-					// report to final form
-					error: "error",
-				};
+				await userClaim(contract, account, poolID)
+					.on("transactionHash", (h) => {
+						console.log("hash", h);
+						setOperation(OPERATION.pending);
+					})
+					.on("receipt", (r) => {
+						console.log("receipt", r);
+						setOperation(OPERATION.claimed);
+						updateData();
+						setLastOperation(null);
+					})
+					.on("error", (e) => {
+						console.error("error", e);
+						setOperation(OPERATION.failed);
+					});
+			} catch (e) {
+				if (e.code === 4001) {
+					setOperation(OPERATION.canceled);
+				} else {
+					setOperation(OPERATION.failed);
+				}
+
+				console.log("err", e);
 			} finally {
 				// close modal
 			}
@@ -287,25 +350,13 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		}
 	};
 
-	//success place a bid
-	const { popUp: successPopUp, close: successClose, open: successOpen } = useControlPopUp();
+	const { popUp, close, open } = useControlPopUp();
 
 	useEffect(() => {
-		if (operation === OPERATION.completed) {
-			successOpen();
+		if (operation !== OPERATION.default) {
+			open();
 		}
-	}, [successOpen, operation]);
-
-	//failed
-	const { popUp: failedPopUp, close: failedClose, open: failedOpen } = useControlPopUp();
-
-	useEffect(() => {
-		if (operation === OPERATION.failed) {
-			failedOpen();
-		} else {
-			failedClose();
-		}
-	}, [operation, failedOpen, failedClose]);
+	}, [open, operation]);
 
 	//set action
 
@@ -462,25 +513,30 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 						</PlaceBid>
 					)}
 				</View>
-				{failedPopUp.defined ? (
-					<FailedPopUp
-						control={failedPopUp}
+				{popUp.defined ? (
+					<ProcessingPopUp
+						title={TITLE[operation]}
+						text={CONTENT[operation]}
+						onSuccess={() => {
+							setOperation(OPERATION.default);
+							close();
+						}}
+						onTry={tryAgainAction}
+						isSuccess={operation === OPERATION.claimed || operation === OPERATION.placed}
+						isLoading={
+							operation === OPERATION.loading ||
+							operation === OPERATION.pending ||
+							operation === OPERATION.confirmed ||
+							operation === OPERATION.approved
+						}
+						isError={operation === OPERATION.failed || operation === OPERATION.canceled}
+						control={popUp}
 						close={() => {
-							failedClose();
+							close();
 							setOperation(OPERATION.default);
 						}}
-						onClick={tryAgainAction}
 					/>
-				) : null}
-				{successPopUp.defined ? (
-					<SuccessPopUp
-						control={successPopUp}
-						close={() => {
-							successClose();
-							setOperation(OPERATION.default);
-						}}
-					/>
-				) : null}
+				) : undefined}
 			</>
 		);
 	}

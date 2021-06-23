@@ -1,0 +1,43 @@
+.component {
+  display: grid;
+
+  padding: 1.125rem 3.75rem 3rem;
+}
+
+.title {
+  margin: 0;
+
+  text-align: center;
+}
+
+.image {
+  display: grid;
+  place-content: center;
+
+  width: 12.5rem;
+  height: 12.5rem;
+  margin: 0 auto;
+}
+
+.text {
+  margin: 0;
+
+  text-align: center;
+}
+
+.buttons {
+  display: grid;
+  grid-auto-flow: column;
+  grid-column-gap: calc(var(--spacing-unit) * 2);
+
+  width: 100%;
+  margin-top: calc(var(--spacing-unit) * 5.5);
+}
+
+.error {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.spinner {
+  margin-right: 0.5rem;
+}

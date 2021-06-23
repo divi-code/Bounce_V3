@@ -14,7 +14,7 @@ export type ButtonComponentType = {
 	style?: CSSProperties;
 	activeClassName?: string;
 
-	onClick?(): void;
+	onClick?(e: any): void;
 } & {
 	iconAfter?: ReactNode;
 	iconBefore?: ReactNode;

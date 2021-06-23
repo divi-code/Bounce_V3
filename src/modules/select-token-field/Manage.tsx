@@ -106,7 +106,7 @@ export const Manage: FC<{
 								<ul className={styles.customList}>
 									{localTokens.map((token) => (
 										<li key={uid(token)}>
-											<Currency token={token.symbol} />
+											<Currency token={token.address} />
 										</li>
 									))}
 								</ul>

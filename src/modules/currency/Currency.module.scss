@@ -3,7 +3,7 @@
   grid-auto-flow: column;
   grid-column-gap: calc(var(--spacing-unit) * 1);
   justify-content: start;
-  align-items: center;
+  align-content: center;
 }
 
 .component::before {

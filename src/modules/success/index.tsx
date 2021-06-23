@@ -1,1 +1,0 @@
-export { SuccessPopUp } from "./SuccessPopUp";

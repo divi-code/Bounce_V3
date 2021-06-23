@@ -45,6 +45,7 @@
     "react-final-form": "^6.5.3",
     "react-focus-on": "^3.5.1",
     "react-imported-component": "^6.4.1",
+    "react-lottie": "^1.2.3",
     "react-stroller": "^1.8.0",
     "react-teleporter": "^2.2.0",
     "react-uid": "^2.3.1",

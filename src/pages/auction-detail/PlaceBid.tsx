@@ -70,6 +70,7 @@ export const PlaceBid: FC<AuctionDetailPlaceBidType & WithChildren> = ({
 						</div>
 					}
 					validate={isLimit && isNotGreaterThan(limit)}
+					required
 				/>
 			</Label>
 			<PrimaryButton className={styles.button} size="large" submit disabled={disabled}>
