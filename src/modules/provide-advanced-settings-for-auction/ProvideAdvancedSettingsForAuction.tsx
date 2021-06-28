@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 
 import { FormSpy } from "react-final-form";
 
@@ -6,6 +6,7 @@ import { MaybeWithClassName } from "@app/helper/react/types";
 import { useResizeObserver } from "@app/hooks/use-resize-observer";
 import { DateField } from "@app/modules/date-field";
 import { Form } from "@app/modules/form";
+import { FormValidator } from "@app/modules/form/Form";
 import { Label } from "@app/modules/label";
 import { OnOffField } from "@app/modules/on-off-field";
 import { RadioField } from "@app/modules/radio-field";
@@ -41,8 +42,29 @@ export const ProvideAdvancedSettingsForAuction: FC<
 	const [blockWidth, setBlockWidth] = useState(0);
 	useResizeObserver(blockRef, (ref) => setBlockWidth(ref.clientWidth));
 
+	const validate = useCallback<FormValidator<"startPool" | "endPool" | "claimStart">>((values) => {
+		if (values.endPool < values.startPool) {
+			return {
+				endPool: "Should be after Start Time",
+			};
+		}
+
+		if (values.claimStart < values.endPool) {
+			return {
+				endPool: "Should be after End Time",
+			};
+		}
+
+		return {};
+	}, []);
+
 	return (
-		<Form onSubmit={onSubmit} className={styles.form} initialValues={initialValues}>
+		<Form
+			onSubmit={onSubmit}
+			className={styles.form}
+			initialValues={initialValues}
+			validate={validate}
+		>
 			<Label Component="div" label="Pool Name">
 				<TextField type="text" name="poolName" required validate={isNotLongerThan(15)} />
 			</Label>
