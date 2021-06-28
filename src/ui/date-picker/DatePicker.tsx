@@ -269,7 +269,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 				const month = calendarValue.getMonth();
 				const day = calendarValue.getDate();
 
-				if (hours && minutes) {
+				if (hours !== "" && minutes !== "") {
 					const newDate = new Date(year, month, day, +hours, +minutes, 0);
 					onChange(newDate);
 				} else {
