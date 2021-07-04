@@ -89,7 +89,6 @@ const generateTokenList = inboxed(
 			}, new Map<string, ExtendedTokenInfo>());
 
 			const allTokens = Array.from(m.values());
-			console.log("regenerated");
 
 			return allTokens.filter((token) => token.chainId === chainId);
 		}

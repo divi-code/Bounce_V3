@@ -1,13 +1,16 @@
 import { FC } from "react";
 
-import { useTokenSearch } from "@app/web3/api/tokens";
+import { useTokenSearchWithFallback } from "@app/web3/api/tokens/use-fallback-tokens";
 
 export const Symbol: FC<{ token: string }> = ({ token }) => {
-	const findToken = useTokenSearch();
-	const tokenInfo = findToken(token);
+	const tokenInfo = useTokenSearchWithFallback(token);
 
 	if (!token) {
 		return null;
+	}
+
+	if (!tokenInfo) {
+		return <span>...</span>;
 	}
 
 	return <>{tokenInfo.symbol}</>;

@@ -1,4 +1,5 @@
-import { postJson } from "@app/api/network/json";
+import { getJson } from "@app/api/network/json";
+import { PoolSearchEntity } from "@app/api/pool/types";
 import { getAPIByNetwork } from "@app/api/pool/utils";
 import { WEB3_NETWORKS } from "@app/web3/networks/const";
 
@@ -8,40 +9,78 @@ type APIResponse<T> = {
 	code: 200 | 500;
 	error_msg: string;
 	data: T;
+	total: number;
 };
 
 const fetchInformation = async <T = any>(
 	chainId: WEB3_NETWORKS,
+	url: string,
 	params
 ): Promise<APIResponse<T>> => {
-	const url = getAPIByNetwork(chainId);
+	const apiPrefix = getAPIByNetwork(chainId);
 
-	return postJson(undefined, url, params);
+	return getJson(undefined, `${apiPrefix}/${url}`, params);
 };
 
-const METHODS_MAPPING = {
-	all: "query_all_pools",
-	[POOL_TYPE.fixed]: "query_fixed_pools",
-	[POOL_TYPE.sealed_bid]: "query_sealed_bid_pools",
-	[POOL_TYPE.english]: "query_english_pools",
-	[POOL_TYPE.dutch]: "query_dutch_auction_pools",
-	[POOL_TYPE.lottery]: "query_lottery_pools",
+const toAuctionType = {
+	[POOL_TYPE.any]: 0,
+	[POOL_TYPE.fixed]: 1,
 };
+
+const mapToParams = <T extends string, K extends string>(
+	data: Partial<Record<T, any>>,
+	mapping: Record<T, K>
+): Record<K, any> =>
+	Object.keys(data).reduce((acc, key) => {
+		const mapped = mapping[key];
+
+		if (mapped) {
+			acc[mapped] = data[key];
+		}
+
+		return acc;
+	}, {} as any);
 
 export const fetchPoolSearch = async (
 	chainId: WEB3_NETWORKS,
 	poolType: POOL_TYPE,
-	params
-): Promise<number[]> => {
-	const res = await fetchInformation<{ pool_ids: number[] }>(chainId, {
-		...params,
-		method: METHODS_MAPPING[poolType],
+	filters: {
+		token?: string;
+		poolId?: string;
+		poolName?: string;
+		creator?: string;
+	},
+	pagination: {
+		page: number;
+		perPage: number;
+	}
+): Promise<{
+	data: PoolSearchEntity[];
+	meta: {
+		total: number;
+	};
+}> => {
+	const res = await fetchInformation<PoolSearchEntity[]>(chainId, "auctions", {
+		offset: pagination.page * pagination.perPage,
+		limit: pagination.perPage,
+		auction_type: toAuctionType[poolType] || 0,
+		...mapToParams(filters, {
+			token: "token",
+			creator: "creator",
+			poolId: "pool_id",
+			poolName: "pool_name",
+		}),
 	});
 
-	if (res.code !== 200) {
+	if (!res.data) {
 		console.error(res);
 		throw new Error("failed to load data:" + res.error_msg);
 	}
 
-	return res.data.pool_ids.filter(Boolean) || [];
+	return {
+		data: res.data,
+		meta: {
+			total: res.total,
+		},
+	};
 };

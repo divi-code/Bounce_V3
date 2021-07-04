@@ -4,9 +4,9 @@ import { CSSProperties, FC, useEffect, useState } from "react";
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { Body1, Caption } from "@app/ui/typography";
 
-import { useTokenSearch } from "@app/web3/api/tokens";
-
 import { uriToHttp } from "@app/web3/api/tokens/ens/helpers";
+
+import { useTokenSearchWithFallback } from "@app/web3/api/tokens/use-fallback-tokens";
 
 import styles from "./Currency.module.scss";
 import EMPTY from "./assets/empty.svg";
@@ -57,8 +57,7 @@ export const Currency: FC<MaybeWithClassName & { token: string; small?: boolean 
 	token,
 	small,
 }) => {
-	const findToken = useTokenSearch();
-	const tokenInfo = findToken(token);
+	const tokenInfo = useTokenSearchWithFallback(token);
 
 	if (!tokenInfo) {
 		return null;

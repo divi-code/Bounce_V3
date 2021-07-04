@@ -25,8 +25,6 @@ export const Pagination: FC<PaginationType & MaybeWithClassName> = ({
 	onBack,
 	onNext,
 }) => {
-	console.log(numberOfPages);
-
 	return (
 		<div className={classNames(className, styles.component)}>
 			<ol className={styles.list}>

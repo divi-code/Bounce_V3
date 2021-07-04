@@ -24,6 +24,7 @@ export function getStaticProps(context) {
 
 	if (
 		![
+			POOL_TYPE.all,
 			POOL_TYPE.fixed,
 			POOL_TYPE.sealed_bid,
 			POOL_TYPE.dutch,
@@ -45,6 +46,7 @@ export function getStaticProps(context) {
 export async function getStaticPaths() {
 	return {
 		paths: [
+			{ params: { auctionType: POOL_TYPE.all } },
 			{ params: { auctionType: POOL_TYPE.fixed } },
 			{ params: { auctionType: POOL_TYPE.sealed_bid } },
 			{ params: { auctionType: POOL_TYPE.dutch } },

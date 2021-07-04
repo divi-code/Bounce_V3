@@ -1,17 +1,25 @@
 import { FORM_ERROR } from "final-form";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { fetchPoolSearch } from "@app/api/pool/api";
-import { POOL_ADDRESS_MAPPING } from "@app/api/pool/const";
+import {
+	POOL_SHORT_NAME_MAPPING,
+	POOL_SPECIFIC_NAME_MAPPING,
+	POOL_TYPE,
+} from "@app/api/pool/const";
 
+import { PoolSearchEntity } from "@app/api/pool/types";
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
 import { DisplayPoolInfoType } from "@app/pages/auction/ui/card";
-import { getMatchedPool } from "@app/utils/pool";
-import { getBouncePoolContract } from "@app/web3/api/bounce/pool";
-import { PoolInfoType, queryPoolInformation } from "@app/web3/api/bounce/pool-search";
+import { weiToNum } from "@app/utils/bn/wei";
+import { getProgress, getStatus, getSwapRatio } from "@app/utils/pool";
 import { useTokenQuery } from "@app/web3/api/tokens";
+import {
+	useTokenSearchWithFallback,
+	useTokenSearchWithFallbackService,
+} from "@app/web3/api/tokens/use-fallback-tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
 import { AuctionView } from "./AuctionView";
@@ -98,7 +106,7 @@ const LAST_QUERY = {
 	page: 0,
 	searchFilters: null as any,
 	poolList: [] as any,
-	poolInformation: [] as any,
+	// poolInformation: [] as any,
 	convertedPoolInformation: [] as any,
 };
 
@@ -113,10 +121,11 @@ export const Auction = () => {
 	const chainId = useChainId();
 	const walletControl = useConnectWalletControl();
 
-	const [poolList, setPoolList] = useState<number[]>([]);
-	const [poolInformation, setPoolInformation] = useState<PoolInfoType[]>([]);
+	const [poolList, setPoolList] = useState<PoolSearchEntity[]>([]);
+	// const [poolInformation, setPoolInformation] = useState<PoolInfoType[]>([]);
 	const [searchFilters, setSearchFilters] = useState<SearchFilters>({});
 	const [page, setPage] = useState(0);
+	const [totalCount, setTotalCount] = useState(0);
 	const [convertedPoolInformation, setConvertedPoolInformation] = useState<DisplayPoolInfoType[]>(
 		[]
 	);
@@ -124,7 +133,6 @@ export const Auction = () => {
 	useLastQuery(LAST_QUERY, {
 		condition: searchFilters,
 		poolList,
-		poolInformation,
 		convertedPoolInformation,
 		searchFilters,
 		page,
@@ -143,7 +151,7 @@ export const Auction = () => {
 			setSearchFilters(LAST_QUERY.searchFilters);
 			setPoolList(LAST_QUERY.poolList);
 			setPage(LAST_QUERY.page);
-			setPoolInformation(LAST_QUERY.poolInformation);
+			// setPoolInformation(LAST_QUERY.poolInformation);
 			setConvertedPoolInformation(LAST_QUERY.convertedPoolInformation);
 
 			return;
@@ -151,67 +159,75 @@ export const Auction = () => {
 
 		setSearchFilters(values);
 		setPage(0);
-
-		const { auctionType, ...params } = values;
-
-		const pools = await fetchPoolSearch(chainId, auctionType, params);
-		setPoolList(pools);
 	};
 
-	const searchWindow = useMemo(() => poolList.slice(page * WINDOW_SIZE, (page + 1) * WINDOW_SIZE), [
-		poolList,
-		page,
-	]);
-
-	// search
 	useEffect(() => {
-		const { auctionType } = searchFilters;
-
 		(async () => {
-			if (searchWindow.length === 0) {
-				setPoolInformation([]);
+			const { auctionType, ...params } = searchFilters;
+			console.log("fetching pool list");
 
-				return;
-			}
-
-			const pools = await queryPoolInformation(
-				provider,
-				POOL_ADDRESS_MAPPING[auctionType],
+			const {
+				data: foundPools,
+				meta: { total },
+			} = await fetchPoolSearch(
 				chainId,
-				searchWindow
+				auctionType,
+				{
+					token: params["token-type"],
+					poolId: params.pool?.id,
+					poolName: params.pool?.name,
+					creator: params.pool?.creator,
+				},
+				{
+					page,
+					perPage: WINDOW_SIZE,
+				}
 			);
-			setPoolInformation(pools.filter(Boolean));
+			setTotalCount(total);
+			setPoolList(foundPools);
+			console.log({ foundPools, total, page });
 		})();
-	}, [chainId, searchWindow, provider, searchFilters]);
+	}, [searchFilters, page, chainId]);
 
-	const queryToken = useTokenQuery();
+	// const queryToken = useTokenQuery();
+	const queryToken = useTokenSearchWithFallbackService();
 
 	useEffect(() => {
-		const { auctionType } = searchFilters;
-
-		if (poolInformation.length > 0) {
+		if (poolList.length > 0) {
 			Promise.all(
-				poolInformation.map(async (pool) => {
+				poolList.map(async (pool) => {
+					console.log("gathering tokens");
+
 					const from = await queryToken(pool.token0);
-					const to = await queryToken(pool.token1);
+					const to = await queryToken(pool.auctioneer);
 
-					const contract = getBouncePoolContract(
-						provider,
-						POOL_ADDRESS_MAPPING[auctionType],
-						chainId
-					);
+					const total0 = pool.amountTotal0;
+					const total = pool.amountTotal1;
+					const amount = pool.swappedAmount0;
 
-					const matchedPool = await getMatchedPool(
-						contract,
-						from,
-						to,
-						pool,
-						pool.poolID,
-						auctionType
-					);
+					const openAt = pool.openAt * 1000;
+					const closeAt = pool.closeAt * 1000;
+
+					console.log("preparing pools");
+
+					const toAuctionType = {
+						0: POOL_TYPE.all,
+						1: POOL_TYPE.fixed,
+					};
+
+					const auctionType = toAuctionType[pool.auctionType];
 
 					return {
-						...matchedPool,
+						status: getStatus(openAt, closeAt, amount, total),
+						id: +pool.poolID,
+						name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
+						address: from.address,
+						type: POOL_SHORT_NAME_MAPPING[auctionType],
+						token: from.address,
+						total: parseFloat(weiToNum(total, to.decimals, 6)),
+						currency: to.address,
+						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
+						fill: getProgress(amount, total, from.decimals),
 						href: `/auction/${auctionType}/${pool.poolID}`,
 					};
 				})
@@ -219,25 +235,17 @@ export const Auction = () => {
 		} else {
 			setConvertedPoolInformation(EMPTY_ARRAY);
 		}
-	}, [
-		chainId,
-		poolInformation,
-		provider,
-		queryToken,
-		searchFilters,
-		searchFilters.auctionType,
-		setConvertedPoolInformation,
-	]);
+	}, [poolList, provider, queryToken]);
 
 	const initialSearchState = useURLControl(searchFilters, provider, onSubmit);
 
 	return (
 		<AuctionView
 			onSubmit={onSubmit}
-			result={poolInformation.length ? convertedPoolInformation : undefined}
+			result={convertedPoolInformation.length ? convertedPoolInformation : undefined}
 			initialSearchState={initialSearchState}
 			currentPage={page}
-			numberOfPages={Math.floor(poolList.length / WINDOW_SIZE)}
+			numberOfPages={Math.floor(totalCount / WINDOW_SIZE)}
 			onBack={() => setPage(page - 1)}
 			onNext={() => setPage(page + 1)}
 		/>

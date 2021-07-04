@@ -8,7 +8,7 @@ import BounceERC20ABI from "./bounceERC20.abi.json";
 
 export const queryERC20Token = async (
 	provider: AbstractProvider,
-	address,
+	dirtyAddress,
 	chainID = 1
 ): Promise<{
 	symbol: string;
@@ -16,9 +16,11 @@ export const queryERC20Token = async (
 	address: string;
 	antiFake: boolean;
 }> => {
-	if (!address) {
+	if (!dirtyAddress) {
 		throw new Error("empty address given");
 	}
+
+	const address = dirtyAddress.toLowerCase();
 
 	if (isEqualTo(address, 0)) {
 		if (chainID === WEB3_NETWORKS.BINANCE) {

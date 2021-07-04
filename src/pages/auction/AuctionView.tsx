@@ -2,12 +2,13 @@ import classNames from "classnames";
 import { FC } from "react";
 import { uid } from "react-uid";
 
+import { POOL_NAME_MAPPING, POOL_TYPE } from "@app/api/pool/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { Form } from "@app/modules/form";
 import { Pagination } from "@app/modules/pagination";
 import { PoolSearchField } from "@app/modules/pool-search-field";
 import { Search } from "@app/modules/search";
-import { SelectAuction } from "@app/modules/select-auction";
+import { SelectField } from "@app/modules/select-field";
 import { SelectTokenField } from "@app/modules/select-token-field";
 import styles from "@app/pages/auction/Auction.module.scss";
 import { Card, DisplayPoolInfoType } from "@app/pages/auction/ui/card";
@@ -26,6 +27,17 @@ type AuctionType = {
 	onNext?(): void;
 	onSubmit?(values: any): any;
 };
+
+const LIST = [
+	{
+		label: "All Auctions Types",
+		key: POOL_TYPE.all,
+	},
+	{
+		label: POOL_NAME_MAPPING.fixed,
+		key: POOL_TYPE.fixed,
+	},
+];
 
 export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 	className,
@@ -51,7 +63,12 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 							<SelectTokenField name="token-type" placeholder="Select a token" />
 						</div>
 						<div>
-							<SelectAuction required name="auctionType" />
+							<SelectField
+								name="auctionType"
+								placeholder="Choose Auction Type"
+								options={LIST}
+								required
+							/>
 						</div>
 						<div>
 							<PoolSearchField placeholder="Pool Information (Optional)" name="pool" />

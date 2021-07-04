@@ -141,6 +141,14 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		//get pool info
 
 		const pool = await getPools(contract, poolID);
+		console.log({ pool });
+
+		if (!pool) {
+			// @ts-ignore
+			alert("cannot find Pool");
+
+			return;
+		}
 
 		const from = await queryToken(pool.token0);
 		const to = await queryToken(pool.token1);
