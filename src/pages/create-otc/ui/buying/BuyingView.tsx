@@ -15,7 +15,7 @@ import { PrimaryButton } from "@app/ui/button";
 import { RightArrow2 } from "@app/ui/icons/arrow-right-2";
 import { Body1 } from "@app/ui/typography";
 
-import { isEqualZero } from "@app/utils/validation";
+import { composeValidators, isEqualZero, isValidWei } from "@app/utils/validation";
 
 import styles from "./Buying.module.scss";
 
@@ -82,7 +82,7 @@ export const BuyingView: FC<MaybeWithClassName & BuyingViewType> = ({
 							<Currency token={tokenFrom} />
 						</div>
 					}
-					validate={isEqualZero}
+					validate={composeValidators(isEqualZero, isValidWei)}
 					required
 				/>
 			</Label>
@@ -102,7 +102,7 @@ export const BuyingView: FC<MaybeWithClassName & BuyingViewType> = ({
 								step={FLOAT}
 								placeholder="0.00"
 								after={<Currency token={props.values.tokenTo} />}
-								validate={isEqualZero}
+								validate={composeValidators(isEqualZero, isValidWei)}
 								required
 							/>
 						</Body1>

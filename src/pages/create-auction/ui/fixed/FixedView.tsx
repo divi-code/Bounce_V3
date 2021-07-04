@@ -17,7 +17,12 @@ import { RightArrow2 } from "@app/ui/icons/arrow-right-2";
 import { RadioGroup } from "@app/ui/radio-group";
 import { Body1 } from "@app/ui/typography";
 
-import { composeValidators, isEqualZero, isNotGreaterThan } from "@app/utils/validation";
+import {
+	composeValidators,
+	isEqualZero,
+	isNotGreaterThan,
+	isValidWei,
+} from "@app/utils/validation";
 
 import styles from "./Fixed.module.scss";
 
@@ -62,7 +67,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 								step={FLOAT}
 								placeholder="0.00"
 								after={<Currency token={props.values.tokenTo} />}
-								validate={isEqualZero}
+								validate={composeValidators(isEqualZero, isValidWei)}
 								required
 							/>
 						</Body1>
@@ -102,7 +107,9 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 					}
 					required
 					validate={
-						balance ? composeValidators(isNotGreaterThan(balance), isEqualZero) : isEqualZero
+						balance
+							? composeValidators(isNotGreaterThan(balance), isEqualZero, isValidWei)
+							: isEqualZero
 					}
 				/>
 			</Label>
@@ -129,7 +136,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 								step={FLOAT}
 								after={<Currency token={props.values.tokenTo} />}
 								required={props.values.allocation === "limited"}
-								validate={isEqualZero}
+								validate={composeValidators(isEqualZero, isValidWei)}
 							/>
 						</Label>
 					</FoldableSection>
