@@ -116,7 +116,7 @@ export const ProvideAdvancedSettingsForAuction: FC<
 						<Label
 							Component="div"
 							label="Delay Unlocking Token"
-							tooltip="Create new item"
+							tooltip="Set a date so traders can only claim tokens by that time."
 							after={<OnOffField name="delayToken" value="unlock" />}
 						>
 							{props.values.delayToken.includes("unlock") && (
@@ -133,7 +133,11 @@ export const ProvideAdvancedSettingsForAuction: FC<
 					</>
 				)}
 			</FormSpy>
-			<Label Component="div" label="Whitelist" tooltip="Create new item">
+			<Label
+				Component="div"
+				label="Whitelist"
+				tooltip="Once activated, only traders you put in this whitelist can join your auction."
+			>
 				<RadioGroup count={2} fixed>
 					<RadioField name="whitelist" label="No" value={WHITELIST_TYPE.no} />
 					<RadioField name="whitelist" label="Yes" value={WHITELIST_TYPE.yes} />

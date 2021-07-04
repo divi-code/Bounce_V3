@@ -72,7 +72,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 			<Label
 				Component="label"
 				label="Amount"
-				tooltip="Create new item"
+				tooltip="The amount of tokens that you want to put in for auction."
 				after={
 					<span className={styles.balance}>
 						Balance: {balance} <Symbol token={tokenFrom} />
@@ -106,7 +106,11 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 					}
 				/>
 			</Label>
-			<Label Component="div" label="Allocation per Wallet" tooltip="Create new item">
+			<Label
+				Component="div"
+				label="Allocation per Wallet"
+				tooltip="You can set a maximum allocation per wallet to prevent monopoly activities during the token swap. "
+			>
 				<RadioGroup count={2} fixed={true}>
 					<RadioField name="allocation" label="No Limits" value={ALLOCATION_TYPE.noLimits} />
 					<RadioField name="allocation" label="Limited" value={ALLOCATION_TYPE.limited} />

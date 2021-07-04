@@ -48,9 +48,14 @@ export const Create: FC<MaybeWithClassName> = ({ className }) => {
 								name="createType"
 								label="Auction"
 								value="auction"
-								tooltip="Create new item"
+								tooltip="Create your preferred type of auction."
 							/>
-							<RadioField name="createType" label="OTC" value="otc" tooltip="Create new item" />
+							<RadioField
+								name="createType"
+								label="OTC"
+								value="otc"
+								tooltip="(Over-the-Counter)  It  means  off-exchange  trading  is  done  directly  between  two  parties, without the supervision of an exchange."
+							/>
 						</RadioGroup>
 					</Label>
 					<FormSpy subscription={{ values: true }}>

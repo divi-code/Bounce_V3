@@ -57,17 +57,7 @@ export const ProvideTokenInformation: FC<ProvideTokenInformationType> = ({
 	return (
 		<Form onSubmit={onSubmit} className={styles.form} initialValues={initialState}>
 			<Effector decimal={decimal} address={address} onTokenChange={onTokenChange} />
-			<Label
-				className={styles.label}
-				Component="div"
-				label="Token"
-				tooltip={
-					<>
-						Please do not select deflationary
-						<br /> or inflationary token
-					</>
-				}
-			>
+			<Label className={styles.label} Component="div" label="Token" tooltip="Select a ERC20 token.">
 				<SelectTokenField
 					name="tokenFrom"
 					placeholder="Select a token"

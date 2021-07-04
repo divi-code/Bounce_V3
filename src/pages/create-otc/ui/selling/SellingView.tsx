@@ -54,7 +54,7 @@ export const SellingView: FC<MaybeWithClassName & SellingViewType> = ({
 			<Label
 				Component="label"
 				label="Amount"
-				tooltip="Create new item"
+				tooltip="The amount of tokens that you want to put in for auction."
 				after={
 					<span className={styles.balance}>
 						Balance: {balance} <Symbol token={tokenFrom} />
