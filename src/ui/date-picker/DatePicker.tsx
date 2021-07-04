@@ -291,11 +291,17 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 		setMinutes(shiftedDate.getMinutes());
 	};
 
-	const setInXDays = (x: number) => {
-		const newDate = new Date(Date.now() + x * 24 * 60 * 60 * 1000);
+	const setInXDays = (inDays: number) => {
+		const newDate = new Date(Date.now() + inDays * 24 * 60 * 60 * 1000);
 		setCalendarValue(newDate);
 		setHours(0);
 		setMinutes(0);
+	};
+
+	const cannotUseQuickAction = (inDays: number) => {
+		const newDate = new Date(Date.now() + inDays * 24 * 60 * 60 * 1000);
+
+		return !validateDate(newDate);
 	};
 
 	return (
@@ -350,32 +356,62 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 							<Body1 className={styles.header} Component="div">
 								{labels[0]}
 								{quickNav && quickNav.includes("today") && (
-									<button className={styles.control} type="button" onClick={setToday}>
+									<button
+										className={styles.control}
+										type="button"
+										onClick={setToday}
+										disabled={cannotUseQuickAction(0)}
+									>
 										Today
 									</button>
 								)}
 								{quickNav && quickNav.includes("tomorrow") && (
-									<button className={styles.control} type="button" onClick={() => setInXDays(1)}>
+									<button
+										className={styles.control}
+										type="button"
+										onClick={() => setInXDays(1)}
+										disabled={cannotUseQuickAction(1)}
+									>
 										Tomorrow
 									</button>
 								)}
 								{quickNav && quickNav.includes("in-2-days") && (
-									<button className={styles.control} type="button" onClick={() => setInXDays(2)}>
+									<button
+										className={styles.control}
+										type="button"
+										onClick={() => setInXDays(2)}
+										disabled={cannotUseQuickAction(2)}
+									>
 										In 2 days
 									</button>
 								)}
 								{quickNav && quickNav.includes("in-5-days") && (
-									<button className={styles.control} type="button" onClick={() => setInXDays(5)}>
+									<button
+										className={styles.control}
+										type="button"
+										onClick={() => setInXDays(5)}
+										disabled={cannotUseQuickAction(5)}
+									>
 										In 5 days
 									</button>
 								)}
 								{quickNav && quickNav.includes("in-7-days") && (
-									<button className={styles.control} type="button" onClick={() => setInXDays(7)}>
+									<button
+										className={styles.control}
+										type="button"
+										onClick={() => setInXDays(7)}
+										disabled={cannotUseQuickAction(7)}
+									>
 										In 7 days
 									</button>
 								)}
 								{quickNav && quickNav.includes("in-10-days") && (
-									<button className={styles.control} type="button" onClick={() => setInXDays(10)}>
+									<button
+										className={styles.control}
+										type="button"
+										onClick={() => setInXDays(10)}
+										disabled={cannotUseQuickAction(10)}
+									>
 										In 10 days
 									</button>
 								)}

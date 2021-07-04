@@ -92,11 +92,16 @@
   transition-duration: 250ms;
   transition-property: background-color, color;
 
-  &:hover,
-  #{mixin.$when-focus-rings-enabled} &:focus {
+  &:not(:disabled):hover,
+  #{mixin.$when-focus-rings-enabled} &:not(:disabled):focus {
     color: rgba(var(--primary-white), 1);
 
     background-color: rgba(var(--primary-black), 1);
+  }
+
+  &:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
   }
 }
 
