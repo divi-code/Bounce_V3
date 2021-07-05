@@ -18,4 +18,5 @@ export type PoolSearchEntity = {
 	status: number;
 	swappedAmount0: string;
 	token0: string;
+	token1: string;
 };

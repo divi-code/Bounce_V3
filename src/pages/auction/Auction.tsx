@@ -162,6 +162,10 @@ export const Auction = () => {
 	};
 
 	useEffect(() => {
+		if (!searchFilters.auctionType) {
+			return;
+		}
+
 		(async () => {
 			const { auctionType, ...params } = searchFilters;
 			console.log("fetching pool list");
@@ -196,10 +200,8 @@ export const Auction = () => {
 		if (poolList.length > 0) {
 			Promise.all(
 				poolList.map(async (pool) => {
-					console.log("gathering tokens");
-
 					const from = await queryToken(pool.token0);
-					const to = await queryToken(pool.auctioneer);
+					const to = await queryToken(pool.token1);
 
 					const total0 = pool.amountTotal0;
 					const total = pool.amountTotal1;
@@ -207,8 +209,6 @@ export const Auction = () => {
 
 					const openAt = pool.openAt * 1000;
 					const closeAt = pool.closeAt * 1000;
-
-					console.log("preparing pools");
 
 					const toAuctionType = {
 						0: POOL_TYPE.all,

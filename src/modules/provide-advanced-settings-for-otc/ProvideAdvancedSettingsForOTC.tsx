@@ -58,7 +58,11 @@ export const ProvideAdvancedSettingsForOTC: FC<
 					/>
 				</Label>
 			</div>
-			<Label Component="div" label="Whitelist" tooltip="Create new item">
+			<Label
+				Component="div"
+				label="Whitelist"
+				tooltip="Once activated, only traders you put in this whitelist can join your auction."
+			>
 				<RadioGroup count={2} fixed>
 					<RadioField name="whitelist" label="No" value={WHITELIST_TYPE.no} />
 					<RadioField name="whitelist" label="Yes" value={WHITELIST_TYPE.yes} />
