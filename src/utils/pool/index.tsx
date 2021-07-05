@@ -6,8 +6,8 @@ import {
 	POOL_SPECIFIC_NAME_MAPPING,
 	POOL_TYPE,
 } from "@app/api/pool/const";
-import { divide, isGreaterThanOrEqualTo } from "@app/utils/bn";
-import { weiToNum } from "@app/utils/bn/wei";
+import { divide, isGreaterThanOrEqualTo, roundedDivide } from "@app/utils/bn";
+import { fromWei, weiToNum } from "@app/utils/bn/wei";
 import { AuctionPoolType, getLimitAmount, getSwap1Amount } from "@app/web3/api/bounce/pool";
 
 export enum POOL_STATUS {
@@ -56,10 +56,14 @@ export const getStatus = (
 };
 
 export const getProgress = (amount: string, total: string, decimals: number): number => {
-	const convertedAmount = weiToNum(amount, decimals);
-	const convertedTotal = weiToNum(total, decimals);
+	const convertedAmount = +fromWei(amount, decimals);
+	const convertedTotal = +fromWei(total, decimals);
 
-	return parseFloat(divide(convertedAmount, convertedTotal, 2)) * 100;
+	console.log("convertedAmount", convertedAmount);
+	console.log("convertedTotal", convertedTotal);
+	console.log("result", +roundedDivide(convertedAmount, convertedTotal, 2) * 100);
+
+	return +roundedDivide(convertedAmount, convertedTotal, 2) * 100;
 };
 
 export const getSwapRatio = (
@@ -68,8 +72,8 @@ export const getSwapRatio = (
 	fromDecimals: number,
 	toDecimals: number
 ): string => {
-	const from = weiToNum(fromAmount, fromDecimals, 6);
-	const to = weiToNum(toAmount, toDecimals, 6);
+	const from = +fromWei(fromAmount, fromDecimals);
+	const to = +fromWei(toAmount, toDecimals);
 
 	return divide(from, to, 6);
 };
@@ -119,16 +123,16 @@ export const getMatchedPool = async (
 		address: from.address,
 		type: POOL_SHORT_NAME_MAPPING[auctionType],
 		token: from.address,
-		total: parseFloat(weiToNum(toTotal, to.decimals, 6)),
-		amount: toAmount ? parseFloat(weiToNum(toAmount, to.decimals, 6)) : 0,
+		total: +fromWei(toTotal, to.decimals).toFixed(6, 1),
+		amount: toAmount ? +fromWei(toAmount, to.decimals).toFixed(6, 1) : 0,
 		currency: to.address,
-		price: parseFloat(getSwapRatio(toTotal, fromTotal, to.decimals, from.decimals)),
+		price: +getSwapRatio(toTotal, fromTotal, to.decimals, from.decimals),
 		fill: getProgress(toAmount, toTotal, to.decimals),
 		openAt: openAt,
 		closeAt: closeAt,
 		creator: pool.creator,
 		claimAt: claimAt > closeAt ? claimAt : closeAt,
-		limit: parseFloat(weiToNum(limit, to.decimals, 6)),
+		limit: +fromWei(limit, to.decimals).toFixed(6, 1),
 		whitelist: pool.enableWhiteList,
 	};
 };

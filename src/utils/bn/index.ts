@@ -24,6 +24,12 @@ export const isEqualTo = (value1: Numeric, value2: Numeric): boolean => {
 
 export const divide = (value1: Numeric, value2: Numeric, fixed = 6): string => {
 	return new BigNumber(
+		new BigNumber(value1).dividedBy(new BigNumber(value2)).toFixed(fixed, 1)
+	).toString();
+};
+
+export const roundedDivide = (value1: Numeric, value2: Numeric, fixed = 6): string => {
+	return new BigNumber(
 		new BigNumber(value1).dividedBy(new BigNumber(value2)).toFixed(fixed)
 	).toString();
 };

@@ -13,7 +13,7 @@ import { PoolSearchEntity } from "@app/api/pool/types";
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
 import { DisplayPoolInfoType } from "@app/pages/auction/ui/card";
-import { weiToNum } from "@app/utils/bn/wei";
+import { fromWei, weiToNum } from "@app/utils/bn/wei";
 import { getProgress, getStatus, getSwapRatio } from "@app/utils/pool";
 import { useTokenQuery } from "@app/web3/api/tokens";
 import {
@@ -224,9 +224,9 @@ export const Auction = () => {
 						address: from.address,
 						type: POOL_SHORT_NAME_MAPPING[auctionType],
 						token: from.address,
-						total: parseFloat(weiToNum(total, to.decimals, 6)),
+						total: +fromWei(total, to.decimals).toFixed(6, 1),
 						currency: to.address,
-						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
+						price: +getSwapRatio(total, total0, to.decimals, from.decimals),
 						fill: getProgress(amount, total, from.decimals),
 						href: `/auction/${auctionType}/${pool.poolID}`,
 					};

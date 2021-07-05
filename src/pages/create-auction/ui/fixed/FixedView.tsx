@@ -136,7 +136,11 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 								step={FLOAT}
 								after={<Currency token={props.values.tokenTo} />}
 								required={props.values.allocation === "limited"}
-								validate={composeValidators(isEqualZero, isValidWei)}
+								validate={
+									props.values.allocation === "limited"
+										? composeValidators(isEqualZero, isValidWei)
+										: undefined
+								}
 							/>
 						</Label>
 					</FoldableSection>

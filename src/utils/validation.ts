@@ -30,7 +30,9 @@ export function isDecimalNumber(value: string): string | undefined {
 }
 
 export function isValidWei(value: string): string | undefined {
-	return value.split(".")[1].length > 6 ? "Should be no more than 6 digits after point" : undefined;
+	return value && value.split(".")[1]?.length > 6
+		? "Should be no more than 6 digits after point"
+		: undefined;
 }
 
 export function isDateRequired(date: Date): string | undefined {

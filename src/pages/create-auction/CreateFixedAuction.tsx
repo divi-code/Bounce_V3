@@ -91,7 +91,7 @@ export const CreateFixedAuction: FC<MaybeWithClassName> = () => {
 
 			const fromAmount = numToWei(data.amount, tokenFrom.decimals, 0);
 			const toAmount = numToWei(
-				new BigNumber(data.amount).multipliedBy(new BigNumber(data.swapRatio)).toNumber(),
+				+new BigNumber(data.amount).multipliedBy(new BigNumber(data.swapRatio)),
 				tokenTo.decimals,
 				0
 			);

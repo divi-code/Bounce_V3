@@ -128,6 +128,8 @@ export const createAuctionPool = (
 
 	action.estimateGas();
 
+	console.log("send", data);
+
 	return action.send({ from: account });
 };
 
