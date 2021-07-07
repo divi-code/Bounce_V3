@@ -13,13 +13,9 @@ import { PoolSearchEntity } from "@app/api/pool/types";
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
 import { DisplayPoolInfoType } from "@app/pages/auction/ui/card";
-import { fromWei, weiToNum } from "@app/utils/bn/wei";
+import { fromWei } from "@app/utils/bn/wei";
 import { getProgress, getStatus, getSwapRatio } from "@app/utils/pool";
-import { useTokenQuery } from "@app/web3/api/tokens";
-import {
-	useTokenSearchWithFallback,
-	useTokenSearchWithFallbackService,
-} from "@app/web3/api/tokens/use-fallback-tokens";
+import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fallback-tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
 import { AuctionView } from "./AuctionView";
@@ -106,7 +102,6 @@ const LAST_QUERY = {
 	page: 0,
 	searchFilters: null as any,
 	poolList: [] as any,
-	// poolInformation: [] as any,
 	convertedPoolInformation: [] as any,
 };
 
@@ -122,7 +117,6 @@ export const Auction = () => {
 	const walletControl = useConnectWalletControl();
 
 	const [poolList, setPoolList] = useState<PoolSearchEntity[]>([]);
-	// const [poolInformation, setPoolInformation] = useState<PoolInfoType[]>([]);
 	const [searchFilters, setSearchFilters] = useState<SearchFilters>({});
 	const [page, setPage] = useState(0);
 	const [totalCount, setTotalCount] = useState(0);
@@ -227,7 +221,7 @@ export const Auction = () => {
 						total: +fromWei(total, to.decimals).toFixed(6, 1),
 						currency: to.address,
 						price: +getSwapRatio(total, total0, to.decimals, from.decimals),
-						fill: getProgress(amount, total, from.decimals),
+						fill: getProgress(amount, total0, from.decimals),
 						href: `/auction/${auctionType}/${pool.poolID}`,
 					};
 				})
@@ -245,7 +239,7 @@ export const Auction = () => {
 			result={convertedPoolInformation.length ? convertedPoolInformation : undefined}
 			initialSearchState={initialSearchState}
 			currentPage={page}
-			numberOfPages={Math.floor(totalCount / WINDOW_SIZE)}
+			numberOfPages={Math.ceil(totalCount / WINDOW_SIZE)}
 			onBack={() => setPage(page - 1)}
 			onNext={() => setPage(page + 1)}
 		/>

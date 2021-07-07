@@ -1,6 +1,6 @@
 import { getJson } from "@app/api/network/json";
 import { PoolSearchEntity } from "@app/api/pool/types";
-import { getAPIByNetwork } from "@app/api/pool/utils";
+import { getAPIByNetwork } from "@app/api/utils";
 import { WEB3_NETWORKS } from "@app/web3/networks/const";
 
 import { POOL_TYPE } from "./const";
@@ -23,7 +23,7 @@ const fetchInformation = async <T = any>(
 };
 
 const toAuctionType = {
-	[POOL_TYPE.any]: 0,
+	[POOL_TYPE.all]: 0,
 	[POOL_TYPE.fixed]: 1,
 };
 

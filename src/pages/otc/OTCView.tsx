@@ -31,8 +31,6 @@ type OTCType = {
 	onSubmit?(values: any): any;
 };
 
-//TODO: replace list
-
 const LIST = [
 	{
 		label: "I want to buy",
@@ -68,7 +66,7 @@ export const OTCView: FC<OTCType & MaybeWithClassName> = ({
 							<SelectTokenField name="tokenType" placeholder="Select a token" />
 						</div>
 						<div>
-							<SelectField name="otcType" placeholder="Choose Auction Type" options={LIST} />
+							<SelectField name="auctionType" placeholder="Choose Auction Type" options={LIST} />
 						</div>
 						<div>
 							<PoolSearchField placeholder="Pool Information (Optional)" name="pool" />

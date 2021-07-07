@@ -1,23 +1,18 @@
 import { FORM_ERROR } from "final-form";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { fetchOTCPoolSearch } from "@app/api/otc/api";
-import { fetchPoolSearch } from "@app/api/pool/api";
-import { POOL_ADDRESS_MAPPING } from "@app/api/pool/const";
+import { fetchOtcSearch } from "@app/api/otc/api";
+import { OTC_SHORT_NAME_MAPPING, OTC_TYPE } from "@app/api/otc/const";
+import { OtcSearchEntity } from "@app/api/otc/types";
 
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
-import { DisplayPoolInfoType } from "@app/pages/auction/ui/card";
 import { OTCView } from "@app/pages/otc/OTCView";
 import { DisplayOTCInfoType } from "@app/pages/otc/ui/card";
-import { getMatchedOTCPool } from "@app/utils/otc";
-import { getMatchedPool } from "@app/utils/pool";
-import { getBounceOtcContract } from "@app/web3/api/bounce/otc";
-import { OTCPoolInfoType, queryOTCPoolInformation } from "@app/web3/api/bounce/otc-search";
-import { getBouncePoolContract } from "@app/web3/api/bounce/pool";
-import { PoolInfoType, queryPoolInformation } from "@app/web3/api/bounce/pool-search";
-import { useTokenQuery } from "@app/web3/api/tokens";
+import { fromWei } from "@app/utils/bn/wei";
+import { getProgress, getStatus, getSwapRatio } from "@app/utils/pool";
+import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fallback-tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
 const WINDOW_SIZE = 9;
@@ -51,7 +46,7 @@ const useURLControl = (
 
 				const filters = isEmpty ? "" : `?filters=${encodeURIComponent(JSON.stringify(rest))}`;
 
-				router.push(`/auction/${auctionType}/${filters}`, undefined, {
+				router.push(`/otc/${auctionType}/${filters}`, undefined, {
 					shallow: true,
 				});
 			}
@@ -65,7 +60,7 @@ const useURLControl = (
 		try {
 			return {
 				...tryParseJSON(decodeURIComponent(router.query.filters as string), {}),
-				auctionType: router.query.auctionType,
+				auctionType: router.query.otcType,
 			};
 		} catch (e) {
 			console.error(e);
@@ -102,7 +97,6 @@ const LAST_QUERY = {
 	page: 0,
 	searchFilters: null as any,
 	poolList: [] as any,
-	poolInformation: [] as any,
 	convertedPoolInformation: [] as any,
 };
 
@@ -117,10 +111,10 @@ export const OTC = () => {
 	const chainId = useChainId();
 	const walletControl = useConnectWalletControl();
 
-	const [poolList, setPoolList] = useState<number[]>([]);
-	const [poolInformation, setPoolInformation] = useState<OTCPoolInfoType[]>([]);
+	const [poolList, setPoolList] = useState<OtcSearchEntity[]>([]);
 	const [searchFilters, setSearchFilters] = useState<SearchFilters>({});
 	const [page, setPage] = useState(0);
+	const [totalCount, setTotalCount] = useState(0);
 	const [convertedPoolInformation, setConvertedPoolInformation] = useState<DisplayOTCInfoType[]>(
 		[]
 	);
@@ -128,7 +122,6 @@ export const OTC = () => {
 	useLastQuery(LAST_QUERY, {
 		condition: searchFilters,
 		poolList,
-		poolInformation,
 		convertedPoolInformation,
 		searchFilters,
 		page,
@@ -147,7 +140,7 @@ export const OTC = () => {
 			setSearchFilters(LAST_QUERY.searchFilters);
 			setPoolList(LAST_QUERY.poolList);
 			setPage(LAST_QUERY.page);
-			setPoolInformation(LAST_QUERY.poolInformation);
+			// setPoolInformation(LAST_QUERY.poolInformation);
 			setConvertedPoolInformation(LAST_QUERY.convertedPoolInformation);
 
 			return;
@@ -155,75 +148,93 @@ export const OTC = () => {
 
 		setSearchFilters(values);
 		setPage(0);
-
-		const { otcType, ...params } = values;
-
-		const pools = await fetchOTCPoolSearch(chainId, otcType, params);
-		setPoolList(pools);
 	};
 
-	const searchWindow = useMemo(() => poolList.slice(page * WINDOW_SIZE, (page + 1) * WINDOW_SIZE), [
-		poolList,
-		page,
-	]);
-
-	// search
 	useEffect(() => {
+		if (!searchFilters.auctionType) {
+			return;
+		}
+
 		(async () => {
-			if (searchWindow.length === 0) {
-				setPoolInformation([]);
+			const { auctionType, ...params } = searchFilters;
+			console.log("fetching pool list");
 
-				return;
-			}
-
-			const pools = await queryOTCPoolInformation(provider, chainId, searchWindow);
-			setPoolInformation(pools.filter(Boolean));
+			const {
+				data: foundPools,
+				meta: { total },
+			} = await fetchOtcSearch(
+				chainId,
+				auctionType,
+				{
+					token: params["token-type"],
+					poolId: params.pool?.id,
+					poolName: params.pool?.name,
+					creator: params.pool?.creator,
+				},
+				{
+					page,
+					perPage: WINDOW_SIZE,
+				}
+			);
+			setTotalCount(total);
+			setPoolList(foundPools);
+			console.log({ foundPools, total, page });
 		})();
-	}, [chainId, searchWindow, provider, searchFilters]);
+	}, [searchFilters, page, chainId]);
 
-	const queryToken = useTokenQuery();
+	// const queryToken = useTokenQuery();
+	const queryToken = useTokenSearchWithFallbackService();
 
 	useEffect(() => {
-		const { otcType } = searchFilters;
-
-		if (poolInformation.length > 0) {
+		if (poolList.length > 0) {
 			Promise.all(
-				poolInformation.map(async (pool) => {
+				poolList.map(async (pool) => {
 					const from = await queryToken(pool.token0);
 					const to = await queryToken(pool.token1);
 
-					const contract = getBounceOtcContract(provider, chainId);
+					const total0 = pool.amountTotal0;
+					const total = pool.amountTotal1;
+					const amount = pool.swappedAmount0;
 
-					const matchedPool = await getMatchedOTCPool(contract, from, to, pool, pool.poolID);
+					const openAt = pool.openAt * 1000;
+					const closeAt = pool.closeAt * 1000;
+
+					const toAuctionType = {
+						0: OTC_TYPE.buy,
+						1: OTC_TYPE.sell,
+					};
+
+					const auctionType = toAuctionType[pool.otcType];
 
 					return {
-						...matchedPool,
-						href: `/otc/${otcType}/${pool.poolID}`,
+						status: getStatus(openAt, closeAt, amount, total),
+						id: +pool.poolID,
+						name: `${pool.name} ${OTC_SHORT_NAME_MAPPING[auctionType]}`,
+						address: from.address,
+						type: OTC_SHORT_NAME_MAPPING[auctionType],
+						token: from.address,
+						total: +fromWei(total, to.decimals).toFixed(6, 1),
+						currency: to.address,
+						price: +getSwapRatio(total, total0, to.decimals, from.decimals),
+						fill: getProgress(amount, total0, from.decimals),
+						href: `/otc/${auctionType}/${pool.poolID}`,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));
 		} else {
 			setConvertedPoolInformation(EMPTY_ARRAY);
 		}
-	}, [
-		chainId,
-		poolInformation,
-		provider,
-		queryToken,
-		searchFilters,
-		searchFilters.otcType,
-		setConvertedPoolInformation,
-	]);
+	}, [poolList, provider, queryToken]);
 
 	const initialSearchState = useURLControl(searchFilters, provider, onSubmit);
 
 	return (
 		<OTCView
 			onSubmit={onSubmit}
-			result={poolInformation.length ? convertedPoolInformation : undefined}
+			result={convertedPoolInformation.length ? convertedPoolInformation : undefined}
 			initialSearchState={initialSearchState}
 			currentPage={page}
-			numberOfPages={Math.floor(poolList.length / WINDOW_SIZE)}
+			numberOfPages={Math.ceil(totalCount / WINDOW_SIZE)}
 			onBack={() => setPage(page - 1)}
 			onNext={() => setPage(page + 1)}
 		/>
