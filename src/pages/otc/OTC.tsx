@@ -9,8 +9,8 @@ import { OtcSearchEntity } from "@app/api/otc/types";
 import { OTC_PATH } from "@app/const/const";
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
+import { DisplayOTCInfoType } from "@app/modules/otc-card";
 import { OTCView } from "@app/pages/otc/OTCView";
-import { DisplayOTCInfoType } from "@app/pages/otc/ui/card";
 import { fromWei } from "@app/utils/bn/wei";
 import { getProgress, getStatus, getSwapRatio } from "@app/utils/pool";
 import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fallback-tokens";

@@ -1,13 +1,13 @@
 import { useWeb3React } from "@web3-react/core";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
-import { uid } from "react-uid";
 
 import { fetchOtcSearch } from "@app/api/my-otc/api";
 import { OtcSearchEntity } from "@app/api/my-otc/types";
 import { OTC_SHORT_NAME_MAPPING, OTC_TYPE } from "@app/api/otc/const";
 import { OTC_PATH } from "@app/const/const";
-import { Card, DisplayPoolInfoType } from "@app/modules/auction-card";
+import { DisplayOTCInfoType } from "@app/modules/otc-card";
+import { Card } from "@app/modules/otc-card";
 import { Pagination } from "@app/modules/pagination";
 
 import { fromWei } from "@app/utils/bn/wei";
@@ -32,7 +32,7 @@ export const Otc = () => {
 
 	const [poolList, setPoolList] = useState<OtcSearchEntity[]>([]);
 
-	const [convertedPoolInformation, setConvertedPoolInformation] = useState<DisplayPoolInfoType[]>(
+	const [convertedPoolInformation, setConvertedPoolInformation] = useState<DisplayOTCInfoType[]>(
 		[]
 	);
 
@@ -116,7 +116,7 @@ export const Otc = () => {
 				<div>
 					<ul className={styles.cardList}>
 						{convertedPoolInformation.map((auction) => (
-							<li key={uid(auction)}>
+							<li key={auction.id}>
 								<Card
 									href={auction.href}
 									id={auction.id}
@@ -125,7 +125,6 @@ export const Otc = () => {
 									address={auction.address}
 									type={auction.type}
 									token={auction.token}
-									total={auction.total}
 									currency={auction.currency}
 									price={auction.price}
 									fill={auction.fill}

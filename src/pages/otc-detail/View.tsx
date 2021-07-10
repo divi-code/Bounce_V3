@@ -2,9 +2,9 @@ import { FC, ReactNode } from "react";
 
 import { CopyAddress } from "@app/modules/copy-to-clipboard";
 import { Currency } from "@app/modules/currency";
+import { DisplayOTCInfoType } from "@app/modules/otc-card";
 import { Symbol } from "@app/modules/symbol";
 import { Timer } from "@app/modules/timer";
-import { DisplayOTCInfoType } from "@app/pages/otc/ui/card";
 import { Button } from "@app/ui/button";
 import { DescriptionList } from "@app/ui/description-list";
 import { GutterBox } from "@app/ui/gutter-box";
@@ -13,8 +13,6 @@ import { RightArrow } from "@app/ui/icons/arrow-right";
 import { ProgressBar } from "@app/ui/progress-bar";
 import { Status } from "@app/ui/status";
 import { Caption, Heading1, Heading2 } from "@app/ui/typography";
-
-import { walletConversion } from "@app/utils/convertWallet";
 
 import { POOL_STATUS } from "@app/utils/pool";
 

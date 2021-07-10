@@ -1,7 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
-import { uid } from "react-uid";
 
 import { fetchPoolSearch } from "@app/api/my-pool/api";
 import { PoolSearchEntity } from "@app/api/my-pool/types";
@@ -13,7 +12,6 @@ import {
 import { AUCTION_PATH } from "@app/const/const";
 import { Card, DisplayPoolInfoType } from "@app/modules/auction-card";
 import { Pagination } from "@app/modules/pagination";
-import { GutterBox } from "@app/ui/gutter-box";
 
 import { fromWei } from "@app/utils/bn/wei";
 import { getProgress, getStatus, getSwapRatio } from "@app/utils/pool";
@@ -121,7 +119,7 @@ export const Auction = () => {
 				<div>
 					<ul className={styles.cardList}>
 						{convertedPoolInformation.map((auction) => (
-							<li key={uid(auction)}>
+							<li key={auction.id}>
 								<Card
 									href={auction.href}
 									id={auction.id}

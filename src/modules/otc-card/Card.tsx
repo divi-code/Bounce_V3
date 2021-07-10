@@ -30,7 +30,7 @@ export type DisplayOTCInfoType = {
 	fill: number;
 };
 
-export const Card: FC<DisplayOTCInfoType & MaybeWithClassName> = ({
+export const Card: FC<DisplayOTCInfoType & MaybeWithClassName & { bordered?: boolean }> = ({
 	className,
 	status,
 	href,
@@ -42,6 +42,7 @@ export const Card: FC<DisplayOTCInfoType & MaybeWithClassName> = ({
 	currency,
 	price,
 	fill,
+	bordered,
 }) => {
 	const STATUS: Record<POOL_STATUS, string> = {
 		[POOL_STATUS.COMING]: "Coming soon",
@@ -63,7 +64,10 @@ export const Card: FC<DisplayOTCInfoType & MaybeWithClassName> = ({
 	};
 
 	return (
-		<NavLink className={classNames(className, styles.component)} href={href}>
+		<NavLink
+			className={classNames(className, styles.component, bordered && styles.bordered)}
+			href={href}
+		>
 			<Status className={styles.status} status={status} captions={STATUS} />
 			<Caption Component="span" className={styles.id} lighten={50}>
 				#{id}

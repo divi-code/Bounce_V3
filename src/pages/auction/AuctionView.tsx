@@ -1,6 +1,5 @@
 import classNames from "classnames";
 import { FC } from "react";
-import { uid } from "react-uid";
 
 import { POOL_NAME_MAPPING, POOL_TYPE } from "@app/api/pool/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
@@ -91,7 +90,7 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 								<>
 									<ul className={styles.list}>
 										{result.map((auction) => (
-											<li key={uid(auction)}>
+											<li key={auction.id}>
 												<Card
 													href={auction.href}
 													id={auction.id}

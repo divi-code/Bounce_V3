@@ -1,25 +1,23 @@
 import classNames from "classnames";
 import { FC } from "react";
 
-import { uid } from "react-uid";
-
 import { OTC_TYPE } from "@app/api/otc/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { Form } from "@app/modules/form";
+import { DisplayOTCInfoType } from "@app/modules/otc-card";
+import { Card } from "@app/modules/otc-card";
 import { Pagination } from "@app/modules/pagination";
 import { PoolSearchField } from "@app/modules/pool-search-field";
 import { Search } from "@app/modules/search";
 import { SelectField } from "@app/modules/select-field";
 import { SelectTokenField } from "@app/modules/select-token-field";
 
-import { DisplayOTCInfoType } from "@app/pages/otc/ui/card";
 import { Button } from "@app/ui/button";
 import { GutterBox } from "@app/ui/gutter-box";
 import { PopupTeleporterTarget } from "@app/ui/pop-up-container";
 
 import styles from "./OTC.module.scss";
-import { Card } from "./ui/card";
 
 type OTCType = {
 	result?: DisplayOTCInfoType[];
@@ -89,7 +87,7 @@ export const OTCView: FC<OTCType & MaybeWithClassName> = ({
 								<>
 									<ul className={styles.list}>
 										{result.map((auction) => (
-											<li key={uid(auction)}>
+											<li key={auction.id}>
 												<Card
 													href={auction.href}
 													id={auction.id}
