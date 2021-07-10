@@ -157,7 +157,6 @@ export const OTC = () => {
 
 		(async () => {
 			const { auctionType, ...params } = searchFilters;
-			console.log("fetching pool list");
 
 			const {
 				data: foundPools,
@@ -178,7 +177,6 @@ export const OTC = () => {
 			);
 			setTotalCount(total);
 			setPoolList(foundPools);
-			console.log({ foundPools, total, page });
 		})();
 	}, [searchFilters, page, chainId]);
 
@@ -200,8 +198,8 @@ export const OTC = () => {
 					const closeAt = pool.closeAt * 1000;
 
 					const toAuctionType = {
-						0: OTC_TYPE.buy,
-						1: OTC_TYPE.sell,
+						0: OTC_TYPE.sell,
+						1: OTC_TYPE.buy,
 					};
 
 					const auctionType = toAuctionType[pool.otcType];

@@ -162,7 +162,6 @@ export const Auction = () => {
 
 		(async () => {
 			const { auctionType, ...params } = searchFilters;
-			console.log("fetching pool list");
 
 			const {
 				data: foundPools,
@@ -183,7 +182,6 @@ export const Auction = () => {
 			);
 			setTotalCount(total);
 			setPoolList(foundPools);
-			console.log({ foundPools, total, page });
 		})();
 	}, [searchFilters, page, chainId]);
 

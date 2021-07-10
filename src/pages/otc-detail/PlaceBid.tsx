@@ -11,25 +11,20 @@ import { TextField } from "@app/modules/text-field";
 
 import { PrimaryButton } from "@app/ui/button";
 import { Spinner } from "@app/ui/spinner";
-import { isNotGreaterThan } from "@app/utils/validation";
 
 import styles from "./PlaceBid.module.scss";
 
-type AuctionDetailPlaceBidType = {
-	isLimit: boolean;
-	limit: number;
+type OtcDetailPlaceBidType = {
 	disabled: boolean;
 	loading: boolean;
 	currency: string;
-	balance: number;
+	balance: string;
 	onSubmit(values: Record<string, any>, form: FormApi): void;
 };
 
 const FLOAT = "0.0001";
 
-export const PlaceBid: FC<AuctionDetailPlaceBidType & WithChildren> = ({
-	isLimit,
-	limit,
+export const PlaceBid: FC<OtcDetailPlaceBidType & WithChildren> = ({
 	disabled,
 	loading,
 	children,
@@ -40,7 +35,7 @@ export const PlaceBid: FC<AuctionDetailPlaceBidType & WithChildren> = ({
 	return (
 		<Form onSubmit={onSubmit} className={styles.component}>
 			<Label
-				label="Your Bid Amount"
+				label="Your OTC Amount"
 				Component="label"
 				after={
 					<>
@@ -52,7 +47,6 @@ export const PlaceBid: FC<AuctionDetailPlaceBidType & WithChildren> = ({
 					name="bid"
 					type="number"
 					step={FLOAT}
-					max={isLimit ? limit : undefined}
 					after={
 						<div className={styles.amount}>
 							<FormSpy>
@@ -69,7 +63,6 @@ export const PlaceBid: FC<AuctionDetailPlaceBidType & WithChildren> = ({
 							<Currency token={currency} />
 						</div>
 					}
-					validate={isLimit && isNotGreaterThan(limit)}
 				/>
 			</Label>
 			<PrimaryButton className={styles.button} size="large" submit disabled={disabled}>

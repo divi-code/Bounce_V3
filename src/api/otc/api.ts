@@ -23,8 +23,8 @@ const fetchInformation = async <T = any>(
 };
 
 const toOtcType = {
-	[OTC_TYPE.buy]: 0,
-	[OTC_TYPE.sell]: 1,
+	[OTC_TYPE.buy]: 1,
+	[OTC_TYPE.sell]: 0,
 };
 
 const mapToParams = <T extends string, K extends string>(

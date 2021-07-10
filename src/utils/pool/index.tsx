@@ -59,10 +59,6 @@ export const getProgress = (amount: string, total: string, decimals: number): nu
 	const convertedAmount = +fromWei(amount, decimals);
 	const convertedTotal = +fromWei(total, decimals);
 
-	console.log("convertedAmount", convertedAmount);
-	console.log("convertedTotal", convertedTotal);
-	console.log("result", +roundedDivide(convertedAmount, convertedTotal, 2) * 100);
-
 	return +roundedDivide(convertedAmount, convertedTotal, 2) * 100;
 };
 

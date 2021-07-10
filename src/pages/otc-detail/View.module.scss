@@ -58,6 +58,18 @@
   box-sizing: border-box;
 }
 
+.type {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: space-between;
+
+  margin: 0;
+  margin-bottom: calc(var(--spacing-unit) * 2.5);
+  padding-bottom: calc(var(--spacing-unit) * 2.5);
+
+  border-bottom: 1px solid rgba(var(--primary-black), 0.1);
+}
+
 .list:not(:first-of-type) {
   margin-top: calc(var(--spacing-unit) * 4);
 }

@@ -89,7 +89,7 @@ export const View: FC<DisplayOTCInfoType & OTCDetailViewType> = ({
 					{alert && <div className={styles.alert}>{alert}</div>}
 					<div className={styles.content}>
 						<div className={styles.info}>
-							<Caption>
+							<Caption className={styles.type} weight="bold">
 								OTC type<span>{type}</span>
 							</Caption>
 							<DescriptionList

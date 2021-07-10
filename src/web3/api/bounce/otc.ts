@@ -41,6 +41,7 @@ export type OtcPoolType = {
 	enableWhiteList: boolean;
 	onlyBot: boolean;
 	poolType: 0 | 1;
+	creator: string;
 };
 
 export const createOtcPool = (
@@ -67,4 +68,45 @@ export const getOtcPools = async (
 
 export const getSwap1Amount = async (contract: ContractType, poolID: number) => {
 	return contract.methods.amountSwap1P(poolID).call();
+};
+
+export const getWhitelistedStatus = async (
+	contract: ContractType,
+	poolID: number,
+	address: string
+): Promise<boolean> => {
+	return contract.methods.whitelistP(poolID, address).call();
+};
+
+export const swapContracts = (
+	contract: ContractType,
+	amount: string,
+	account: string,
+	index: number,
+	sendAmount: string
+) => {
+	const action = contract.methods.swap(index, amount);
+
+	action.estimateGas({
+		index,
+		amount,
+	});
+
+	return action.send({ from: account, value: sendAmount });
+};
+
+export const getMyAmount0 = async (
+	contract: ContractType,
+	address: string,
+	poolID: number
+): Promise<string> => {
+	return contract.methods.myAmountSwapped0(address, poolID).call();
+};
+
+export const getMyAmount1 = async (
+	contract: ContractType,
+	address: string,
+	poolID: number
+): Promise<string> => {
+	return contract.methods.myAmountSwapped1(address, poolID).call();
 };

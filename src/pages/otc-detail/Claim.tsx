@@ -35,7 +35,7 @@ export const Claim: FC<AuctionDetailClaimType> = ({
 		<div className={styles.component}>
 			<DescriptionList
 				data={{
-					"Bid swap ratio": (
+					"OTC price": (
 						<span style={{ display: "grid", alignItems: "center", gridAutoFlow: "column" }}>
 							1{"\u00a0"}
 							<Currency token={token} small />
@@ -45,7 +45,7 @@ export const Claim: FC<AuctionDetailClaimType> = ({
 							<Currency token={currency} small />
 						</span>
 					),
-					"Total bid amount": (
+					"Successful bid amount": (
 						<span style={{ display: "grid", alignItems: "center", gridAutoFlow: "column" }}>
 							{amount}
 							{"\u00a0"}

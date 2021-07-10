@@ -10,8 +10,8 @@ import { Timer } from "@app/modules/timer";
 
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
 import { Caption } from "@app/ui/typography";
-import { isLessThan } from "@app/utils/bn";
-import { numToWei, weiToNum } from "@app/utils/bn/wei";
+import { isGreaterThan, isLessThan } from "@app/utils/bn";
+import { fromWei, numToWei, weiToNum } from "@app/utils/bn/wei";
 import { getMatchedPool, MatchedPoolType, POOL_STATUS } from "@app/utils/pool";
 import { getDeltaTime } from "@app/utils/time";
 import { getBalance, getEthBalance, getTokenContract } from "@app/web3/api/bounce/erc";
@@ -29,6 +29,7 @@ import {
 	swapContracts,
 	userClaim,
 } from "@app/web3/api/bounce/pool";
+import { isEth } from "@app/web3/api/eth/use-eth";
 import { useTokenQuery } from "@app/web3/api/tokens";
 import {
 	useAccount,
@@ -120,18 +121,10 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 
 	const [to, setTo] = useState(undefined);
 
-	const [isETH, setETH] = useState(false);
-
 	const contract = useMemo(
 		() => getBouncePoolContract(provider, POOL_ADDRESS_MAPPING[auctionType], chainId),
 		[auctionType, chainId, provider]
 	);
-
-	useEffect(() => {
-		if (to && to.address === "0x0000000000000000000000000000000000000000") {
-			setETH(true);
-		}
-	}, [to]);
 
 	const updateData = useCallback(async () => {
 		if (!contract) {
@@ -162,7 +155,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 
 		setPool(matchedPool);
 		setTo(to);
-		setUserPlaced(parseFloat(weiToNum(userBid, to.decimals, 6)) > 0);
+		setUserPlaced(isGreaterThan(userBid, 0));
 		setUserClaimed(!!userClaim);
 		setCreatorClaimed(!!creatorClaim);
 		setUserWhitelisted(matchedPool.whitelist ? whitelistStatus : true);
@@ -173,13 +166,18 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 			parseFloat(weiToNum(limit, to.decimals, 6)) - parseFloat(weiToNum(userBid, to.decimals, 6))
 		);
 
-		if (!isETH) {
+		if (!isEth(to.address)) {
 			const tokenContract = getTokenContract(provider, to.address);
-			getBalance(tokenContract, account).then((b) => setBalance(weiToNum(b, to.decimals, 6)));
+
+			getBalance(tokenContract, account).then((b) =>
+				setBalance(parseFloat(fromWei(b, to.decimals).toFixed(6, 1)).toString())
+			);
 		} else {
-			getEthBalance(web3, account).then((b) => setBalance(weiToNum(b, to.decimals, 4)));
+			getEthBalance(web3, account).then((b) =>
+				setBalance(parseFloat(fromWei(b, to.decimals).toFixed(4, 1)).toString())
+			);
 		}
-	}, [account, auctionType, contract, isETH, poolID, provider, queryToken, web3]);
+	}, [account, auctionType, contract, poolID, provider, queryToken, web3]);
 
 	const onRequestData = updateData;
 
@@ -207,7 +205,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 
 				const value = numToWei(values.bid, to.decimals, 0);
 
-				if (!isETH) {
+				if (!isEth(to.address)) {
 					const tokenContract = getTokenContract(provider, to.address);
 
 					const allowance = await getAllowance(
@@ -236,7 +234,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 
 				setOperation(OPERATION.confirmed);
 
-				await swapContracts(contract, value, account, poolID, !isETH ? "0" : value)
+				await swapContracts(contract, value, account, poolID, !isEth(to.address) ? "0" : value)
 					.on("transactionHash", (h) => {
 						console.log("hash", h);
 						setOperation(OPERATION.pending);

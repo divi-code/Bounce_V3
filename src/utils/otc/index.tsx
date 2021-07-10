@@ -3,7 +3,7 @@ import { Contract as ContractType } from "web3-eth-contract";
 
 import { OTC_TYPE } from "@app/api/otc/const";
 import { divide, isGreaterThanOrEqualTo } from "@app/utils/bn";
-import { weiToNum } from "@app/utils/bn/wei";
+import { fromWei, weiToNum } from "@app/utils/bn/wei";
 import { getSwap1Amount, OtcPoolType } from "@app/web3/api/bounce/otc";
 import { OTCPoolInfoType } from "@app/web3/api/bounce/otc-search";
 
@@ -97,8 +97,8 @@ export const getMatchedOTCPool = async (
 		address: from.address,
 		type: MATCHED_TYPE[pool.poolType],
 		token: from.address,
-		total: parseFloat(weiToNum(toTotal, to.decimals, 6)),
-		amount: toAmount ? parseFloat(weiToNum(toAmount, to.decimals, 6)) : 0,
+		total: +fromWei(toTotal, to.decimals).toFixed(6, 1),
+		amount: toAmount ? +fromWei(toAmount, to.decimals).toFixed(6, 1) : 0,
 		currency: to.address,
 		price: parseFloat(getSwapRatio(toTotal, fromTotal, to.decimals, from.decimals)),
 		fill: getProgress(toAmount, toTotal, to.decimals),

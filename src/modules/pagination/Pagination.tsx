@@ -51,7 +51,7 @@ export const Pagination: FC<PaginationType & MaybeWithClassName> = ({
 					<Button
 						className={styles.button}
 						onClick={onNext}
-						disabled={currentPage === numberOfPages}
+						disabled={currentPage === numberOfPages - 1}
 						icon={<RightArrow style={{ width: 6, height: "auto" }} />}
 					>
 						Next

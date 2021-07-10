@@ -90,6 +90,7 @@ export const CreateFixedAuction: FC<MaybeWithClassName> = () => {
 			const tokenTo = findToken(data.tokenTo);
 
 			const fromAmount = numToWei(data.amount, tokenFrom.decimals, 0);
+
 			const toAmount = numToWei(
 				+new BigNumber(data.amount).multipliedBy(new BigNumber(data.swapRatio)),
 				tokenTo.decimals,

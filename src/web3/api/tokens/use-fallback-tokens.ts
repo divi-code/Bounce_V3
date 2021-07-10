@@ -31,7 +31,7 @@ export const useFallbackTokens = () => {
 	const add = useCallback(
 		(address: string) => {
 			withAsyncCache(address, async () => {
-				console.log("--- resolving unknown token", address);
+				console.log("resolving unknown token", address);
 
 				const newToken: TokenInfo = {
 					chainId,
@@ -75,5 +75,5 @@ export const useTokenSearchWithFallbackService = () => {
 export const useTokenSearchWithFallback = (token: string) => {
 	const find = useTokenSearchWithFallbackService();
 
-	return find(token);
+	return token ? find(token) : undefined;
 };

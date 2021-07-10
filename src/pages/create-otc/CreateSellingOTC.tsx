@@ -126,6 +126,7 @@ export const CreateSellingOTC: FC<MaybeWithClassName> = () => {
 						enableWhiteList: data.whitelist,
 						onlyBot: false,
 						poolType: 0,
+						creator: account,
 					},
 					data.whiteListList
 				)
