@@ -1,6 +1,7 @@
 import { FC, ReactNode } from "react";
 
 import { useConvertDate } from "@app/hooks/use-convert-data";
+import { CopyAddress } from "@app/modules/copy-to-clipboard";
 import { Currency } from "@app/modules/currency";
 import { Symbol } from "@app/modules/symbol";
 import { Timer } from "@app/modules/timer";
@@ -57,7 +58,7 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 	const convertDate = useConvertDate();
 
 	const TOKEN_INFORMATION = {
-		"Contact address": walletConversion(address),
+		"Contact address": <CopyAddress className={styles.copy} address={address} />,
 		"Token symbol": <Currency token={token} small />,
 	};
 

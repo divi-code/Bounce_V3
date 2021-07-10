@@ -5,11 +5,12 @@ import CopyToClipboard from "react-copy-to-clipboard";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
+import { CopyAddress } from "@app/modules/copy-to-clipboard";
 import { Button } from "@app/ui/button";
 import { Copy } from "@app/ui/icons/copy";
 import { Exit } from "@app/ui/icons/exit";
 import { ShortLogo } from "@app/ui/icons/short-logo";
-import { fromWei, weiToNum } from "@app/utils/bn/wei";
+import { fromWei } from "@app/utils/bn/wei";
 import { walletConversion } from "@app/utils/convertWallet";
 
 import { getEthBalance } from "@app/web3/api/bounce/erc";
@@ -58,12 +59,7 @@ export const UserInfoView: FC<ComponentType> = ({
 				</Button>
 				<div className={styles.dropdown}>
 					<div className={styles.info}>
-						<CopyToClipboard text={address} onCopy={() => setCopy(true)}>
-							<p className={styles.copyAddress}>
-								{walletConversion(address)}
-								<Copy style={{ width: 20 }} />
-							</p>
-						</CopyToClipboard>
+						<CopyAddress className={styles.copyAddress} address={address} />
 						<span className={styles.ethBalance}>{ethBalance} ETH</span>
 					</div>
 					<Button

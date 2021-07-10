@@ -1,0 +1,10 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  justify-content: flex-start;
+  grid-column-gap: calc(var(--spacing-unit) * 0.5);
+}
