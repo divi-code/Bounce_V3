@@ -6,6 +6,7 @@ import { fetchOtcSearch } from "@app/api/otc/api";
 import { OTC_SHORT_NAME_MAPPING, OTC_TYPE } from "@app/api/otc/const";
 import { OtcSearchEntity } from "@app/api/otc/types";
 
+import { OTC_PATH } from "@app/const/const";
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
 import { OTCView } from "@app/pages/otc/OTCView";
@@ -46,7 +47,7 @@ const useURLControl = (
 
 				const filters = isEmpty ? "" : `?filters=${encodeURIComponent(JSON.stringify(rest))}`;
 
-				router.push(`/otc/${auctionType}/${filters}`, undefined, {
+				router.push(`/${OTC_PATH}/${auctionType}/${filters}`, undefined, {
 					shallow: true,
 				});
 			}
@@ -215,7 +216,7 @@ export const OTC = () => {
 						currency: to.address,
 						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
 						fill: getProgress(amount, total0, from.decimals),
-						href: `/otc/${auctionType}/${pool.poolID}`,
+						href: `/${OTC_PATH}/${auctionType}/${pool.poolID}`,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));

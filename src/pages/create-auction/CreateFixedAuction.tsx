@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { FC, useEffect, useMemo, useState } from "react";
 
 import { POOL_ADDRESS_MAPPING, POOL_TYPE } from "@app/api/pool/const";
+import { AUCTION_PATH } from "@app/const/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { useControlPopUp } from "@app/hooks/use-control-popup";
@@ -202,7 +203,7 @@ export const CreateFixedAuction: FC<MaybeWithClassName> = () => {
 					title={TITLE[operation]}
 					text={CONTENT[operation]}
 					onSuccess={() => {
-						routerPush(`/auction/${type}/${poolId}`);
+						routerPush(`/${AUCTION_PATH}/${type}/${poolId}`);
 						setOperation(OPERATION.default);
 						close();
 					}}

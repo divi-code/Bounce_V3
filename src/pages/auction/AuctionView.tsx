@@ -4,6 +4,7 @@ import { uid } from "react-uid";
 
 import { POOL_NAME_MAPPING, POOL_TYPE } from "@app/api/pool/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
+import { Card, DisplayPoolInfoType } from "@app/modules/auction-card";
 import { Form } from "@app/modules/form";
 import { Pagination } from "@app/modules/pagination";
 import { PoolSearchField } from "@app/modules/pool-search-field";
@@ -11,7 +12,6 @@ import { Search } from "@app/modules/search";
 import { SelectField } from "@app/modules/select-field";
 import { SelectTokenField } from "@app/modules/select-token-field";
 import styles from "@app/pages/auction/Auction.module.scss";
-import { Card, DisplayPoolInfoType } from "@app/pages/auction/ui/card";
 
 import { Button } from "@app/ui/button";
 import { GutterBox } from "@app/ui/gutter-box";

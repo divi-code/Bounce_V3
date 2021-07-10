@@ -1,6 +1,6 @@
 import classNames from "classnames";
 
-import { NextRouter, withRouter } from "next/router";
+import { NextRouter } from "next/router";
 
 import { HEADER_LINKS } from "@app/const/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
@@ -28,7 +28,7 @@ const settings = {
 	color: "light-grey" as const,
 };
 
-export const NavigationBase: FC<ComponentType> = ({ className, links = HEADER_LINKS, router }) => {
+export const NavigationBase: FC<ComponentType> = ({ className, links = HEADER_LINKS }) => {
 	return (
 		<div className={className}>
 			<ul className={styles.list}>
@@ -38,15 +38,12 @@ export const NavigationBase: FC<ComponentType> = ({ className, links = HEADER_LI
 					const href = typeof item !== "string" ? undefined : item;
 					const subLinks = typeof item !== "string" ? item : undefined;
 
-					const active = item.children
-						? Object.values(item.children).some((item) => router.pathname === item)
-						: router.pathname === item;
-
 					return (
 						<li key={key} className={styles.item}>
 							{href !== undefined ? (
 								<NavLink
-									className={classNames(styles.link, active && styles.active)}
+									className={classNames(styles.link)}
+									activeClassName={styles.active}
 									href={href}
 									{...settings}
 								>
@@ -82,8 +79,4 @@ export const NavigationBase: FC<ComponentType> = ({ className, links = HEADER_LI
 	);
 };
 
-export const Navigation = withRouter(
-	({ router, ...props }: MaybeWithClassName & NavigationType & { router: NextRouter }) => {
-		return <NavigationBase router={router} {...props} />;
-	}
-);
+export const Navigation = (props) => <NavigationBase {...props} />;

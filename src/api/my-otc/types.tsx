@@ -1,0 +1,22 @@
+export type OtcSearchEntity = {
+	amountTotal0: string;
+	amountTotal1: string;
+	otcType: number;
+	auctioneer: string;
+	businessType: number;
+	category: number;
+	openAt: number;
+	closeAt: number;
+	claimAt: number;
+	contract: string;
+	contractHeight: number;
+	contractTxHash: string;
+	creator: string;
+	id: number;
+	name: string;
+	poolID: string;
+	status: number;
+	swappedAmount0: string;
+	token0: string;
+	token1: string;
+};

@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { default as Link } from "next/dist/client/link";
+import { useRouter } from "next/router";
 import React, { CSSProperties, ComponentType, FC, ReactNode } from "react";
 
 import { EmptyObject, MaybeWithClassName, WithChildren } from "@app/helper/react/types";
@@ -106,24 +107,42 @@ export const Button: FC<CommonType & { submit?: boolean }> = ({ submit, ...rest 
 	<ButtonComponent Component="button" type={submit ? "submit" : "button"} {...rest} />
 );
 
-export const NavLink: FC<CommonType & { href: string; as?: string }> = ({ href, as, ...rest }) => (
-	<>
-		{href.startsWith("http") || href.startsWith("mailto") || href.startsWith("tel") ? (
-			<ButtonComponent
-				Component="a"
-				href={href}
-				role="link"
-				target="_blank"
-				rel="noopener noreferrer"
-				{...rest}
-			/>
-		) : (
-			<Link href={href} as={as} passHref>
-				<ButtonComponent Component="a" role="link" {...rest} />
-			</Link>
-		)}
-	</>
-);
+export const NavLink: FC<CommonType & { href: string; as?: string; exact?: boolean }> = ({
+	href,
+	as,
+	className,
+	activeClassName,
+	exact,
+	...rest
+}) => {
+	const router = useRouter();
+	const isActiveLink = exact ? router.pathname === href : router.pathname.startsWith(href);
+
+	return (
+		<>
+			{href.startsWith("http") || href.startsWith("mailto") || href.startsWith("tel") ? (
+				<ButtonComponent
+					Component="a"
+					href={href}
+					role="link"
+					target="_blank"
+					className={className}
+					rel="noopener noreferrer"
+					{...rest}
+				/>
+			) : (
+				<Link href={href} as={as} passHref>
+					<ButtonComponent
+						Component="a"
+						role="link"
+						{...rest}
+						className={classNames(className, isActiveLink && activeClassName)}
+					/>
+				</Link>
+			)}
+		</>
+	);
+};
 
 export type PrimaryType = Omit<CommonType, "variant" | "color">;
 

@@ -31,8 +31,9 @@ export type DisplayPoolInfoType = {
 	fill: number;
 };
 
-export const Card: FC<DisplayPoolInfoType & MaybeWithClassName> = ({
+export const Card: FC<DisplayPoolInfoType & MaybeWithClassName & { bordered?: boolean }> = ({
 	className,
+	bordered,
 	status,
 	href,
 	id,
@@ -66,7 +67,10 @@ export const Card: FC<DisplayPoolInfoType & MaybeWithClassName> = ({
 	};
 
 	return (
-		<NavLink className={classNames(className, styles.component)} href={href}>
+		<NavLink
+			className={classNames(className, styles.component, bordered && styles.bordered)}
+			href={href}
+		>
 			<Status className={styles.status} status={status} captions={STATUS} />
 			<Caption className={styles.id} Component="span" lighten={50}>
 				#{id}

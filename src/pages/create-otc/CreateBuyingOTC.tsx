@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { FC, useEffect, useMemo, useState } from "react";
 
 import { OTC_TYPE } from "@app/api/otc/const";
+import { OTC_PATH } from "@app/const/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { useControlPopUp } from "@app/hooks/use-control-popup";
@@ -188,7 +189,7 @@ export const CreateBuyingOTC: FC<MaybeWithClassName> = () => {
 					title={TITLE[operation]}
 					text={CONTENT[operation]}
 					onSuccess={() => {
-						routerPush(`/otc/${type}/${poolId}`);
+						routerPush(`/${OTC_PATH}/${type}/${poolId}`);
 						setOperation(OPERATION.default);
 						close();
 					}}

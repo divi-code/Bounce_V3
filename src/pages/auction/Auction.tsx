@@ -10,9 +10,10 @@ import {
 } from "@app/api/pool/const";
 
 import { PoolSearchEntity } from "@app/api/pool/types";
+import { AUCTION_PATH } from "@app/const/const";
+import { DisplayPoolInfoType } from "@app/modules/auction-card";
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
-import { DisplayPoolInfoType } from "@app/pages/auction/ui/card";
 import { fromWei } from "@app/utils/bn/wei";
 import { getProgress, getStatus, getSwapRatio } from "@app/utils/pool";
 import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fallback-tokens";
@@ -51,7 +52,7 @@ const useURLControl = (
 
 				const filters = isEmpty ? "" : `?filters=${encodeURIComponent(JSON.stringify(rest))}`;
 
-				router.push(`/auction/${auctionType}/${filters}`, undefined, {
+				router.push(`/${AUCTION_PATH}/${auctionType}/${filters}`, undefined, {
 					shallow: true,
 				});
 			}
@@ -185,7 +186,6 @@ export const Auction = () => {
 		})();
 	}, [searchFilters, page, chainId]);
 
-	// const queryToken = useTokenQuery();
 	const queryToken = useTokenSearchWithFallbackService();
 
 	useEffect(() => {
@@ -220,7 +220,7 @@ export const Auction = () => {
 						currency: to.address,
 						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
 						fill: getProgress(amount, total0, from.decimals),
-						href: `/auction/${auctionType}/${pool.poolID}`,
+						href: `/${AUCTION_PATH}/${auctionType}/${pool.poolID}`,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));

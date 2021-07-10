@@ -5,12 +5,16 @@ export const TWITTER_PATH = "";
 export const DOCS_PATH = "";
 export const AUDIT_PATH = "";
 export const COMMUNITY_PATH = "";
+export const FANGIBLE_PATH = "";
+export const CERTIFIED_PATH = "";
 
-export const AUCTION_PATH = "/";
+export const AUCTION_PATH = "/auction";
 export const OTC_PATH = "/otc";
 export const FARM_PATH = "/farm";
 export const GOVERNANCE_PATH = "/governance";
 export const CREATE_PATH = "/create";
+
+export const ACCOUNT_PATH = "/account";
 
 export const SOCIAL = {
 	Github: GITHUB_PATH,
