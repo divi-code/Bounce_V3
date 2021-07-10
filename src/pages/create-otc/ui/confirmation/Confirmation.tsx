@@ -114,7 +114,9 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 			amount={
 				type === OTC_TYPE.sell ? (
 					<>
-						{new BigNumber(amount).multipliedBy(new BigNumber(unitPrice)).toString()}{" "}
+						{parseFloat(
+							new BigNumber(amount).multipliedBy(new BigNumber(unitPrice)).toFixed(6, 1)
+						).toString()}{" "}
 						<Symbol token={tokenTo} />
 					</>
 				) : (

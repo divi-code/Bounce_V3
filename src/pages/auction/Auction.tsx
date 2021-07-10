@@ -216,9 +216,9 @@ export const Auction = () => {
 						address: from.address,
 						type: POOL_SHORT_NAME_MAPPING[auctionType],
 						token: from.address,
-						total: +fromWei(total, to.decimals).toFixed(6, 1),
+						total: parseFloat(fromWei(total, to.decimals).toFixed(6, 1)),
 						currency: to.address,
-						price: +getSwapRatio(total, total0, to.decimals, from.decimals),
+						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
 						fill: getProgress(amount, total0, from.decimals),
 						href: `/auction/${auctionType}/${pool.poolID}`,
 					};

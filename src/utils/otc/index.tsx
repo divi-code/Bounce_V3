@@ -2,7 +2,7 @@ import { TokenInfo } from "@uniswap/token-lists";
 import { Contract as ContractType } from "web3-eth-contract";
 
 import { OTC_TYPE } from "@app/api/otc/const";
-import { divide, isGreaterThanOrEqualTo } from "@app/utils/bn";
+import { divide, isGreaterThanOrEqualTo, roundedDivide } from "@app/utils/bn";
 import { fromWei, weiToNum } from "@app/utils/bn/wei";
 import { getSwap1Amount, OtcPoolType } from "@app/web3/api/bounce/otc";
 import { OTCPoolInfoType } from "@app/web3/api/bounce/otc-search";
@@ -37,10 +37,10 @@ export const getStatus = (openAt: string | number, amount: string, total: string
 };
 
 export const getProgress = (amount: string, total: string, decimals: number): number => {
-	const convertedAmount = weiToNum(amount, decimals);
-	const convertedTotal = weiToNum(total, decimals);
+	const convertedAmount = +fromWei(amount, decimals);
+	const convertedTotal = +fromWei(total, decimals);
 
-	return parseFloat(divide(convertedAmount, convertedTotal, 2)) * 100;
+	return +roundedDivide(convertedAmount, convertedTotal, 2) * 100;
 };
 
 export const getSwapRatio = (
@@ -49,8 +49,8 @@ export const getSwapRatio = (
 	fromDecimals: number,
 	toDecimals: number
 ): string => {
-	const from = weiToNum(fromAmount, fromDecimals, 6);
-	const to = weiToNum(toAmount, toDecimals, 6);
+	const from = +fromWei(fromAmount, fromDecimals);
+	const to = +fromWei(toAmount, toDecimals);
 
 	return divide(from, to, 6);
 };
@@ -97,8 +97,8 @@ export const getMatchedOTCPool = async (
 		address: from.address,
 		type: MATCHED_TYPE[pool.poolType],
 		token: from.address,
-		total: +fromWei(toTotal, to.decimals).toFixed(6, 1),
-		amount: toAmount ? +fromWei(toAmount, to.decimals).toFixed(6, 1) : 0,
+		total: parseFloat(fromWei(toTotal, to.decimals).toFixed(6, 1)),
+		amount: toAmount ? parseFloat(fromWei(toAmount, to.decimals).toFixed(6, 1)) : 0,
 		currency: to.address,
 		price: parseFloat(getSwapRatio(toTotal, fromTotal, to.decimals, from.decimals)),
 		fill: getProgress(toAmount, toTotal, to.decimals),

@@ -118,7 +118,9 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 					1 <Symbol token={tokenFrom} /> = {swapRatio} <Symbol token={tokenTo} />
 				</>
 			}
-			amount={new BigNumber(amount).multipliedBy(new BigNumber(swapRatio)).toFixed(6, 1)}
+			amount={parseFloat(
+				new BigNumber(amount).multipliedBy(new BigNumber(swapRatio)).toFixed(6, 1)
+			).toString()}
 			allocation={
 				allocation === ALLOCATION_TYPE.limited ? (
 					<>
