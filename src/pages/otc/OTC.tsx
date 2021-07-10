@@ -47,7 +47,7 @@ const useURLControl = (
 
 				const filters = isEmpty ? "" : `?filters=${encodeURIComponent(JSON.stringify(rest))}`;
 
-				router.push(`/${OTC_PATH}/${auctionType}/${filters}`, undefined, {
+				router.push(`${OTC_PATH}/${auctionType}/${filters}`, undefined, {
 					shallow: true,
 				});
 			}
@@ -216,7 +216,7 @@ export const OTC = () => {
 						currency: to.address,
 						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
 						fill: getProgress(amount, total0, from.decimals),
-						href: `/${OTC_PATH}/${auctionType}/${pool.poolID}`,
+						href: `${OTC_PATH}/${auctionType}/${pool.poolID}`,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));

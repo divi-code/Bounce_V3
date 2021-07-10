@@ -82,13 +82,13 @@ export const swapContracts = (
 	contract: ContractType,
 	amount: string,
 	account: string,
-	index: number,
+	poolID: number,
 	sendAmount: string
 ) => {
-	const action = contract.methods.swap(index, amount);
+	const action = contract.methods.swap(poolID, amount);
 
 	action.estimateGas({
-		index,
+		poolID,
 		amount,
 	});
 
@@ -109,4 +109,14 @@ export const getMyAmount1 = async (
 	poolID: number
 ): Promise<string> => {
 	return contract.methods.myAmountSwapped1(address, poolID).call();
+};
+
+export const delList = (contract: ContractType, account: string, poolID: number) => {
+	const action = contract.methods.deList(poolID);
+
+	action.estimateGas({
+		poolID,
+	});
+
+	return action.send({ from: account });
 };

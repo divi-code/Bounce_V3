@@ -203,7 +203,7 @@ export const CreateFixedAuction: FC<MaybeWithClassName> = () => {
 					title={TITLE[operation]}
 					text={CONTENT[operation]}
 					onSuccess={() => {
-						routerPush(`/${AUCTION_PATH}/${type}/${poolId}`);
+						routerPush(`${AUCTION_PATH}/${type}/${poolId}`);
 						setOperation(OPERATION.default);
 						close();
 					}}

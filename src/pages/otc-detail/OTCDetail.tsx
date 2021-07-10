@@ -11,7 +11,7 @@ import { Timer } from "@app/modules/timer";
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
 import { Caption } from "@app/ui/typography";
 import { isGreaterThan, isLessThan } from "@app/utils/bn";
-import { fromWei, numToWei, weiToNum } from "@app/utils/bn/wei";
+import { fromWei, numToWei } from "@app/utils/bn/wei";
 import { getMatchedOTCPool, MatchedOTCType, POOL_STATUS } from "@app/utils/otc";
 import { getBalance, getEthBalance, getTokenContract } from "@app/web3/api/bounce/erc";
 import {
@@ -22,6 +22,7 @@ import {
 	getWhitelistedStatus,
 	swapContracts,
 	getMyAmount0,
+	delList,
 } from "@app/web3/api/bounce/otc";
 import { isEth } from "@app/web3/api/eth/use-eth";
 import { useTokenQuery } from "@app/web3/api/tokens";
@@ -169,6 +170,8 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 		return () => clearInterval(tm);
 	}, [updateData]);
 
+	const { back: goBack } = useRouter();
+
 	const [operation, setOperation] = useState(OPERATION.default);
 	const [lastOperation, setLastOperation] = useState<(() => void) | null>(null);
 
@@ -209,6 +212,45 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 						setOperation(OPERATION.placed);
 						updateData();
 						form.change("bid", undefined);
+						setLastOperation(null);
+					})
+					.on("error", (e) => {
+						console.error("error", e);
+						setOperation(OPERATION.failed);
+					});
+			} catch (e) {
+				if (e.code === 4001) {
+					setOperation(OPERATION.canceled);
+				} else {
+					setOperation(OPERATION.failed);
+				}
+			} finally {
+				// close modal
+			}
+		};
+
+		setLastOperation(() => operation);
+
+		return operation();
+	};
+
+	//place a bid
+
+	const deleteOTC = async () => {
+		const operation = async () => {
+			try {
+				setOperation(OPERATION.confirmed);
+
+				await delList(contract, account, poolID)
+					.on("transactionHash", (h) => {
+						console.log("hash", h);
+						setOperation(OPERATION.pending);
+					})
+					.on("receipt", (r) => {
+						console.log("receipt", r);
+						setOperation(OPERATION.placed);
+						goBack();
+						updateData();
 						setLastOperation(null);
 					})
 					.on("error", (e) => {
@@ -293,8 +335,6 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 		}
 	}, [isCreator, pool, userPlaced, userWhitelisted]);
 
-	const { back: goBack } = useRouter();
-
 	if (pool) {
 		return (
 			<>
@@ -322,10 +362,10 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 							price={pool.price}
 							currency={pool.currency}
 							amount={pool.amount}
-							isNonAction={!isCreator || (isCreator && pool.status !== POOL_STATUS.CLOSED)}
+							isNonAction={!isCreator}
 							disabled={operation === OPERATION.loading}
 							loading={operation === OPERATION.loading}
-							onClick={isCreator ? () => null : undefined}
+							onClick={isCreator ? deleteOTC : undefined}
 						>
 							Cancel OTC Offer
 						</Claim>

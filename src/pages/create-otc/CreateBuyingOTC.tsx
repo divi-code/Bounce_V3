@@ -189,7 +189,7 @@ export const CreateBuyingOTC: FC<MaybeWithClassName> = () => {
 					title={TITLE[operation]}
 					text={CONTENT[operation]}
 					onSuccess={() => {
-						routerPush(`/${OTC_PATH}/${type}/${poolId}`);
+						routerPush(`${OTC_PATH}/${type}/${poolId}`);
 						setOperation(OPERATION.default);
 						close();
 					}}

@@ -95,7 +95,7 @@ export const Auction = () => {
 						currency: to.address,
 						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
 						fill: getProgress(amount, total0, from.decimals),
-						href: `/${AUCTION_PATH}/${auctionType}/${pool.poolID}`,
+						href: `${AUCTION_PATH}/${auctionType}/${pool.poolID}`,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));
