@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { defineFlowStep } from "@app/modules/flow/definition";
 import { useFlowControl, useFlowData } from "@app/modules/flow/hooks";
 
-import { weiToNum } from "@app/utils/bn/wei";
+import { fromWei } from "@app/utils/bn/wei";
 import { getBalance, getTokenContract } from "@app/web3/api/bounce/erc";
 
 import { useTokenSearch } from "@app/web3/api/tokens";
@@ -36,13 +36,13 @@ const SellingImp = () => {
 	const provider = useWeb3Provider();
 	const { account } = useWeb3React();
 
-	const [balance, setBalance] = useState("0");
+	const [balance, setBalance] = useState(0);
 
 	const tokenContract = getTokenContract(provider, findToken(tokenFrom).address);
 
 	useEffect(() => {
 		getBalance(tokenContract, account).then((b) =>
-			setBalance(weiToNum(b, findToken(tokenFrom).decimals, 6))
+			setBalance(parseFloat(fromWei(b, findToken(tokenFrom).decimals).toFixed(6, 1)))
 		);
 	}, [tokenContract, account, findToken, tokenFrom]);
 
@@ -61,7 +61,7 @@ const SellingImp = () => {
 		<SellingView
 			onSubmit={onSubmit}
 			tokenFrom={tokenFrom}
-			balance={parseFloat(balance)}
+			balance={balance}
 			initialValues={initialValues}
 		/>
 	);

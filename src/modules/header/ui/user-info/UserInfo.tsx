@@ -9,7 +9,7 @@ import { Button } from "@app/ui/button";
 import { Copy } from "@app/ui/icons/copy";
 import { Exit } from "@app/ui/icons/exit";
 import { ShortLogo } from "@app/ui/icons/short-logo";
-import { weiToNum } from "@app/utils/bn/wei";
+import { fromWei, weiToNum } from "@app/utils/bn/wei";
 import { walletConversion } from "@app/utils/convertWallet";
 
 import { getEthBalance } from "@app/web3/api/bounce/erc";
@@ -104,7 +104,7 @@ export const UserInfo = () => {
 	return (
 		<UserInfoView
 			address={account}
-			ethBalance={weiToNum(balance, 18, 4)}
+			ethBalance={parseFloat(fromWei(balance, 18).toFixed(4, 1)).toString()}
 			onLogout={disconnectWallet}
 		/>
 	);
