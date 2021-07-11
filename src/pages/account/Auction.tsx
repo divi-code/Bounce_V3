@@ -17,8 +17,8 @@ import { Pagination } from "@app/modules/pagination";
 
 import { Select } from "@app/ui/select";
 import { fromWei } from "@app/utils/bn/wei";
-import { getProgress, getStatus, getSwapRatio, POOL_STATUS } from "@app/utils/pool";
-import { getDeltaTime, getIsOpen } from "@app/utils/time";
+import { getProgress, getSwapRatio, POOL_STATUS } from "@app/utils/pool";
+import { getIsOpen } from "@app/utils/time";
 import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fallback-tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
