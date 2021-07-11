@@ -54,13 +54,13 @@ export const UserInfoView: FC<ComponentType> = ({
 						<CopyAddress className={styles.copyAddress} address={address} />
 					</div>
 					<div className={styles.links}>
-						<NavLink className={styles.link} href={`${ACCOUNT_PATH}`} weight="bold" exact>
+						<NavLink className={styles.link} href={`${ACCOUNT_PATH}`} weight="medium" exact>
 							My Auctions
 						</NavLink>
-						<NavLink className={styles.link} href={`${ACCOUNT_PATH}/otc`} weight="bold">
+						<NavLink className={styles.link} href={`${ACCOUNT_PATH}/otc`} weight="medium">
 							My OTC
 						</NavLink>
-						<NavLink className={styles.link} href={`${ACCOUNT_PATH}/activity`} weight="bold">
+						<NavLink className={styles.link} href={`${ACCOUNT_PATH}/activity`} weight="medium">
 							Activities
 						</NavLink>
 					</div>

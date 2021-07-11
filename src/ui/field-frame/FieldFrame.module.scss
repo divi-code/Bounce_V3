@@ -36,6 +36,12 @@
   }
 }
 
+.small {
+  min-height: 2.75rem;
+
+  border-radius: 3.125rem;
+}
+
 .errorState {
   border: 1px solid rgba(var(--error), 1);
 }

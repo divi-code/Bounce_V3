@@ -13,8 +13,9 @@ import { AUCTION_PATH } from "@app/const/const";
 import { Card, DisplayPoolInfoType } from "@app/modules/auction-card";
 import { Pagination } from "@app/modules/pagination";
 
+import { Select } from "@app/ui/select";
 import { fromWei } from "@app/utils/bn/wei";
-import { getProgress, getStatus, getSwapRatio } from "@app/utils/pool";
+import { getProgress, getStatus, getSwapRatio, POOL_STATUS } from "@app/utils/pool";
 import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fallback-tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
@@ -40,7 +41,10 @@ export const Auction = () => {
 	);
 
 	const [checkbox, setCheckbox] = useState<boolean>(false);
+
 	const type = checkbox ? "created" : "participated";
+
+	console.log("filters status", status);
 
 	useEffect(() => {
 		if (!type) {
@@ -114,6 +118,27 @@ export const Auction = () => {
 						Participated
 					</span>
 				</label>
+				<Select
+					className={styles.select}
+					options={[
+						{
+							label: "All",
+							key: "all",
+						},
+						{
+							label: "Live",
+							// @ts-ignore
+							key: POOL_STATUS.LIVE,
+						},
+						{
+							label: "Closed",
+							// @ts-ignore
+							key: POOL_STATUS.CLOSED,
+						},
+					]}
+					name="status"
+					small
+				/>
 			</div>
 			{convertedPoolInformation && convertedPoolInformation.length > 0 && (
 				<div>

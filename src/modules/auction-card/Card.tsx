@@ -31,9 +31,12 @@ export type DisplayPoolInfoType = {
 	fill: number;
 };
 
-export const Card: FC<DisplayPoolInfoType & MaybeWithClassName & { bordered?: boolean }> = ({
+export const Card: FC<
+	DisplayPoolInfoType & MaybeWithClassName & { bordered?: boolean; needClaim?: boolean }
+> = ({
 	className,
 	bordered,
+	needClaim,
 	status,
 	href,
 	id,
@@ -89,6 +92,7 @@ export const Card: FC<DisplayPoolInfoType & MaybeWithClassName & { bordered?: bo
 				data={AUCTION_INFORMATION}
 			/>
 			<ProgressBar className={styles.bar} fillInPercentage={fill} status={status} />
+			{needClaim && <div className={styles.claim}>Need to claim token</div>}
 		</NavLink>
 	);
 };

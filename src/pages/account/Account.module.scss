@@ -163,6 +163,10 @@
   background-color: rgba(var(--primary-black), 1);
 }
 
+.select {
+  min-width: 10rem;
+}
+
 .cardList {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

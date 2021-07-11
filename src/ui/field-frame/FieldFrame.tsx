@@ -8,6 +8,7 @@ import { Caption } from "@app/ui/typography";
 import styles from "./FieldFrame.module.scss";
 
 type FieldType = {
+	small?: boolean;
 	focus?: boolean;
 	placeholder?: boolean;
 	ariaOwns?: string;
@@ -24,6 +25,7 @@ export const FieldFrame = forwardRef<HTMLButtonElement, FieldType>(
 	(
 		{
 			className,
+			small,
 			error,
 			focus,
 			placeholder,
@@ -42,6 +44,7 @@ export const FieldFrame = forwardRef<HTMLButtonElement, FieldType>(
 					className={classNames(
 						className,
 						styles.component,
+						small && styles.small,
 						error && styles.errorState,
 						focus && styles.focus,
 						placeholder && styles.placeholder

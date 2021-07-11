@@ -59,6 +59,7 @@ export interface ListItemProps<P> {
 
 interface SelectProps<P extends string> {
 	className?: string;
+	small?: boolean;
 	options: ListItemProps<P>[];
 	value?: P;
 	name: string;
@@ -70,6 +71,7 @@ interface SelectProps<P extends string> {
 
 export const Select = <P extends string>({
 	className,
+	small,
 	options,
 	value,
 	name,
@@ -211,6 +213,7 @@ export const Select = <P extends string>({
 				required={required}
 			/>
 			<FieldFrame
+				small={small}
 				focus={on}
 				placeholder={active.key === undefined}
 				onClick={!readOnly ? toggle : () => null}

@@ -69,3 +69,20 @@
 
   margin-top: calc(var(--spacing-unit) * 3.5);
 }
+
+.claim {
+  position: absolute;
+  bottom: 0;
+
+  display: grid;
+  place-content: center;
+
+  width: 100%;
+  height: 2.75rem;
+
+  font-size: var(--body-1);
+  font-weight: var(--regular);
+  color: rgba(var(--primary-white), 1);
+
+  background-color: rgba(var(--primary-black), 1);
+}
