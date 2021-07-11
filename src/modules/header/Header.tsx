@@ -6,9 +6,10 @@ import { FocusOn } from "react-focus-on";
 import { CREATE_PATH } from "@app/const/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { useScatteredContinuousState } from "@app/hooks/use-continuous-state";
+import { DotLinks } from "@app/modules/header/ui/dots";
 import { UserInfo } from "@app/modules/header/ui/user-info";
 import { NavLink, PrimaryButton } from "@app/ui/button";
-import { ExtendedLogo } from "@app/ui/icons/extend-logo";
+import { Logo } from "@app/ui/icons/logo";
 import { Toggle } from "@app/ui/icons/toggle";
 
 import { useConnected } from "@app/web3/hooks/use-web3";
@@ -51,12 +52,13 @@ export const HeaderView: FC<HeaderType & MaybeWithClassName> = ({ className, act
 					<NavLink
 						className={styles.logo}
 						href="/"
-						icon={<ExtendedLogo style={{ width: 170 }} />}
+						icon={<Logo style={{ width: 130 }} />}
 						variant="text"
 						color="primary-black"
 					>
 						Home
 					</NavLink>
+					<DotLinks className={styles.dots} />
 					<Navigation className={styles.navigation} />
 					<div className={styles.buttons}>
 						<NavLink

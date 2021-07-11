@@ -1,52 +1,51 @@
 @use "../../../../helper/style/mixin";
 
-.component {}
-
-.list {
-  display: grid;
-  grid-auto-flow: column;
-  justify-content: start;
-  grid-column-gap: 2.5rem;
-
-  margin: 0;
-  padding: 0;
-
-  list-style: none;
-}
-
-.item {
-  position: relative;
-
-  display: grid;
-  align-items: center;
-
-  height: var(--header-height);
-
+.component {
   &:hover .dropdown,
   #{mixin.$when-focus-rings-enabled} &:focus .dropdown {
     opacity: 1;
     visibility: visible;
   }
+
+  &:hover .colored,
+  #{mixin.$when-focus-rings-enabled} &:focus .colored {
+    opacity: 1;
+  }
 }
 
-.item::before {
+.toggle {
+  display: grid;
+  place-content: center;
+
+  padding: 0;
+  width: calc(19px + var(--spacing-unit) * 3);
+  height: var(--header-height);
+
+  border: 0;
+
+  background-color: transparent;
+
+  cursor: pointer;
+}
+
+.toggle svg {
   position: absolute;
-  top: 0;
-  content: "";
+  top: 50%;
 
-  display: block;
-  width: 100%;
-  height: calc(100% + 5px);
+  width: 19px;
+  height: 19px;
+
+  transform: translateY(-50%);
 }
 
-.link {
-  position: relative;
+.colored {
+  z-index: 1;
 
-  margin-top: 6px;
-}
+  opacity: 0;
 
-.active {
-  color: rgba(var(--primary-black), 1);
+  transition-timing-function: linear;
+  transition-duration: 300ms;
+  transition-property: opacity;
 }
 
 .dropdown {
@@ -74,20 +73,23 @@
   visibility: hidden;
 }
 
-.subList {
-  display: grid;
+.animation {
+  transform: translateY(0);
+}
 
+.visible {
+  pointer-events: all;
+  visibility: visible;
+}
+
+.list {
   margin: 0;
   padding: 0;
 
   list-style: none;
 }
 
-.subItem {
-  display: inline-grid;
-}
-
-.subLink {
+.link {
   width: 100%;
   padding: 0.75rem 1.25rem;
 

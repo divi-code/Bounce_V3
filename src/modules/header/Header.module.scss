@@ -32,11 +32,15 @@
 }
 
 .logo {
-  margin-right: calc(var(--spacing-unit) * 6);
+  margin-right: calc(var(--spacing-unit) * 2.5);
 }
 
 .logo svg {
   height: auto;
+}
+
+.dots {
+  margin-right: calc(var(--spacing-unit) * 3);
 }
 
 .navigation {
