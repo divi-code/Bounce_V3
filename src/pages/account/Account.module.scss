@@ -179,6 +179,55 @@
   list-style: none;
 }
 
+.head {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-column-gap: var(--spacing-unit);
+
+  height: 2.75rem;
+
+  border-radius: 0.5rem;
+
+  background-color: #F3F3F3;
+}
+
+.cell {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: flex-start;
+  align-content: center;
+}
+
+.cell:first-child {
+  padding-left: calc(var(--spacing-unit) * 2.5);
+}
+
+.cell:last-child {
+  padding-right: calc(var(--spacing-unit) * 2.5);
+}
+
+.cellId {
+  text-decoration: underline;
+}
+
+.body {
+  margin: 0;
+  margin-bottom: calc(var(--spacing-unit) * 2.5);
+  padding: 0;
+
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-column-gap: var(--spacing-unit);
+
+  height: 5rem;
+
+  border-bottom: 1px solid rgba(var(--primary-black), 0.1);
+}
+
 .pagination {
   margin-top: auto;
 }

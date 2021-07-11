@@ -2,6 +2,8 @@ import { useWeb3React } from "@web3-react/core";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 
+import { uid } from "react-uid";
+
 import { fetchPoolSearch } from "@app/api/my-pool/api";
 import { PoolSearchEntity } from "@app/api/my-pool/types";
 import {
@@ -59,6 +61,7 @@ export const Auction = () => {
 			});
 			setTotalCount(total);
 			setPoolList(foundPools);
+			console.log("Auctions", foundPools);
 		})();
 	}, [page, chainId, type]);
 
@@ -141,7 +144,7 @@ export const Auction = () => {
 				<div>
 					<ul className={styles.cardList}>
 						{convertedPoolInformation.map((auction) => (
-							<li key={auction.id}>
+							<li key={uid(auction)}>
 								<Card
 									href={auction.href}
 									id={auction.id}

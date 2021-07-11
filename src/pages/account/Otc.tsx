@@ -56,6 +56,7 @@ export const Otc = () => {
 			});
 			setTotalCount(total);
 			setPoolList(foundPools);
+			console.log("Otcs", foundPools);
 		})();
 	}, [page, chainId, type]);
 
