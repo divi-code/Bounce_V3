@@ -14,12 +14,7 @@ export enum POOL_STATUS {
 	ERROR = "error",
 }
 
-export const getStatus = (
-	openAt: string | number,
-	amount: string,
-	total: string,
-	claimed: boolean
-): POOL_STATUS => {
+const getStatus = (openAt: string | number, amount: string, total: string): POOL_STATUS => {
 	const nowTime = new Date();
 	const openTime = new Date(+openAt);
 
@@ -27,21 +22,17 @@ export const getStatus = (
 
 	const isOpen = nowTime > openTime;
 
-	const isClaimed = claimed;
+	if (!isOpen) {
+		return POOL_STATUS.COMING;
+	}
 
-	if (!isClaimed) {
-		if (!isOpen) {
-			return POOL_STATUS.COMING;
-		}
+	if (isOpen && !isFilled) {
+		return POOL_STATUS.LIVE;
+	}
 
-		if (isOpen && !isFilled) {
-			return POOL_STATUS.LIVE;
-		}
-
-		if (isOpen && isFilled) {
-			return POOL_STATUS.FILLED;
-		}
-	} else return POOL_STATUS.CLOSED;
+	if (isOpen && isFilled) {
+		return POOL_STATUS.FILLED;
+	}
 };
 
 export const getProgress = (amount: string, total: string, decimals: number): number => {
@@ -101,7 +92,7 @@ export const getMatchedOTCPool = async (
 	const claimed = await getCreatorClaimed(contract, pool.creator, id);
 
 	return {
-		status: getStatus(openAt, toAmount, toTotal, claimed),
+		status: claimed ? POOL_STATUS.CLOSED : getStatus(openAt, toAmount, toTotal),
 		id: id,
 		name: `${pool.name} OTC`,
 		address: from.address,

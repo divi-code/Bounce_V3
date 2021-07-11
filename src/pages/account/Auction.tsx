@@ -18,6 +18,7 @@ import { Pagination } from "@app/modules/pagination";
 import { Select } from "@app/ui/select";
 import { fromWei } from "@app/utils/bn/wei";
 import { getProgress, getStatus, getSwapRatio, POOL_STATUS } from "@app/utils/pool";
+import { getDeltaTime, getIsOpen } from "@app/utils/time";
 import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fallback-tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
@@ -78,9 +79,6 @@ export const Auction = () => {
 					const total = pool.amountTotal1;
 					const amount = pool.swappedAmount0;
 
-					const openAt = pool.openAt * 1000;
-					const closeAt = pool.closeAt * 1000;
-
 					const toAuctionType = {
 						0: POOL_TYPE.all,
 						1: POOL_TYPE.fixed,
@@ -88,8 +86,16 @@ export const Auction = () => {
 
 					const auctionType = toAuctionType[pool.auctionType];
 
+					const toAuctionStatus = {
+						0: POOL_STATUS.LIVE,
+						1: POOL_STATUS.CLOSED,
+						2: POOL_STATUS.FILLED,
+					};
+
+					const isOpen = getIsOpen(pool.openAt * 1000);
+
 					return {
-						status: getStatus(openAt, closeAt, amount, total0),
+						status: isOpen ? toAuctionStatus[pool.status] : POOL_STATUS.COMING,
 						id: +pool.poolID,
 						name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
 						address: from.address,

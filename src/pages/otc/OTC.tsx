@@ -12,8 +12,9 @@ import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 import { DisplayOTCInfoType } from "@app/modules/otc-card";
 import { OTCView } from "@app/pages/otc/OTCView";
 import { fromWei } from "@app/utils/bn/wei";
-import { getProgress, getStatus, getSwapRatio } from "@app/utils/otc";
-import { getBounceOtcContract, getCreatorClaimed } from "@app/web3/api/bounce/otc";
+import { getProgress, getSwapRatio, POOL_STATUS } from "@app/utils/otc";
+import { getDeltaTime, getIsOpen } from "@app/utils/time";
+import { getBounceOtcContract } from "@app/web3/api/bounce/otc";
 import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fallback-tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
@@ -198,13 +199,9 @@ export const OTC = () => {
 					const from = await queryToken(pool.token0);
 					const to = await queryToken(pool.token1);
 
-					const claimed = await getCreatorClaimed(contract, pool.creator, +pool.poolID);
-
 					const total0 = pool.amountTotal0;
 					const total = pool.amountTotal1;
 					const amount = pool.swappedAmount0;
-
-					const openAt = pool.openAt * 1000;
 
 					const toAuctionType = {
 						0: OTC_TYPE.sell,
@@ -213,8 +210,16 @@ export const OTC = () => {
 
 					const auctionType = toAuctionType[pool.otcType];
 
+					const toAuctionStatus = {
+						0: POOL_STATUS.LIVE,
+						1: POOL_STATUS.CLOSED,
+						2: POOL_STATUS.FILLED,
+					};
+
+					const isOpen = getIsOpen(pool.openAt * 1000);
+
 					return {
-						status: getStatus(openAt, amount, total0, claimed),
+						status: isOpen ? toAuctionStatus[pool.status] : POOL_STATUS.COMING,
 						id: +pool.poolID,
 						name: `${pool.name} ${OTC_SHORT_NAME_MAPPING[auctionType]}`,
 						address: from.address,

@@ -7,8 +7,14 @@ import {
 	POOL_TYPE,
 } from "@app/api/pool/const";
 import { divide, isGreaterThanOrEqualTo, roundedDivide } from "@app/utils/bn";
-import { fromWei, weiToNum } from "@app/utils/bn/wei";
-import { AuctionPoolType, getLimitAmount, getSwap1Amount } from "@app/web3/api/bounce/pool";
+import { fromWei } from "@app/utils/bn/wei";
+import {
+	AuctionPoolType,
+	getLimitAmount,
+	getSwap1Amount,
+	getCreatorClaimed,
+	getMyClaimed,
+} from "@app/web3/api/bounce/pool";
 
 export enum POOL_STATUS {
 	COMING = "coming",
@@ -18,7 +24,7 @@ export enum POOL_STATUS {
 	ERROR = "error",
 }
 
-export const getStatus = (
+const getStatus = (
 	openAt: string | number,
 	closeAt: string | number,
 	amount: string,
@@ -100,7 +106,8 @@ export const getMatchedPool = async (
 	to: TokenInfo,
 	pool: Omit<AuctionPoolType, "maxAmount1PerWallet" | "onlyBot">,
 	id: number,
-	auctionType: POOL_TYPE
+	auctionType: POOL_TYPE,
+	account
 ): Promise<MatchedPoolType> => {
 	const toAmount = await getSwap1Amount(contract, id);
 	const limit = await getLimitAmount(contract, id);
@@ -112,8 +119,13 @@ export const getMatchedPool = async (
 	const closeAt = pool.closeAt * 1000;
 	const claimAt = pool.claimAt * 1000;
 
+	const creatorClaim = await getCreatorClaimed(contract, account, id);
+	const userClaim = await getMyClaimed(contract, account, id);
+
+	const isClaimed = creatorClaim || userClaim;
+
 	return {
-		status: getStatus(openAt, closeAt, toAmount, toTotal),
+		status: isClaimed ? POOL_STATUS.CLOSED : getStatus(openAt, closeAt, toAmount, toTotal),
 		id: id,
 		name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
 		address: from.address,

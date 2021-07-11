@@ -151,7 +151,15 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		const creatorClaim = await getCreatorClaimed(contract, account, poolID);
 		const userClaim = await getMyClaimed(contract, account, poolID);
 
-		const matchedPool = await getMatchedPool(contract, from, to, pool, poolID, auctionType);
+		const matchedPool = await getMatchedPool(
+			contract,
+			from,
+			to,
+			pool,
+			poolID,
+			auctionType,
+			account
+		);
 
 		setPool(matchedPool);
 		setTo(to);
