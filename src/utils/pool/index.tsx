@@ -46,12 +46,12 @@ export const getStatus = (
 		return POOL_STATUS.FILLED;
 	}
 
-	if (isClose && !isFilled) {
-		return POOL_STATUS.CLOSED;
-	}
-
 	if (isClose && isFilled) {
 		return POOL_STATUS.FILLED;
+	}
+
+	if (isClose && !isFilled) {
+		return POOL_STATUS.CLOSED;
 	}
 };
 

@@ -120,3 +120,11 @@ export const delList = (contract: ContractType, account: string, poolID: number)
 
 	return action.send({ from: account });
 };
+
+export const getCreatorClaimed = async (
+	contract: ContractType,
+	address: string,
+	poolID: number
+): Promise<boolean> => {
+	return contract.methods.creatorClaimed(address, poolID).call();
+};

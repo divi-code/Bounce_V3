@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { fetchOtcSearch } from "@app/api/my-otc/api";
 import { OtcSearchEntity } from "@app/api/my-otc/types";
@@ -12,7 +12,8 @@ import { Pagination } from "@app/modules/pagination";
 
 import { Select } from "@app/ui/select";
 import { fromWei } from "@app/utils/bn/wei";
-import { getProgress, getStatus, getSwapRatio, POOL_STATUS } from "@app/utils/pool";
+import { getProgress, getStatus, getSwapRatio, POOL_STATUS } from "@app/utils/otc";
+import { getBounceOtcContract, getCreatorClaimed } from "@app/web3/api/bounce/otc";
 import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fallback-tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
@@ -61,19 +62,26 @@ export const Otc = () => {
 
 	const queryToken = useTokenSearchWithFallbackService();
 
+	const contract = useMemo(() => getBounceOtcContract(provider, chainId), [chainId, provider]);
+
 	useEffect(() => {
+		if (!contract) {
+			return;
+		}
+
 		if (poolList.length > 0) {
 			Promise.all(
 				poolList.map(async (pool) => {
 					const from = await queryToken(pool.token0);
 					const to = await queryToken(pool.token1);
 
+					const claimed = await getCreatorClaimed(contract, pool.creator, +pool.poolID);
+
 					const total0 = pool.amountTotal0;
 					const total = pool.amountTotal1;
 					const amount = pool.swappedAmount0;
 
 					const openAt = pool.openAt * 1000;
-					const closeAt = pool.closeAt * 1000;
 
 					const toAuctionType = {
 						0: OTC_TYPE.sell,
@@ -83,7 +91,7 @@ export const Otc = () => {
 					const auctionType = toAuctionType[pool.otcType];
 
 					return {
-						status: getStatus(openAt, closeAt, amount, total),
+						status: getStatus(openAt, amount, total, claimed),
 						id: +pool.poolID,
 						name: `${pool.name} ${OTC_SHORT_NAME_MAPPING[auctionType]}`,
 						address: from.address,

@@ -6,6 +6,7 @@ import { ACCOUNT_PATH, CERTIFIED_PATH, FANGIBLE_PATH } from "@app/const/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { CopyAddress } from "@app/modules/copy-to-clipboard";
+import { Activity } from "@app/pages/account/Activity";
 import { Auction } from "@app/pages/account/Auction";
 import { Otc } from "@app/pages/account/Otc";
 import { NavLink } from "@app/ui/button";
@@ -74,7 +75,7 @@ export const Account: FC<{ type: "otc" | "auction" | "activity" } & MaybeWithCla
 				<GutterBox>
 					{type === "otc" && <Otc />}
 					{type === "auction" && <Auction />}
-					{type === "activity" && <div>Activity</div>}
+					{type === "activity" && <Activity />}
 				</GutterBox>
 			</section>
 		</div>

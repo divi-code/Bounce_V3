@@ -3,9 +3,8 @@ import { Contract as ContractType } from "web3-eth-contract";
 
 import { OTC_TYPE } from "@app/api/otc/const";
 import { divide, isGreaterThanOrEqualTo, roundedDivide } from "@app/utils/bn";
-import { fromWei, weiToNum } from "@app/utils/bn/wei";
-import { getSwap1Amount, OtcPoolType } from "@app/web3/api/bounce/otc";
-import { OTCPoolInfoType } from "@app/web3/api/bounce/otc-search";
+import { fromWei } from "@app/utils/bn/wei";
+import { getCreatorClaimed, getSwap1Amount, OtcPoolType } from "@app/web3/api/bounce/otc";
 
 export enum POOL_STATUS {
 	COMING = "coming",
@@ -15,7 +14,12 @@ export enum POOL_STATUS {
 	ERROR = "error",
 }
 
-export const getStatus = (openAt: string | number, amount: string, total: string): POOL_STATUS => {
+export const getStatus = (
+	openAt: string | number,
+	amount: string,
+	total: string,
+	claimed: boolean
+): POOL_STATUS => {
 	const nowTime = new Date();
 	const openTime = new Date(+openAt);
 
@@ -23,17 +27,21 @@ export const getStatus = (openAt: string | number, amount: string, total: string
 
 	const isOpen = nowTime > openTime;
 
-	if (!isOpen) {
-		return POOL_STATUS.COMING;
-	}
+	const isClaimed = claimed;
 
-	if (isOpen && !isFilled) {
-		return POOL_STATUS.LIVE;
-	}
+	if (!isClaimed) {
+		if (!isOpen) {
+			return POOL_STATUS.COMING;
+		}
 
-	if (isOpen && isFilled) {
-		return POOL_STATUS.FILLED;
-	}
+		if (isOpen && !isFilled) {
+			return POOL_STATUS.LIVE;
+		}
+
+		if (isOpen && isFilled) {
+			return POOL_STATUS.FILLED;
+		}
+	} else return POOL_STATUS.CLOSED;
 };
 
 export const getProgress = (amount: string, total: string, decimals: number): number => {
@@ -90,8 +98,10 @@ export const getMatchedOTCPool = async (
 
 	const openAt = pool.openAt * 1000;
 
+	const claimed = await getCreatorClaimed(contract, pool.creator, id);
+
 	return {
-		status: getStatus(openAt, toAmount, toTotal),
+		status: getStatus(openAt, toAmount, toTotal, claimed),
 		id: id,
 		name: `${pool.name} OTC`,
 		address: from.address,
