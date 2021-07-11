@@ -48,15 +48,14 @@ export const createOtcPool = (
 	contract: ContractType,
 	account: string,
 	data: OtcPoolType,
-	whiteList: string[] | undefined
+	whiteList: string[] | undefined,
+	value?: string
 ) => {
 	const action = contract.methods.create(data, whiteList !== undefined ? whiteList : []);
 
 	action.estimateGas();
 
-	console.log("send", data);
-
-	return action.send({ from: account });
+	return action.send({ from: account, value });
 };
 
 export const getOtcPools = async (

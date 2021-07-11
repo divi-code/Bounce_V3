@@ -1,5 +1,4 @@
 import { TokenInfo } from "@uniswap/token-lists";
-import classNames from "classnames";
 import React, { FC } from "react";
 import { Field } from "react-final-form";
 

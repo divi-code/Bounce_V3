@@ -22,6 +22,7 @@ import {
 	getOtcAllowance,
 } from "@app/web3/api/bounce/otc";
 
+import { isEth } from "@app/web3/api/eth/use-eth";
 import { useTokenSearch } from "@app/web3/api/tokens";
 import { useWeb3Provider } from "@app/web3/hooks/use-web3";
 
@@ -96,17 +97,19 @@ export const CreateBuyingOTC: FC<MaybeWithClassName> = () => {
 			);
 
 			try {
-				const tokenContract = getTokenContract(provider, tokenTo.address);
+				if (!isEth(tokenTo.address)) {
+					const tokenContract = getTokenContract(provider, tokenTo.address);
 
-				const allowance = await getOtcAllowance(tokenContract, chainId, account);
+					const allowance = await getOtcAllowance(tokenContract, chainId, account);
 
-				if (isLessThan(allowance, toAmount)) {
-					const result = await approveOtcPool(tokenContract, chainId, account, toAmount);
+					if (isLessThan(allowance, toAmount)) {
+						const result = await approveOtcPool(tokenContract, chainId, account, toAmount);
 
-					if (!result.status) {
-						setOperation(OPERATION.error);
+						if (!result.status) {
+							setOperation(OPERATION.error);
 
-						return;
+							return;
+						}
 					}
 				}
 
@@ -127,7 +130,8 @@ export const CreateBuyingOTC: FC<MaybeWithClassName> = () => {
 						poolType: 1,
 						creator: account,
 					},
-					data.whiteListList
+					data.whiteListList,
+					isEth(tokenTo.address) ? toAmount : undefined
 				)
 					.on("transactionHash", (h) => {
 						console.log("hash", h);

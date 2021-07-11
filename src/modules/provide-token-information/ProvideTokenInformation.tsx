@@ -41,6 +41,7 @@ const Effector: FC<EffectorType> = ({ decimal, address, onTokenChange }) => {
 type ProvideTokenInformationType = EffectorType & {
 	href: string;
 	initialState: any;
+	withoutEth?: boolean;
 	onSubmit(values): void;
 };
 
@@ -51,6 +52,7 @@ export const ProvideTokenInformation: FC<ProvideTokenInformationType> = ({
 	address,
 	initialState,
 	href,
+	withoutEth,
 }) => {
 	const notEtherium = useCallback((token: TokenInfo) => token.symbol !== "ETH", []);
 
@@ -61,7 +63,7 @@ export const ProvideTokenInformation: FC<ProvideTokenInformationType> = ({
 				<SelectTokenField
 					name="tokenFrom"
 					placeholder="Select a token"
-					filter={notEtherium}
+					filter={withoutEth ? notEtherium : undefined}
 					required
 				/>
 			</Label>
