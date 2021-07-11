@@ -44,8 +44,6 @@ export const Auction = () => {
 
 	const type = checkbox ? "created" : "participated";
 
-	console.log("filters status", status);
-
 	useEffect(() => {
 		if (!type) {
 			return;
@@ -61,7 +59,6 @@ export const Auction = () => {
 			});
 			setTotalCount(total);
 			setPoolList(foundPools);
-			console.log("result", foundPools);
 		})();
 	}, [page, chainId, type]);
 
@@ -89,13 +86,13 @@ export const Auction = () => {
 					const auctionType = toAuctionType[pool.auctionType];
 
 					return {
-						status: getStatus(openAt, closeAt, amount, total),
+						status: getStatus(openAt, closeAt, amount, total0),
 						id: +pool.poolID,
 						name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
 						address: from.address,
 						type: POOL_SHORT_NAME_MAPPING[auctionType],
 						token: from.address,
-						total: parseFloat(fromWei(total, to.decimals).toFixed(6, 1)),
+						total: parseFloat(fromWei(total, to.decimals).toString()),
 						currency: to.address,
 						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
 						fill: getProgress(amount, total0, from.decimals),

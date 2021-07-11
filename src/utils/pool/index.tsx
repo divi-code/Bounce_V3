@@ -119,8 +119,8 @@ export const getMatchedPool = async (
 		address: from.address,
 		type: POOL_SHORT_NAME_MAPPING[auctionType],
 		token: from.address,
-		total: parseFloat(fromWei(toTotal, to.decimals).toFixed(6, 1)),
-		amount: toAmount ? parseFloat(fromWei(toAmount, to.decimals).toFixed(6, 1)) : 0,
+		total: parseFloat(fromWei(toTotal, to.decimals).toString()),
+		amount: toAmount ? parseFloat(fromWei(toAmount, to.decimals).toString()) : 0,
 		currency: to.address,
 		price: parseFloat(getSwapRatio(toTotal, fromTotal, to.decimals, from.decimals)),
 		fill: getProgress(toAmount, toTotal, to.decimals),
@@ -128,7 +128,7 @@ export const getMatchedPool = async (
 		closeAt: closeAt,
 		creator: pool.creator,
 		claimAt: claimAt > closeAt ? claimAt : closeAt,
-		limit: parseFloat(fromWei(limit, to.decimals).toFixed(6, 1)),
+		limit: parseFloat(fromWei(limit, to.decimals).toString()),
 		whitelist: pool.enableWhiteList,
 	};
 };

@@ -56,7 +56,6 @@ export const Otc = () => {
 			});
 			setTotalCount(total);
 			setPoolList(foundPools);
-			console.log("result", foundPools);
 		})();
 	}, [page, chainId, type]);
 
@@ -91,13 +90,13 @@ export const Otc = () => {
 					const auctionType = toAuctionType[pool.otcType];
 
 					return {
-						status: getStatus(openAt, amount, total, claimed),
+						status: getStatus(openAt, amount, total0, claimed),
 						id: +pool.poolID,
 						name: `${pool.name} ${OTC_SHORT_NAME_MAPPING[auctionType]}`,
 						address: from.address,
 						type: OTC_SHORT_NAME_MAPPING[auctionType],
 						token: from.address,
-						total: parseFloat(fromWei(total, to.decimals).toFixed(6, 1)),
+						total: parseFloat(fromWei(total, to.decimals).toString()),
 						currency: to.address,
 						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
 						fill: getProgress(amount, total0, from.decimals),

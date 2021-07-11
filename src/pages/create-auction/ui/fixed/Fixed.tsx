@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { defineFlowStep } from "@app/modules/flow/definition";
 import { useFlowControl, useFlowData } from "@app/modules/flow/hooks";
 
-import { fromWei, weiToNum } from "@app/utils/bn/wei";
+import { fromWei } from "@app/utils/bn/wei";
 import { getBalance, getTokenContract } from "@app/web3/api/bounce/erc";
 
 import { useTokenSearch } from "@app/web3/api/tokens";

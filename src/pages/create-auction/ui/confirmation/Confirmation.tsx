@@ -28,7 +28,7 @@ type ConfirmationType = {
 	declaim: string;
 	tokenTo: ReactNode;
 	swapRatio: ReactNode;
-	amount: string;
+	amount: number;
 	allocation: ReactNode;
 	whitelist: string;
 	duration: string;
@@ -118,9 +118,7 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 					1 <Symbol token={tokenFrom} /> = {swapRatio} <Symbol token={tokenTo} />
 				</>
 			}
-			amount={parseFloat(
-				new BigNumber(amount).multipliedBy(new BigNumber(swapRatio)).toFixed(6, 1)
-			).toString()}
+			amount={parseFloat(new BigNumber(amount).multipliedBy(new BigNumber(swapRatio)).toString())}
 			allocation={
 				allocation === ALLOCATION_TYPE.limited ? (
 					<>

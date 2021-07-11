@@ -100,8 +100,6 @@ export const CreateSellingOTC: FC<MaybeWithClassName> = () => {
 
 				const allowance = await getOtcAllowance(tokenContract, chainId, account);
 
-				console.log("allowance", allowance);
-
 				if (isLessThan(allowance, fromAmount)) {
 					const result = await approveOtcPool(tokenContract, chainId, account, fromAmount);
 
