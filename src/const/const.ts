@@ -7,6 +7,7 @@ export const AUDIT_PATH = "";
 export const COMMUNITY_PATH = "";
 export const FANGIBLE_PATH = "";
 export const CERTIFIED_PATH = "";
+export const V2_PATH = "";
 
 export const AUCTION_PATH = "/auction";
 export const OTC_PATH = "/otc";

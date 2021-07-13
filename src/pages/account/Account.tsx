@@ -2,7 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import classNames from "classnames";
 import React, { FC } from "react";
 
-import { ACCOUNT_PATH, CERTIFIED_PATH, FANGIBLE_PATH } from "@app/const/const";
+import { ACCOUNT_PATH, CERTIFIED_PATH, FANGIBLE_PATH, V2_PATH } from "@app/const/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { CopyAddress } from "@app/modules/copy-to-clipboard";
@@ -42,6 +42,16 @@ export const Account: FC<{ type: "otc" | "auction" | "activity" } & MaybeWithCla
 							</NavLink>
 						</div>
 					</div>
+					{/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
+					<Body1 Component="div" className={styles.alert}>
+						🔥 <span className={styles.alertBold}>Bounce app new version is live.</span>
+						<span className={styles.alertText}>
+							If you want to use previous version{" "}
+							<a className={styles.alertLink} href={V2_PATH}>
+								click here.
+							</a>
+						</span>
+					</Body1>
 					<div className={styles.tabs}>
 						<NavLink
 							className={styles.tab}
