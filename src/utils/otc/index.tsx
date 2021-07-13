@@ -20,19 +20,13 @@ const getStatus = (openAt: string | number, amount: string, total: string): POOL
 
 	const isFilled = amount && total && isGreaterThanOrEqualTo(amount, total);
 
-	const isOpen = nowTime > openTime;
+	const isComing = nowTime < openTime;
 
-	if (!isOpen) {
-		return POOL_STATUS.COMING;
-	}
-
-	if (isOpen && !isFilled) {
-		return POOL_STATUS.LIVE;
-	}
-
-	if (isOpen && isFilled) {
-		return POOL_STATUS.FILLED;
-	}
+	if (!isComing) {
+		if (isFilled) {
+			return POOL_STATUS.FILLED;
+		} else return POOL_STATUS.LIVE;
+	} else return POOL_STATUS.COMING;
 };
 
 export const getProgress = (amount: string, total: string, decimals: number): number => {

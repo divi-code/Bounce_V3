@@ -40,25 +40,15 @@ const getStatus = (
 
 	const isClose = nowTime > closeTime;
 
-	if (!isOpen) {
-		return POOL_STATUS.COMING;
-	}
+	const isComing = nowTime < openTime;
 
-	if (isOpen && !isClose && !isFilled) {
-		return POOL_STATUS.LIVE;
-	}
-
-	if (isOpen && !isClose && isFilled) {
-		return POOL_STATUS.FILLED;
-	}
-
-	if (isClose && isFilled) {
-		return POOL_STATUS.FILLED;
-	}
-
-	if (isClose && !isFilled) {
-		return POOL_STATUS.CLOSED;
-	}
+	if (!isComing) {
+		if (isOpen && !isClose) {
+			if (isFilled) {
+				return POOL_STATUS.FILLED;
+			} else return POOL_STATUS.LIVE;
+		} else return POOL_STATUS.CLOSED;
+	} else return POOL_STATUS.COMING;
 };
 
 export const getProgress = (amount: string, total: string, decimals: number): number => {

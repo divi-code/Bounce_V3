@@ -211,6 +211,7 @@ export const Auction = () => {
 						0: POOL_STATUS.LIVE,
 						1: POOL_STATUS.CLOSED,
 						2: POOL_STATUS.FILLED,
+						3: POOL_STATUS.CLOSED,
 					};
 
 					const isOpen = getIsOpen(pool.openAt * 1000);
