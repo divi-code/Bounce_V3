@@ -18,7 +18,7 @@ import { Pagination } from "@app/modules/pagination";
 import { Select } from "@app/ui/select";
 import { fromWei } from "@app/utils/bn/wei";
 import { getProgress, getSwapRatio, POOL_STATUS } from "@app/utils/pool";
-import { getIsOpen } from "@app/utils/time";
+import { getIsClosed, getIsOpen } from "@app/utils/time";
 import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fallback-tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
@@ -125,6 +125,12 @@ export const Auction = () => {
 
 					const isOpen = getIsOpen(pool.openAt * 1000);
 
+					const isClosed = getIsClosed(pool.closeAt * 1000);
+
+					console.log("isClosed", isClosed);
+					console.log("status", pool.status);
+					console.log(isClosed && pool.status !== 3);
+
 					return {
 						status: isOpen ? toAuctionStatus[pool.status] : POOL_STATUS.COMING,
 						id: +pool.poolID,
@@ -137,6 +143,7 @@ export const Auction = () => {
 						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
 						fill: getProgress(amount, total0, from.decimals),
 						href: `${AUCTION_PATH}/${auctionType}/${pool.poolID}`,
+						needClaim: isClosed && pool.status !== 3,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));
@@ -181,6 +188,7 @@ export const Auction = () => {
 									currency={auction.currency}
 									price={auction.price}
 									fill={auction.fill}
+									needClaim={auction.needClaim}
 									bordered
 								/>
 							</li>

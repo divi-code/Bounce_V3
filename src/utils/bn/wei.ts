@@ -1,5 +1,7 @@
 import BigNumber from "bignumber.js";
 
+BigNumber.set({ EXPONENTIAL_AT: 25 });
+
 export const toWei = (value: number, decimals) => {
 	return new BigNumber(value).multipliedBy(new BigNumber(10).pow(decimals));
 };

@@ -210,6 +210,44 @@
   text-decoration: underline;
 }
 
+.cellEvent {
+  grid-column-gap: 10px;
+  align-items: center;
+}
+
+.cellEvent::before {
+  position: relative;
+  content: "";
+
+  display: block;
+  width: 12px;
+  height: 12px;
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.cellCreated::before {
+  background-image: url("./assets/create.svg");
+}
+
+.cellClaim::before {
+  background-image: url("./assets/claim.svg");
+}
+
+.cellBid::before {
+  background-image: url("./assets/bid.svg");
+}
+
+.cellBuy::before {
+  background-image: url("./assets/sell.svg");
+}
+
+.cellSell::before {
+  background-image: url("./assets/sell.svg");
+}
+
 .body {
   margin: 0;
   margin-bottom: calc(var(--spacing-unit) * 2.5);

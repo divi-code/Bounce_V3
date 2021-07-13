@@ -14,9 +14,9 @@ import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fall
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
 import styles from "./Account.module.scss";
-import { getActivity } from "./getActivity";
+import { EventType, getActivity, getEvent } from "./utils";
 
-const WINDOW_SIZE = 9;
+const WINDOW_SIZE = 20;
 const EMPTY_ARRAY = [];
 
 export const Activity = () => {
@@ -57,11 +57,11 @@ export const Activity = () => {
 					const token = await queryToken(pool.token);
 
 					return {
-						event: pool.event,
-						category: getActivity(pool.businessType, pool.auctionType),
+						event: getEvent(pool.event as EventType, pool.businessType, pool.otc_type),
+						category: getActivity(pool.businessType, pool.auctionType, pool.otc_type),
 						id: +pool.poolID,
 						token: token.address,
-						amount: parseFloat(fromWei(pool.amount, token.decimals).toString()),
+						amount: fromWei(pool.amount, token.decimals).toString(),
 						date: "",
 					};
 				})
@@ -98,7 +98,14 @@ export const Activity = () => {
 					<ul className={styles.body}>
 						{convertedActivityInformation.map((activity) => (
 							<li key={uid(activity)} className={styles.row}>
-								<Body1 className={styles.cell} Component="span">
+								<Body1
+									className={classNames(
+										styles.cell,
+										styles.cellEvent,
+										styles[`cell${activity.event}`]
+									)}
+									Component="span"
+								>
 									{activity.event}
 								</Body1>
 								<Body1 className={styles.cell} Component="span">

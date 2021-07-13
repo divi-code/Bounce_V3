@@ -13,6 +13,13 @@ export const getIsOpen = (time: number) => {
 	return nowTime > openTime;
 };
 
+export const getIsClosed = (time: number) => {
+	const nowTime = new Date();
+	const closeTime = new Date(time);
+
+	return nowTime > closeTime;
+};
+
 export const toDeltaTimer = (delta: number) => {
 	const d = Math.floor(delta / (60 * 60 * 24));
 	const h = Math.floor((delta / (60 * 60)) % 24);

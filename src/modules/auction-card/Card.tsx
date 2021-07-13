@@ -29,11 +29,10 @@ export type DisplayPoolInfoType = {
 	currency: string;
 	price: number;
 	fill: number;
+	needClaim?: boolean;
 };
 
-export const Card: FC<
-	DisplayPoolInfoType & MaybeWithClassName & { bordered?: boolean; needClaim?: boolean }
-> = ({
+export const Card: FC<DisplayPoolInfoType & MaybeWithClassName & { bordered?: boolean }> = ({
 	className,
 	bordered,
 	needClaim,
