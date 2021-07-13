@@ -27,6 +27,29 @@ import styles from "./Account.module.scss";
 const WINDOW_SIZE = 9;
 const EMPTY_ARRAY = [];
 
+const STATUS_OPTIONS = [
+	{
+		label: "All",
+		key: "all",
+	},
+	{
+		label: "Live",
+		key: "open",
+	},
+	{
+		label: "Closed",
+		key: "closed",
+	},
+	{
+		label: "Filled",
+		key: "filled",
+	},
+	{
+		label: "Claimed",
+		key: "claimed",
+	},
+];
+
 export const Auction = () => {
 	const chainId = useChainId();
 	const { account } = useWeb3React();
@@ -44,6 +67,7 @@ export const Auction = () => {
 	);
 
 	const [checkbox, setCheckbox] = useState<boolean>(false);
+	const [status, setStatus] = useState<string>("all");
 
 	const type = checkbox ? "created" : "participated";
 
@@ -56,15 +80,21 @@ export const Auction = () => {
 			const {
 				data: foundPools,
 				meta: { total },
-			} = await fetchPoolSearch(chainId, account, type, {
-				page,
-				perPage: WINDOW_SIZE,
-			});
+			} = await fetchPoolSearch(
+				chainId,
+				account,
+				type,
+				{
+					page,
+					perPage: WINDOW_SIZE,
+				},
+				status
+			);
 			setTotalCount(total);
 			setPoolList(foundPools);
 			console.log("Auctions", foundPools);
 		})();
-	}, [page, chainId, type]);
+	}, [page, chainId, type, status]);
 
 	const queryToken = useTokenSearchWithFallbackService();
 
@@ -126,23 +156,10 @@ export const Auction = () => {
 				</label>
 				<Select
 					className={styles.select}
-					options={[
-						{
-							label: "All",
-							key: "all",
-						},
-						{
-							label: "Live",
-							// @ts-ignore
-							key: POOL_STATUS.LIVE,
-						},
-						{
-							label: "Closed",
-							// @ts-ignore
-							key: POOL_STATUS.CLOSED,
-						},
-					]}
+					options={STATUS_OPTIONS}
 					name="status"
+					value={status}
+					onChange={(e) => setStatus(e.target.value)}
 					small
 				/>
 			</div>

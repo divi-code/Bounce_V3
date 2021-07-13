@@ -3,8 +3,6 @@ import { OtcSearchEntity } from "@app/api/otc/types";
 import { getAPIByNetwork } from "@app/api/utils";
 import { WEB3_NETWORKS } from "@app/web3/networks/const";
 
-import { OTC_TYPE } from "./const";
-
 type APIResponse<T> = {
 	code: 200 | 500;
 	error_msg: string;
@@ -27,6 +25,13 @@ const toAuctionType = {
 	participated: 1,
 };
 
+const toStatus = {
+	all: false,
+	open: 0,
+	closed: 1,
+	filled: 2,
+};
+
 export const fetchOtcSearch = async (
 	chainId: WEB3_NETWORKS,
 	address: string,
@@ -34,7 +39,8 @@ export const fetchOtcSearch = async (
 	pagination: {
 		page: number;
 		perPage: number;
-	}
+	},
+	status?: string
 ): Promise<{
 	data: OtcSearchEntity[];
 	meta: {
@@ -46,6 +52,7 @@ export const fetchOtcSearch = async (
 		offset: pagination.page * pagination.perPage,
 		limit: pagination.perPage,
 		action_type: toAuctionType[poolType] || 0,
+		status: toStatus[status],
 	});
 
 	if (!res.data) {

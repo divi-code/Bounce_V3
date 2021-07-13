@@ -13,7 +13,7 @@ import { Pagination } from "@app/modules/pagination";
 import { Select } from "@app/ui/select";
 import { fromWei } from "@app/utils/bn/wei";
 import { getProgress, getSwapRatio, POOL_STATUS } from "@app/utils/otc";
-import { getDeltaTime, getIsOpen } from "@app/utils/time";
+import { getIsOpen } from "@app/utils/time";
 import { getBounceOtcContract } from "@app/web3/api/bounce/otc";
 import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fallback-tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
@@ -22,6 +22,25 @@ import styles from "./Account.module.scss";
 
 const WINDOW_SIZE = 9;
 const EMPTY_ARRAY = [];
+
+const STATUS_OPTIONS = [
+	{
+		label: "All",
+		key: "all",
+	},
+	{
+		label: "Live",
+		key: "open",
+	},
+	{
+		label: "Closed",
+		key: "closed",
+	},
+	{
+		label: "Filled",
+		key: "filled",
+	},
+];
 
 export const Otc = () => {
 	const chainId = useChainId();
@@ -40,6 +59,8 @@ export const Otc = () => {
 	);
 
 	const [checkbox, setCheckbox] = useState<boolean>(false);
+	const [status, setStatus] = useState<string>(STATUS_OPTIONS[0].key);
+
 	const type = checkbox ? "created" : "participated";
 
 	useEffect(() => {
@@ -51,15 +72,20 @@ export const Otc = () => {
 			const {
 				data: foundPools,
 				meta: { total },
-			} = await fetchOtcSearch(chainId, account, type, {
-				page,
-				perPage: WINDOW_SIZE,
-			});
+			} = await fetchOtcSearch(
+				chainId,
+				account,
+				type,
+				{
+					page,
+					perPage: WINDOW_SIZE,
+				},
+				status
+			);
 			setTotalCount(total);
 			setPoolList(foundPools);
-			console.log("Otcs", foundPools);
 		})();
-	}, [page, chainId, type]);
+	}, [page, chainId, type, account, status]);
 
 	const queryToken = useTokenSearchWithFallbackService();
 
@@ -129,23 +155,10 @@ export const Otc = () => {
 				</label>
 				<Select
 					className={styles.select}
-					options={[
-						{
-							label: "All",
-							key: "all",
-						},
-						{
-							label: "Live",
-							// @ts-ignore
-							key: POOL_STATUS.LIVE,
-						},
-						{
-							label: "Closed",
-							// @ts-ignore
-							key: POOL_STATUS.CLOSED,
-						},
-					]}
+					options={STATUS_OPTIONS}
 					name="status"
+					value={status}
+					onChange={(e) => setStatus(e.target.value)}
 					small
 				/>
 			</div>

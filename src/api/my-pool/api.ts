@@ -27,6 +27,14 @@ const toAuctionType = {
 	participated: 1,
 };
 
+const toStatus = {
+	all: false,
+	open: 0,
+	closed: 1,
+	filled: 2,
+	claimed: 3,
+};
+
 export const fetchPoolSearch = async (
 	chainId: WEB3_NETWORKS,
 	address: string,
@@ -34,7 +42,8 @@ export const fetchPoolSearch = async (
 	pagination: {
 		page: number;
 		perPage: number;
-	}
+	},
+	status?: string
 ): Promise<{
 	data: PoolSearchEntity[];
 	meta: {
@@ -46,6 +55,7 @@ export const fetchPoolSearch = async (
 		offset: pagination.page * pagination.perPage,
 		limit: pagination.perPage,
 		action_type: toAuctionType[poolType] || 0,
+		status: toStatus[status],
 	});
 
 	if (!res.data) {
