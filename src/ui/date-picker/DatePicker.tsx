@@ -286,7 +286,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 		const newDate = new Date();
 		setCalendarValue(newDate);
 
-		const shiftedDate = new Date(+newDate + /* +10m */ 10 * 60 * 1000);
+		const shiftedDate = new Date(+newDate + /* +1h */ 60 * 60 * 1000);
 		setHours(shiftedDate.getHours());
 		setMinutes(shiftedDate.getMinutes());
 	};

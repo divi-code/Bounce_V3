@@ -125,8 +125,8 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 			</Label>
 
 			<FormSpy subscription={{ values: true }}>
-				{(props) => (
-					<FoldableSection open={props.values.allocation === "limited"} timeout={300} ssr>
+				{(props) =>
+					props.values.allocation === "limited" && (
 						<Label Component="label" label="Limit">
 							<TextField
 								type="text"
@@ -143,8 +143,8 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 								}
 							/>
 						</Label>
-					</FoldableSection>
-				)}
+					)
+				}
 			</FormSpy>
 			<FormSpy>
 				{(form) => (
