@@ -36,7 +36,7 @@ export const ConnectWallet: FC<ConnectWallet> = ({
 							<MetaIcon />
 						</span>
 						Metamask
-						<RightArrow style={{ width: 8, marginLeft: "auto" }} />
+						<RightArrow className={styles.arrow} />
 					</button>
 				</li>
 				<li className={styles.item}>
@@ -50,7 +50,7 @@ export const ConnectWallet: FC<ConnectWallet> = ({
 							<WalletIcon />
 						</span>
 						WalletConnect
-						<RightArrow style={{ width: 8, marginLeft: "auto" }} />
+						<RightArrow className={styles.arrow} />
 					</button>
 				</li>
 			</ul>
@@ -94,7 +94,8 @@ export const ConnectWalletModal: RC<{
 		<PopUpContainer
 			animated={control.present}
 			visible={control.defined}
-			onClose={connecting ? undefined : close}
+			// onClose={connecting ? undefined : close}
+			onClose={close}
 			maxWidth={640}
 			scrollable={false}
 		>

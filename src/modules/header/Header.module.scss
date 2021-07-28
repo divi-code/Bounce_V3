@@ -26,9 +26,6 @@
 
   background-color: rgba(var(--primary-white), 1);
 
-  @include mixin.until(media.$md) {
-    justify-content: space-between;
-  }
 }
 
 .logo {
@@ -65,7 +62,7 @@
   position: relative;
 
   padding: 0;
-  margin: 0;
+  margin: 0 0 0 auto;
 
   color: rgba(var(--primary-black), 1);
 
@@ -80,7 +77,7 @@
   @include mixin.from(media.$md) {
     display: none;
   }
-
+  
   &:hover,
   #{mixin.$when-focus-rings-enabled} &:focus {
     color: rgba(var(--primary-black), 0.4);
