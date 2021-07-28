@@ -24,6 +24,7 @@ class MyDocument extends Document {
 					/>
 					<link rel="stylesheet" href="/fonts/Helvetica/stylesheet.css" />
 					<link rel="stylesheet" href="/fonts/Graphik/stylesheet.css" />
+					<link rel="stylesheet" href="/css/animate.min.css" />
 				</Head>
 				<body>
 					<Main />

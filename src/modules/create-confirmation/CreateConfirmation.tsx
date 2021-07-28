@@ -48,7 +48,7 @@ export const CreateConfirmation: FC<CreateConfirmationType & MaybeWithClassName 
 						className={styles.close}
 						variant="text"
 						color="primary-black"
-						icon={<Close width={24} height="auto" />}
+						icon={<Close width={24} height={24} />}
 						onClick={moveBack}
 					>
 						Close

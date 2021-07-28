@@ -50,57 +50,64 @@ type ButtonProps<T extends EmptyObject> = ButtonComponentType &
 
 export type CommonType = ButtonComponentType & MaybeWithClassName & WithChildren;
 
-export const ButtonComponent: FC<ButtonProps<EmptyObject> & MaybeWithClassName & WithChildren> = ({
-	Component = "button",
-	className,
-	children,
-	iconAfter,
-	iconBefore,
-	icon,
-	variant,
-	color,
-	size,
-	weight = "medium",
-	hover,
-	active,
-	disabled,
-	rainbowHover,
-	onClick,
-	...props
-}) => (
-	<Component
-		className={classNames(
+export const ButtonComponent: FC<
+	ButtonProps<EmptyObject> & MaybeWithClassName & WithChildren
+> = React.forwardRef(
+	(
+		{
+			Component = "button",
 			className,
-			styles.button,
-			icon && styles.icon,
-			variant && styles[variant],
-			color && variant && styles[`${variant}-${color}`],
-			size && styles[size],
-			size && variant && styles[`${variant}-${size}`],
-			size && icon && styles[`icon-${size}`],
-			size && iconBefore && styles[`iconBefore-${size}`],
-			size && iconAfter && styles[`iconAfter-${size}`],
-			weight && styles[`weight-${weight}`],
-			rainbowHover && styles.rainbow,
-			hover && styles.hover,
-			active && styles.active,
-			disabled && styles.disabled
-		)}
-		onClick={onClick}
-		disabled={disabled}
-		{...props}
-	>
-		{iconBefore}
-		{icon ? (
-			<>
-				{icon}
-				<span>{children}</span>
-			</>
-		) : (
-			children
-		)}
-		{iconAfter}
-	</Component>
+			children,
+			iconAfter,
+			iconBefore,
+			icon,
+			variant,
+			color,
+			size,
+			weight = "medium",
+			hover,
+			active,
+			disabled,
+			rainbowHover,
+			onClick,
+			...props
+		},
+		_ref
+	) => (
+		<Component
+			className={classNames(
+				className,
+				styles.button,
+				icon && styles.icon,
+				variant && styles[variant],
+				color && variant && styles[`${variant}-${color}`],
+				size && styles[size],
+				size && variant && styles[`${variant}-${size}`],
+				size && icon && styles[`icon-${size}`],
+				size && iconBefore && styles[`iconBefore-${size}`],
+				size && iconAfter && styles[`iconAfter-${size}`],
+				weight && styles[`weight-${weight}`],
+				rainbowHover && styles.rainbow,
+				hover && styles.hover,
+				active && styles.active,
+				disabled && styles.disabled
+			)}
+			onClick={onClick}
+			disabled={disabled}
+			{...props}
+		>
+			{iconBefore}
+			{icon ? (
+				<>
+					{icon}
+					<span>{children}</span>
+				</>
+			) : (
+				children
+			)}
+			{iconAfter}
+		</Component>
+	)
 );
 
 export const Button: FC<CommonType & { submit?: boolean }> = ({ submit, ...rest }) => (

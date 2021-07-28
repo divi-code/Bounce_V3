@@ -60,7 +60,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 				{(props) => (
 					<Label Component="label" label="Swap Ratio">
 						<Body1 Component="div" className={styles.swap}>
-							1 <Symbol token={tokenFrom} /> ={"\u00a0"}
+							1 <Symbol token={tokenFrom} /> =&nbsp;
 							<TextField
 								type="number"
 								name="swapRatio"
