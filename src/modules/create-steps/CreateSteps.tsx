@@ -40,7 +40,7 @@ export const CreateSteps: FC<CreateStepsType & MaybeWithClassName & WithChildren
 						variant="text"
 						href="/"
 						color="primary-black"
-						icon={<Close width={24} height="auto" />}
+						icon={<Close width={24} height={24} />}
 					>
 						Close
 					</NavLink>

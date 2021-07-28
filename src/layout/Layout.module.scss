@@ -21,7 +21,7 @@
 
 .mobile {
   @include mixin.from(media.$lg) {
-    // display: none;
+    display: none;
   }
 }
 

@@ -12,3 +12,15 @@ export const Copy = (props: SVGAttributes<SVGElement>) => {
 		</svg>
 	);
 };
+
+export const Copied = (props: SVGAttributes<SVGElement>) => {
+	return (
+		<svg viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+			<path
+				d="M1.19995 4.73324L5.36662 8.48324L11.2 1.3999"
+				stroke="rgba(0,0,0,0.5)"
+				strokeWidth="2"
+			/>
+		</svg>
+	);
+};

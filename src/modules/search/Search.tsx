@@ -27,7 +27,11 @@ export const Search: FC<SearchType & MaybeWithClassName & WithChildren> = ({
 			<GutterBox className={classNames(styles.wrapper, !visibleText && styles.withoutText)}>
 				{visibleText && (
 					<>
-						<Heading1 Component="h2" className={styles.title} color="primary-white">
+						<Heading1
+							Component="h2"
+							className={`animate__animated animate__bounce ${styles.title}`}
+							color="primary-white"
+						>
 							{title}
 						</Heading1>
 						<Body1 className={styles.text} color="primary-white">

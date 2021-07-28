@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
-import { Copy } from "@app/ui/icons/copy";
+import { Copy, Copied } from "@app/ui/icons/copy";
 import { walletConversion } from "@app/utils/convertWallet";
 
 import styles from "./CopyAddress.module.scss";
@@ -24,7 +24,7 @@ export const CopyAddress: FC<{ address: string } & MaybeWithClassName> = ({
 		<CopyToClipboard text={address} onCopy={() => setCopy(true)}>
 			<span className={classNames(className, styles.component)}>
 				{walletConversion(address)}
-				<Copy />
+				{isCopy ? <Copied /> : <Copy />}
 			</span>
 		</CopyToClipboard>
 	);
