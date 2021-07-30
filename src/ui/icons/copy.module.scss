@@ -1,0 +1,10 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.copy {
+    cursor: pointer;
+	&:hover {
+		color: rgba(var(--primary-black), 1);
+		fill: rgba(var(--primary-black), 1);
+	}
+}
