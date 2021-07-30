@@ -8,3 +8,11 @@
   justify-content: flex-start;
   grid-column-gap: calc(var(--spacing-unit) * 0.5);
 }
+
+
+.copy {
+  cursor: pointer;
+  &:hover {
+    color: rgba(var(--primary-black), 1)
+  }
+}
