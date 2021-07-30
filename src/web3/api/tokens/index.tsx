@@ -28,11 +28,10 @@ export const TokenListProvider: FC = ({ children }) => {
 	const ensResolver = useCallback(
 		async (ensName: string) => {
 			if (!library || chainId !== 1) {
-				const networkLibrary = library;
-				const network = await networkLibrary.getNetwork();
+				const network = await library.getNetwork();
 
-				if (networkLibrary && network.chainId === 1) {
-					return resolveENSContentHash(ensName, networkLibrary);
+				if (library && network.chainId === 1) {
+					return resolveENSContentHash(ensName, library);
 				}
 
 				throw new Error("Could not construct mainnet ENS resolver");

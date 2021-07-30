@@ -37,7 +37,7 @@ export const PoolSearch: FC<PoolSearchType & MaybeWithClassName> = ({
 				onClick={!readOnly ? open : () => null}
 			>
 				{value ? value : placeholder}
-				<Arrow style={{ transform: !popUp.defined ? "rotate(180deg)" : "rotate(0)" }} />
+				<Arrow position={!popUp.defined ? "bottom" : "top"} />
 			</FieldFrame>
 			{popUp.defined ? (
 				<PopUpContainer

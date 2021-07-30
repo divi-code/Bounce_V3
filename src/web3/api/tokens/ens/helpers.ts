@@ -6,6 +6,7 @@ export function uriToHttp(uri: string): string[] {
 	const protocol = uri.split(":")[0].toLowerCase();
 
 	switch (protocol) {
+		case "data":
 		case "https":
 			return [uri];
 		case "http":

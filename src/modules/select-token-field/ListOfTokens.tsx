@@ -67,7 +67,7 @@ export const ListOfTokens: FC<ListOfTokensType> = ({
 	const handleOnSearch = (e: ChangeEvent<HTMLInputElement>) =>
 		setSearch(e.target.value.toLowerCase());
 
-	const listOfTokens = useMemo(() => {
+	const tokens = useMemo(() => {
 		if (!searchValue) {
 			return options;
 		}
@@ -92,11 +92,11 @@ export const ListOfTokens: FC<ListOfTokensType> = ({
 			</div>
 			<div className={styles.scroll}>
 				<StrollableContainer bar={ScrollBar} draggable>
-					<SizeHolder lineCount={listOfTokens.length}>
+					<SizeHolder lineCount={tokens.length}>
 						<StrollerState>
 							{({ clientHeight, scrollTop }) =>
 								getDataWindow(
-									listOfTokens,
+									tokens,
 									LINE_HEIGHT,
 									scrollTop,
 									clientHeight

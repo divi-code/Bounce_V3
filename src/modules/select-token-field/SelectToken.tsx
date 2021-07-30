@@ -21,9 +21,13 @@ import { PopUpContainer } from "@app/ui/pop-up-container";
 
 import { useAllTokens, useTokenList } from "@app/web3/api/tokens";
 
+import { uriToHttp } from "@app/web3/api/tokens/ens/helpers";
+
+import { Icon } from "../icon";
+
 import { ListOfTokens } from "./ListOfTokens";
 import styles from "./SelectToken.module.scss";
-import EMPTY from "./assets/empty.svg";
+// import EMPTY from "./assets/empty.svg";
 
 type SelectTokenType = {
 	value?: string;
@@ -116,19 +120,12 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 					onClick={!readOnly ? open : () => null}
 				>
 					{active && (
-						<span
-							className={styles.value}
-							style={
-								{
-									"--icon": active.img ? `url("${active.img}")` : `url(${EMPTY})`,
-									"--show-icon": active.img !== undefined ? "block" : "none",
-								} as CSSProperties
-							}
-						>
-							{active.currency}
-						</span>
+						<div className={styles.value}>
+							<Icon src={active.img} />
+							<span>{active.currency}</span>
+						</div>
 					)}
-					<Arrow style={{ transform: !popUp.defined ? "rotate(180deg)" : "rotate(0)" }} />
+					<Arrow position={!popUp.defined ? "bottom" : "top"} />
 				</FieldFrame>
 			</div>
 			{popUp.defined ? (
@@ -186,7 +183,7 @@ export const SelectToken: FC<
 					key: token.address,
 					title: token.name,
 					currency: token.symbol,
-					img: token.logoURI,
+					img: token.logoURI ? uriToHttp(token.logoURI)[0] : "",
 					source: token.source,
 				};
 			}),

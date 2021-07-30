@@ -224,7 +224,7 @@ export const Select = <P extends string>({
 				ariaExpanded={on}
 			>
 				{active && active.label}
-				<Arrow style={{ transform: !on ? "rotate(180deg)" : "rotate(0)" }} />
+				<Arrow position={!on ? "bottom" : "top"} />
 			</FieldFrame>
 
 			<div className={styles.wrapper}>

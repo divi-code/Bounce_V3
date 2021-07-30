@@ -15,24 +15,13 @@
   justify-content: start;
   align-items: center;
   grid-column-gap: var(--spacing-unit);
-}
 
-.value::before {
-  position: relative;
-  content: "";
+  >img {
+    background-color: rgba(var(--primary-black), 0.1);
+    width: 1.5rem;
+    height: 1.5rem;
 
-  display: var(--show-icon);
-
-  width: 1.5rem;
-  height: 1.5rem;
-
-  border-radius: 50%;
-
-  background-color: rgba(var(--primary-black), 0.1);
-  background-image: var(--icon);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-
-  overflow: hidden;
+    border-radius: 50%;
+    overflow: hidden;
+  }
 }

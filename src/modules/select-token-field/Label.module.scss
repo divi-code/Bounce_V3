@@ -16,6 +16,10 @@
   grid-row-gap: calc(var(--spacing-unit) * 0.4);
   justify-content: start;
   align-items: center;
+  cursor: pointer;
+  &:hover{
+    opacity: 0.6;
+  }
 }
 
 .label::before {
