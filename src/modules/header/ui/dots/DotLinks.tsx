@@ -38,7 +38,7 @@ export const DotLinks: FC<MaybeWithClassName> = ({ className }) => {
 							href={V2_PATH}
 							iconBefore={<ShortLogo style={{ width: 14, marginRight: 12 }} />}
 						>
-							Bounce V2
+							Bounce V1
 						</NavLink>
 					</li>
 					<li className={styles.item}>
