@@ -5,8 +5,8 @@ export const TWITTER_PATH = "";
 export const DOCS_PATH = "";
 export const AUDIT_PATH = "";
 export const COMMUNITY_PATH = "";
-export const FANGIBLE_PATH = "";
-export const CERTIFIED_PATH = "";
+export const FANGIBLE_PATH = "https://fangible.com";
+export const CERTIFIED_PATH = "https://certified.bounce.finance";
 export const V2_PATH = "https://app.bounce.finance";
 
 export const AUCTION_PATH = "/auction";
