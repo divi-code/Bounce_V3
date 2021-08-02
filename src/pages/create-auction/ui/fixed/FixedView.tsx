@@ -50,7 +50,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 		<Form onSubmit={onSubmit} className={styles.form} initialValues={initialValues}>
 			<div className={styles.group}>
 				<Label Component="div" label="From">
-					<SelectTokenField name="tokenFrom" required readOnly />
+					<SelectTokenField name="tokenFrom" required readOnly showArrow={false} />
 				</Label>
 				<Label Component="div" label="To">
 					<SelectTokenField name="tokenTo" placeholder="Select a token" required />

@@ -41,6 +41,7 @@ type SelectTokenType = {
 	error?: string;
 	onBlur?(): void;
 	onChange(date: string): void;
+	showArrow?: boolean;
 };
 
 export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
@@ -56,6 +57,7 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 	tokenListControl,
 	onBlur,
 	error,
+	showArrow = true,
 }) => {
 	const { popUp, close, open } = useControlPopUp();
 
@@ -125,7 +127,9 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 							<span>{active.currency}</span>
 						</div>
 					)}
-					<Arrow position={!popUp.defined ? "bottom" : "top"} />
+					{showArrow && (
+						<Arrow position={!popUp.defined ? "bottom" : "top"} />
+					)}
 				</FieldFrame>
 			</div>
 			{popUp.defined ? (
