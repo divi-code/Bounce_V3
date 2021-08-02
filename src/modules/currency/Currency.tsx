@@ -1,19 +1,21 @@
 import classNames from "classnames";
-import { CSSProperties, FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
+import { GeckoCoin } from "@app/ui/icons/gecko-coin";
 import { Body1, Caption } from "@app/ui/typography";
 
 import { uriToHttp } from "@app/web3/api/tokens/ens/helpers";
 
 import { useTokenSearchWithFallback } from "@app/web3/api/tokens/use-fallback-tokens";
 
+import { Icon } from "../icon";
+
 import styles from "./Currency.module.scss";
-import EMPTY from "./assets/empty.svg";
 
 type CurrencyType = {
 	symbol: string;
-	img?: string;
+	img?: React.ReactNode;
 };
 
 export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClassName> = ({
@@ -22,41 +24,19 @@ export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClas
 	img,
 	small,
 }) => {
-	const [logoIsOk, setLogoIsOk] = useState(true);
-
-	const realImage = img ? uriToHttp(img)[0] : undefined;
-
-	useEffect(() => {
-		if (realImage) {
-			const testImage = new Image();
-			testImage.onerror = () => setLogoIsOk(false);
-			testImage.src = realImage;
-		}
-	}, [realImage]);
-
 	return small ? (
-		<Caption
-			className={classNames(className, styles.component, styles.small)}
-			Component="span"
-			style={{ "--icon": img && logoIsOk ? `url(${img})` : `url(${EMPTY})` } as CSSProperties}
-		>
+		<Caption className={classNames(className, styles.component, styles.small)} Component="span">
+			<Icon src={img} />
 			{symbol}
 		</Caption>
 	) : (
-		<Body1
-			className={classNames(className, styles.component)}
-			Component="span"
-			style={{ "--icon": img && logoIsOk ? `url(${img})` : `url(${EMPTY})` } as CSSProperties}
-		>
+		<Body1 className={classNames(className, styles.component)} Component="span">
 			{symbol}
 		</Body1>
 	);
 };
 
-export const Currency: FC<MaybeWithClassName & { token: string; small?: boolean }> = ({
-	token,
-	small,
-}) => {
+const CurrencyToken: FC<ICurrencyProps> = ({ token, small }) => {
 	const tokenInfo = useTokenSearchWithFallback(token);
 
 	if (!tokenInfo) {
@@ -70,4 +50,20 @@ export const Currency: FC<MaybeWithClassName & { token: string; small?: boolean 
 			small={small}
 		/>
 	);
+};
+
+interface ICurrencyProps extends MaybeWithClassName {
+	gecko?: boolean;
+	token: string;
+	small?: boolean;
+}
+
+export const Currency: FC<ICurrencyProps> = (props) => {
+	const { token, small, gecko } = props;
+
+	if (gecko) {
+		return <CurrencyView symbol={token} img={GeckoCoin} small={small} />;
+	}
+
+	return <CurrencyToken {...props} />;
 };

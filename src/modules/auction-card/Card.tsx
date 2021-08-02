@@ -7,6 +7,7 @@ import { Currency } from "@app/modules/currency";
 import { NavLink } from "@app/ui/button";
 
 import { DescriptionList } from "@app/ui/description-list";
+// import { GeckoCoin } from "@app/ui/icons/gecko-coin";
 import { ProgressBar } from "@app/ui/progress-bar";
 import { Status } from "@app/ui/status";
 import { Caption, Heading2 } from "@app/ui/typography";
@@ -57,7 +58,7 @@ export const Card: FC<DisplayPoolInfoType & MaybeWithClassName & { bordered?: bo
 	};
 
 	const TOKEN_INFORMATION = {
-		"Contact address": walletConversion(address),
+		"Contact address": <Currency token={walletConversion(address)} small />,
 		"Token symbol": <Currency token={token} small />,
 	};
 

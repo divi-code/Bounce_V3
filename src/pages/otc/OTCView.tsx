@@ -64,7 +64,7 @@ export const OTCView: FC<OTCType & MaybeWithClassName> = ({
 							<SelectTokenField name="tokenType" placeholder="Select a token" />
 						</div>
 						<div>
-							<SelectField name="auctionType" placeholder="Choose Auction Type" options={LIST} />
+							<SelectField name="auctionType" placeholder="Choose OTC Offer" options={LIST} />
 						</div>
 						<div>
 							<PoolSearchField placeholder="Pool Information (Optional)" name="pool" />

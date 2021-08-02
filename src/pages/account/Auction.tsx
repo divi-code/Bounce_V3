@@ -5,12 +5,13 @@ import { useEffect, useState } from "react";
 import { uid } from "react-uid";
 
 import { fetchPoolSearch } from "@app/api/my-pool/api";
-import { PoolSearchEntity } from "@app/api/my-pool/types";
+// import { IPoolSearchEntity } from "@app/api/my-pool/types";
 import {
 	POOL_SHORT_NAME_MAPPING,
 	POOL_SPECIFIC_NAME_MAPPING,
 	POOL_TYPE,
 } from "@app/api/pool/const";
+import { IPoolSearchEntity } from "@app/api/pool/types";
 import { AUCTION_PATH } from "@app/const/const";
 import { Card, DisplayPoolInfoType } from "@app/modules/auction-card";
 import { Pagination } from "@app/modules/pagination";
@@ -60,7 +61,7 @@ export const Auction = () => {
 
 	const numberOfPages = Math.ceil(totalCount / WINDOW_SIZE);
 
-	const [poolList, setPoolList] = useState<PoolSearchEntity[]>([]);
+	const [poolList, setPoolList] = useState<IPoolSearchEntity[]>([]);
 
 	const [convertedPoolInformation, setConvertedPoolInformation] = useState<DisplayPoolInfoType[]>(
 		[]
@@ -80,16 +81,16 @@ export const Auction = () => {
 			const {
 				data: foundPools,
 				meta: { total },
-			} = await fetchPoolSearch(
+			} = await fetchPoolSearch({
+				status,
 				chainId,
-				account,
-				type,
-				{
+				address: account,
+				poolType: type,
+				pagination: {
 					page,
 					perPage: WINDOW_SIZE,
 				},
-				status
-			);
+			});
 			setTotalCount(total);
 			setPoolList(foundPools);
 			console.log("Auctions", foundPools);
