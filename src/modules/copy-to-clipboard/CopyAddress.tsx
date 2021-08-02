@@ -23,7 +23,7 @@ export const CopyAddress: FC<{ address: string } & MaybeWithClassName> = ({
 	return (
 		<CopyToClipboard text={address} onCopy={() => setCopy(true)}>
 			<span className={classNames(className, styles.component)}>
-				{walletConversion(address)}
+				{address}
 				{isCopy ? <Copied /> : <Copy className={styles.copy} />}
 			</span>
 		</CopyToClipboard>
