@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import EMPTY from "./assets/empty.svg";
 
 export interface IIconProps {
-	src: string;
+	src: React.ReactNode;
 }
 
 export const Icon: React.FC<IIconProps> = ({ src }) => {
@@ -19,5 +19,5 @@ export const Icon: React.FC<IIconProps> = ({ src }) => {
 		return null;
 	}
 
-	return <img src={error ? EMPTY : src} onError={() => setError(true)} alt="" />;
+	return <img src={(error ? EMPTY : src) as string} onError={() => setError(true)} alt="" />;
 };

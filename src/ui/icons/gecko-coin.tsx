@@ -1,6 +1,6 @@
 import { SVGAttributes } from "react";
 
-export const Arrow = (props: SVGAttributes<SVGElement>) => {
+export const GeckoCoin = (props: SVGAttributes<SVGElement>) => {
 	return (
 		<svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" fill="none" {...props}>
 			<path

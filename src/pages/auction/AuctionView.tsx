@@ -21,7 +21,7 @@ import { PopupTeleporterTarget } from "@app/ui/pop-up-container";
 
 type AuctionType = {
 	result?: DisplayPoolInfoType[];
-	initialSearchState: any;
+	initialSearchState?: any;
 	numberOfPages: number;
 	currentPage: number;
 	onBack?(): void;
@@ -48,7 +48,7 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 	currentPage,
 	onBack,
 	onNext,
-	initialSearchState,
+	initialSearchState = {},
 }) => {
 	return (
 		<>

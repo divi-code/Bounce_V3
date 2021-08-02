@@ -9,7 +9,7 @@ import {
 	POOL_TYPE,
 } from "@app/api/pool/const";
 
-import { PoolSearchEntity } from "@app/api/pool/types";
+import { IPoolSearchEntity } from "@app/api/pool/types";
 import { AUCTION_PATH } from "@app/const/const";
 import { DisplayPoolInfoType } from "@app/modules/auction-card";
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
@@ -118,7 +118,7 @@ export const Auction = () => {
 	const chainId = useChainId();
 	const walletControl = useConnectWalletControl();
 
-	const [poolList, setPoolList] = useState<PoolSearchEntity[]>([]);
+	const [poolList, setPoolList] = useState<IPoolSearchEntity[]>([]);
 	const [searchFilters, setSearchFilters] = useState<SearchFilters>({});
 	const [page, setPage] = useState(0);
 	const [totalCount, setTotalCount] = useState(0);

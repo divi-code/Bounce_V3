@@ -1,5 +1,5 @@
 import { getJson } from "@app/api/network/json";
-import { PoolSearchEntity } from "@app/api/pool/types";
+import { IPoolSearchEntity } from "@app/api/pool/types";
 import { getAPIByNetwork } from "@app/api/utils";
 import { WEB3_NETWORKS } from "@app/web3/networks/const";
 
@@ -55,12 +55,12 @@ export const fetchPoolSearch = async (
 		perPage: number;
 	}
 ): Promise<{
-	data: PoolSearchEntity[];
+	data: IPoolSearchEntity[];
 	meta: {
 		total: number;
 	};
 }> => {
-	const res = await fetchInformation<PoolSearchEntity[]>(chainId, "auctions", {
+	const res = await fetchInformation<IPoolSearchEntity[]>(chainId, "auctions", {
 		offset: pagination.page * pagination.perPage,
 		limit: pagination.perPage,
 		auction_type: toAuctionType[poolType] || 0,

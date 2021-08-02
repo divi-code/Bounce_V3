@@ -1,9 +1,11 @@
 import { getJson } from "@app/api/network/json";
-import { PoolSearchEntity } from "@app/api/pool/types";
+import { IPoolSearchEntity } from "@app/api/pool/types";
 import { getAPIByNetwork } from "@app/api/utils";
 import { WEB3_NETWORKS } from "@app/web3/networks/const";
 
-import { POOL_TYPE } from "./const";
+import { IPoolSearchProps } from "./types";
+
+// import { POOL_TYPE } from "./const";
 
 type APIResponse<T> = {
 	code: 200 | 500;
@@ -35,22 +37,19 @@ const toStatus = {
 	claimed: 3,
 };
 
-export const fetchPoolSearch = async (
-	chainId: WEB3_NETWORKS,
-	address: string,
-	poolType: "created" | "participated",
-	pagination: {
-		page: number;
-		perPage: number;
-	},
-	status?: string
-): Promise<{
-	data: PoolSearchEntity[];
+export const fetchPoolSearch = async ({
+	chainId,
+	address,
+	pagination,
+	poolType,
+	status,
+}: IPoolSearchProps): Promise<{
+	data: IPoolSearchEntity[];
 	meta: {
 		total: number;
 	};
 }> => {
-	const res = await fetchInformation<PoolSearchEntity[]>(chainId, "my/auctions", {
+	const res = await fetchInformation<IPoolSearchEntity[]>(chainId, "my/auctions", {
 		address: address,
 		offset: pagination.page * pagination.perPage,
 		limit: pagination.perPage,
