@@ -2,7 +2,7 @@ import classNames from "classnames";
 
 import { FC } from "react";
 
-import { CERTIFIED_PATH, FANGIBLE_PATH } from "@app/const/const";
+import { CERTIFIED_PATH, V2_PATH, FANGIBLE_PATH } from "@app/const/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { NavLink } from "@app/ui/button";
@@ -30,6 +30,15 @@ export const DotLinks: FC<MaybeWithClassName> = ({ className }) => {
 							iconBefore={<Plus style={{ width: 15, marginRight: 12 }} />}
 						>
 							Fangible
+						</NavLink>
+					</li>
+					<li className={styles.item}>
+						<NavLink
+							className={styles.link}
+							href={V2_PATH}
+							iconBefore={<ShortLogo style={{ width: 14, marginRight: 12 }} />}
+						>
+							Bounce V1
 						</NavLink>
 					</li>
 					<li className={styles.item}>
