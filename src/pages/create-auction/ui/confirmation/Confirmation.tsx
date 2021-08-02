@@ -31,7 +31,7 @@ type ConfirmationType = {
 	amount: number;
 	allocation: ReactNode;
 	whitelist: string;
-	duration: string;
+	duration: ReactNode;
 	delay: string;
 };
 
@@ -129,10 +129,12 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 				)
 			}
 			whitelist={whitelist ? "Whitelist" : "Public"}
-			duration={`From ${convertDate(new Date(startPool), "long")} - To ${convertDate(
-				new Date(endPool),
-				"long"
-			)}`}
+			duration={
+				<div style={{ display: "flex", flexDirection: "column", textAlign: "right" }}>
+					<span>{`From ${convertDate(new Date(startPool), "long")}`}</span>
+					<span>{`To ${convertDate(new Date(endPool), "long")}`}</span>
+				</div>
+			}
 			delay={delayClaim ? convertDate(new Date(claimStart), "long") : "No"}
 			type={POOL_SHORT_NAME_MAPPING[type]}
 		/>

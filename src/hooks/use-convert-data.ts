@@ -7,12 +7,18 @@ const pickDateFormat = (format: "long" | "short"): Intl.DateTimeFormatOptions =>
 				year: "2-digit",
 				day: "2-digit",
 				month: "short",
+				hour: "2-digit",
+				minute: "2-digit",
+				hour12: false,
 			} as const;
 		case "long":
 			return {
 				year: "numeric",
 				day: "2-digit",
 				month: "long",
+				hour: "2-digit",
+				minute: "2-digit",
+				hour12: false,
 			};
 		default:
 			return pickDateFormat("long");
