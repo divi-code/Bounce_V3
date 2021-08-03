@@ -1,8 +1,8 @@
 @use "../../helper/style/mixin";
 @use "../../helper/style/media";
 
-.component {
-  display: inline-block;
+.alert {
+  display: flex;
   padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
 
   font-family: var(--primary-font);
@@ -27,21 +27,17 @@
   background-color: #F2FFF5;
 }
 
-.title {
-  display: inline-flex;
-  align-items: center;
+.warning {
+  background-color: #FFFDF8;
 }
 
-.title::before {
+.alert::before {
   position: relative;
   content: "";
 
   display: block;
   width: 1.25rem;
   height: 1.25rem;
-  margin-right: calc(var(--spacing-unit) * 1.25);
-
-  border-radius: 50%;
 
   background-position: center;
   background-repeat: no-repeat;
@@ -50,19 +46,29 @@
   overflow: hidden;
 }
 
-.defaultTitle::before {
+.defaultAlert::before {
   background-image: url("./assets/default.svg");
+  border-radius: 50%;
 }
 
-.errorTitle::before {
+.errorAlert::before {
   background-image: url("./assets/error.svg");
 }
 
-.successTitle::before {
+.successAlert::before {
   background-image: url("./assets/success.svg");
+}
+
+.warningAlert::before {
+  background-image: url("./assets/warning.svg"); 
 }
 
 .text {
   vertical-align: top;
   color: rgba(var(--primary-black), 0.7);
+}
+
+.wrapper {
+  flex: 1;
+  margin-left: calc(var(--spacing-unit) * 1.25);
 }

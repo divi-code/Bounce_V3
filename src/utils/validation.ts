@@ -46,3 +46,7 @@ export function isDateRequired(date: Date): string | undefined {
 
 	return undefined;
 }
+
+export function isFromToTokensDifferent<T>(fromToken: T, toToken: T): string | undefined {
+	return fromToken !== toToken ? undefined : "Please select different tokens.";
+}
