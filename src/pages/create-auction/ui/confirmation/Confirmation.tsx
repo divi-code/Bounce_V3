@@ -105,6 +105,8 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 	} = useFlowData<ConfirmationInType>();
 
 	const convertDate = useConvertDate();
+	const val = new BigNumber(amount).multipliedBy(new BigNumber(swapRatio)).toString();
+	const am = parseInt((Number(val) * 1000000).toString()) / 1000000;
 
 	return (
 		<ConfirmationView
@@ -118,7 +120,7 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 					1 <Symbol token={tokenFrom} /> = {swapRatio} <Symbol token={tokenTo} />
 				</>
 			}
-			amount={parseFloat(new BigNumber(amount).multipliedBy(new BigNumber(swapRatio)).toString())}
+			amount={am}
 			allocation={
 				allocation === ALLOCATION_TYPE.limited ? (
 					<>
