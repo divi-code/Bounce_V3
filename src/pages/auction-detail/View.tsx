@@ -70,7 +70,12 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 	};
 
 	const STATUS: Record<POOL_STATUS, ReactNode> = {
-		[POOL_STATUS.COMING]: <Timer timer={openAt} onZero={onZero} />,
+		[POOL_STATUS.COMING]: (
+			<>
+				{`in `}
+				<Timer timer={openAt} onZero={onZero} />
+			</>
+		),
 		[POOL_STATUS.LIVE]: <Timer timer={closeAt} onZero={onZero} />,
 		[POOL_STATUS.FILLED]: "Filled",
 		[POOL_STATUS.CLOSED]: "Closed",

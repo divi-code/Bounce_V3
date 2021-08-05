@@ -27,7 +27,7 @@ export const Status: FC<StatusProps & MaybeWithClassName> = ({ className, status
 		<Caption
 			className={classNames(
 				className,
-				styles.component,
+				status !== POOL_STATUS.COMING && styles.component,
 				status === POOL_STATUS.COMING && styles.coming
 			)}
 			Component="span"

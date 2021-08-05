@@ -58,7 +58,12 @@ export const View: FC<DisplayOTCInfoType & OTCDetailViewType> = ({
 	};
 
 	const STATUS: Record<POOL_STATUS, ReactNode> = {
-		[POOL_STATUS.COMING]: <Timer timer={openAt} onZero={onZero} />,
+		[POOL_STATUS.COMING]: (
+			<>
+				{`in&nbsp`}
+				<Timer timer={openAt} onZero={onZero} />
+			</>
+		),
 		[POOL_STATUS.LIVE]: "Live",
 		[POOL_STATUS.FILLED]: "Filled",
 		[POOL_STATUS.CLOSED]: "Closed",
