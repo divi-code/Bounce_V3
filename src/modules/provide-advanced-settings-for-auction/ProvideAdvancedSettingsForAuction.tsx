@@ -42,14 +42,14 @@ export const ProvideAdvancedSettingsForAuction: FC<
 	const [blockWidth, setBlockWidth] = useState(0);
 	useResizeObserver(blockRef, (ref) => setBlockWidth(ref.clientWidth));
 
-	const validate = useCallback<FormValidator<"startPool" | "endPool" | "claimStart">>((values) => {
+	const validate = useCallback((values) => {
 		if (values.endPool < values.startPool) {
 			return {
 				endPool: "Should be after Start Time",
 			};
 		}
 
-		if (values.claimStart < values.endPool) {
+		if (values?.delayToken?.[0] === "unlock" && values.claimStart < values.endPool) {
 			return {
 				endPool: "Should be after End Time",
 			};

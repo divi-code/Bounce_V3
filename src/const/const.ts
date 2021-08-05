@@ -1,18 +1,18 @@
 export const MEDIUM_PATH = "";
-export const GITHUB_PATH = "";
+export const GITHUB_PATH = "https://app.bounce.finance/statistic";
 export const TELEGRAM_PATH = "";
 export const TWITTER_PATH = "";
-export const DOCS_PATH = "";
+export const DOCS_PATH = "https://docs.bounce.finance";
 export const AUDIT_PATH = "";
-export const COMMUNITY_PATH = "";
+export const COMMUNITY_PATH = "https://www.bounce.community";
 export const FANGIBLE_PATH = "https://fangible.com";
 export const CERTIFIED_PATH = "https://certified.bounce.finance";
 export const V2_PATH = "https://app.bounce.finance";
 
 export const AUCTION_PATH = "/auction";
 export const OTC_PATH = "/otc";
-export const FARM_PATH = "/farm";
-export const GOVERNANCE_PATH = "/governance";
+export const FARM_PATH = "https://app.bounce.finance/earning ";
+export const GOVERNANCE_PATH = "https://app.bounce.finance/governance";
 export const CREATE_PATH = "/create";
 
 export const ACCOUNT_PATH = "/account";
