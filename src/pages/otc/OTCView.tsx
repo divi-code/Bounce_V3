@@ -61,10 +61,10 @@ export const OTCView: FC<OTCType & MaybeWithClassName> = ({
 				>
 					<Form onSubmit={onSubmit} className={styles.form} initialValues={initialSearchState}>
 						<div>
-							<SelectTokenField name="tokenType" placeholder="Select a token" />
+							<SelectField name="auctionType" placeholder="Choose OTC offer" options={LIST} />
 						</div>
 						<div>
-							<SelectField name="auctionType" placeholder="Choose Auction Type" options={LIST} />
+							<SelectTokenField name="tokenType" placeholder="Select a token" />
 						</div>
 						<div>
 							<PoolSearchField placeholder="Pool Information (Optional)" name="pool" />

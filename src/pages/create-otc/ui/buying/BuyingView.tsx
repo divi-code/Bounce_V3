@@ -51,46 +51,9 @@ export const BuyingView: FC<MaybeWithClassName & BuyingViewType> = ({
 				}
 				type={ALERT_TYPE.default}
 			/>
-			<Label
-				Component="label"
-				label="Amount"
-				tooltip="The amount of tokens that you want to put in for auction."
-				after={
-					<span className={styles.balance}>
-						Balance: {balance} <Symbol token={tokenFrom} />
-					</span>
-				}
-			>
-				<TextField
-					type="number"
-					name="amount"
-					placeholder="0.00"
-					step={FLOAT}
-					after={
-						<div className={styles.amount}>
-							<FormSpy>
-								{({ form }) => (
-									<button
-										className={styles.max}
-										onClick={() => form.change("amount", balance)}
-										type="button"
-									>
-										MAX
-									</button>
-								)}
-							</FormSpy>
-							<Currency token={tokenFrom} />
-						</div>
-					}
-					validate={composeValidators(isEqualZero, isValidWei)}
-					required
-				/>
-			</Label>
-
-			<Label Component="div" label="Receipt Currency">
+			<Label Component="div" label="Payment Currency">
 				<SelectTokenField name="tokenTo" placeholder="Select a token you want to pay" required />
 			</Label>
-
 			<FormSpy subscription={{ values: true }}>
 				{(props) => (
 					<Label Component="label" label="Unit Price">
@@ -106,6 +69,45 @@ export const BuyingView: FC<MaybeWithClassName & BuyingViewType> = ({
 								required
 							/>
 						</Body1>
+					</Label>
+				)}
+			</FormSpy>
+			<FormSpy subscription={{ values: true }}>
+				{(props) => (
+					<Label
+						Component="label"
+						label="Buying Amount"
+						tooltip="The amount of tokens that you want to put in for auction."
+						after={
+							<span className={styles.balance}>
+								Balance: {balance} <Symbol token={props.values.tokenTo} />
+							</span>
+						}
+					>
+						<TextField
+							type="number"
+							name="amount"
+							placeholder="0.00"
+							step={FLOAT}
+							after={
+								<div className={styles.amount}>
+									<FormSpy>
+										{({ form }) => (
+											<button
+												className={styles.max}
+												onClick={() => form.change("amount", balance)}
+												type="button"
+											>
+												MAX
+											</button>
+										)}
+									</FormSpy>
+									<Currency token={tokenFrom} />
+								</div>
+							}
+							validate={composeValidators(isEqualZero, isValidWei)}
+							required
+						/>
 					</Label>
 				)}
 			</FormSpy>

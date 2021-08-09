@@ -63,7 +63,6 @@ const TokenImp = () => {
 			address={address}
 			decimal={decimal}
 			href={getLinkByNetwork(chainId)}
-			withoutEth
 		/>
 	);
 };
