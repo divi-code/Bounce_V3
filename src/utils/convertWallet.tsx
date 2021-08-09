@@ -1,5 +1,5 @@
 export const walletConversion = (wallet: string): string => {
-	if (wallet.length <= 12) {
+	if (!wallet || wallet.length <= 12) {
 		return wallet;
 	}
 

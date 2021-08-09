@@ -8,6 +8,17 @@ export interface IPoolSearchParticipants {
 	swappedAmount0: string;
 }
 
+export interface IToken {
+	address: string;
+	coinGeckoID: string;
+	currentPrice: number;
+	decimals: number;
+	largeURL: string;
+	name: string;
+	smallURL: string;
+	symbol: string;
+	thumbURL: string;
+}
 export interface IPoolDetail {
 	amountTotal0: string;
 	amountTotal1: string;
@@ -20,9 +31,9 @@ export interface IPoolDetail {
 	id: number;
 	openAt: number;
 	poolID: string;
-	swapped_amount0: string;
-	token0: string;
-	token1: string;
+	swappedAmount0: string;
+	token0: IToken;
+	token1: IToken;
 }
 export interface IPoolSearchEntity {
 	auctionType: number;
