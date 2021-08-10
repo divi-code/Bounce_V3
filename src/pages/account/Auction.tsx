@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { uid } from "react-uid";
 
 import { fetchPoolSearch } from "@app/api/my-pool/api";
-// import { IPoolSearchEntity } from "@app/api/my-pool/types";
 import {
 	POOL_SHORT_NAME_MAPPING,
 	POOL_SPECIFIC_NAME_MAPPING,
@@ -50,6 +49,17 @@ const STATUS_OPTIONS = [
 		key: "claimed",
 	},
 ];
+
+const ToAuctionType = {
+	0: POOL_TYPE.all,
+	1: POOL_TYPE.fixed,
+};
+const ToAuctionStatus = {
+	0: POOL_STATUS.LIVE,
+	1: POOL_STATUS.CLOSED,
+	2: POOL_STATUS.FILLED,
+	3: POOL_STATUS.CLOSED,
+};
 
 export const Auction = () => {
 	const chainId = useChainId();
@@ -103,48 +113,31 @@ export const Auction = () => {
 		if (poolList.length > 0) {
 			Promise.all(
 				poolList.map(async (pool) => {
-					const from = await queryToken(pool.token0);
-					const to = await queryToken(pool.token1);
-
-					const total0 = pool.amountTotal0;
-					const total = pool.amountTotal1;
-					const amount = pool.swappedAmount0;
-
-					const toAuctionType = {
-						0: POOL_TYPE.all,
-						1: POOL_TYPE.fixed,
-					};
-
-					const auctionType = toAuctionType[pool.auctionType];
-
-					const toAuctionStatus = {
-						0: POOL_STATUS.LIVE,
-						1: POOL_STATUS.CLOSED,
-						2: POOL_STATUS.FILLED,
-						3: POOL_STATUS.CLOSED,
-					};
-
-					const isOpen = getIsOpen(pool.openAt * 1000);
-
-					const isClosed = getIsClosed(pool.closeAt * 1000);
-
-					console.log("isClosed", isClosed);
-					console.log("status", pool.status);
-					console.log(isClosed && pool.status !== 3);
+					const {
+						token0,
+						token1,
+						amountTotal0,
+						amountTotal1,
+						swappedAmount0,
+						openAt,
+					} = pool.poolDetail;
+					const isOpen = getIsOpen(openAt * 1000);
+					const auctionType = ToAuctionType[pool.auctionType];
 
 					return {
-						status: isOpen ? toAuctionStatus[pool.status] : POOL_STATUS.COMING,
+						status: isOpen ? ToAuctionStatus[pool.status] : POOL_STATUS.COMING,
 						id: +pool.poolID,
 						name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
-						address: from.address,
+						address: token0.address,
 						type: POOL_SHORT_NAME_MAPPING[auctionType],
-						token: from.address,
-						total: parseFloat(fromWei(total, to.decimals).toString()),
-						currency: to.address,
-						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
-						fill: getProgress(amount, total0, from.decimals),
+						from: token0,
+						to: token1,
+						total: parseFloat(fromWei(amountTotal1, token1.decimals).toFixed()),
+						price: parseFloat(
+							getSwapRatio(amountTotal1, amountTotal0, token1.decimals, token0.decimals)
+						),
+						fill: getProgress(swappedAmount0, amountTotal0, token0.decimals),
 						href: `${AUCTION_PATH}/${auctionType}/${pool.poolID}`,
-						needClaim: isClosed && pool.status !== 3,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));
