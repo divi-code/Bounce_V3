@@ -155,17 +155,17 @@ export const Auction = () => {
 			}
 		}
 
-		if (JSON.stringify(LAST_QUERY.condition) === JSON.stringify(values)) {
-			setSearchFilters(LAST_QUERY.searchFilters);
-			setPoolList(LAST_QUERY.poolList);
-			setPage(LAST_QUERY.page);
-			// setPoolInformation(LAST_QUERY.poolInformation);
-			setConvertedPoolInformation(LAST_QUERY.convertedPoolInformation);
+		// if (JSON.stringify(LAST_QUERY.condition) === JSON.stringify(values)) {
+		// 	setSearchFilters(LAST_QUERY.searchFilters);
+		// 	setPoolList(LAST_QUERY.poolList);
+		// 	setPage(LAST_QUERY.page);
+		// 	// setPoolInformation(LAST_QUERY.poolInformation);
+		// 	setConvertedPoolInformation(LAST_QUERY.convertedPoolInformation);
 
-			return;
-		}
+		// 	return;
+		// }
 
-		setSearchFilters(values);
+		setSearchFilters({ ...values });
 		setPage(0);
 	};
 
