@@ -98,6 +98,8 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 	} = useFlowData<ConfirmationInType>();
 
 	const convertDate = useConvertDate();
+	const val = new BigNumber(amount).multipliedBy(new BigNumber(unitPrice)).toString();
+	const am = parseInt((Number(val) * 1000000).toString()) / 1000000;
 
 	return (
 		<ConfirmationView
@@ -114,7 +116,7 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 			amount={
 				type === OTC_TYPE.sell ? (
 					<>
-						{parseFloat(new BigNumber(amount).multipliedBy(new BigNumber(unitPrice)).toString())}{" "}
+						{am}&nbsp;
 						<Symbol token={tokenTo} />
 					</>
 				) : (
