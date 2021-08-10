@@ -29,6 +29,10 @@ const STATUS_OPTIONS = [
 		key: "all",
 	},
 	{
+		label: "Coming soon",
+		key: "comingSoon",
+	},
+	{
 		label: "Live",
 		key: "open",
 	},
