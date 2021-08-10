@@ -34,7 +34,7 @@ export const SelectField: FC<SelectFieldType & MaybeWithClassName> = ({
 					name={input.name}
 					value={input.value}
 					onChange={input.onChange}
-					// placeholder={placeholder}
+					placeholder={placeholder}
 					readOnly={readOnly}
 					required={required}
 				/>

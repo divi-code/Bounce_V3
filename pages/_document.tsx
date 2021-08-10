@@ -17,6 +17,7 @@ class MyDocument extends Document {
 						name="viewport"
 						content="width=device-width, minimum-scale=1, initial-scale=1, shrink-to-fit=no, user-scalable=no"
 					/>
+					<link rel="shortcut icon" href="/imgs/favicon.ico" />
 					<link rel="preconnect" href="https://fonts.gstatic.com" />
 					<link
 						href="https://fonts.googleapis.com/css2?family=Rokkitt&display=swap"

@@ -36,34 +36,28 @@ export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClas
 	);
 };
 
-const CurrencyToken: FC<ICurrencyProps> = ({ token, small }) => {
-	const tokenInfo = useTokenSearchWithFallback(token);
+export interface ICoin {
+	address: string;
+	coinGeckoID: string;
+	currentPrice: number;
+	decimals: number;
+	name: string;
+	symbol: string;
+	thumbURL?: string;
+	smallURL?: string;
+	largeURL: string;
+}
 
-	if (!tokenInfo) {
+export const Currency: FC<
+	MaybeWithClassName & { token?: string; coin?: ICoin; small?: boolean }
+> = ({ token, coin, small }) => {
+	const tokenInfo = useTokenSearchWithFallback(token) as any;
+	const detail = coin || tokenInfo;
+	const logoURI = detail?.thumbURL || detail?.smallURL || tokenInfo?.logoURI || undefined;
+
+	if (!detail) {
 		return null;
 	}
 
-	return (
-		<CurrencyView
-			symbol={tokenInfo.symbol}
-			img={tokenInfo ? tokenInfo.logoURI : undefined}
-			small={small}
-		/>
-	);
-};
-
-interface ICurrencyProps extends MaybeWithClassName {
-	gecko?: boolean;
-	token: string;
-	small?: boolean;
-}
-
-export const Currency: FC<ICurrencyProps> = (props) => {
-	const { token, small, gecko } = props;
-
-	if (gecko) {
-		return <CurrencyView symbol={token} img={GeckoCoin} small={small} />;
-	}
-
-	return <CurrencyToken {...props} />;
+	return <CurrencyView symbol={detail.symbol.toUpperCase()} img={logoURI} small={small} />;
 };

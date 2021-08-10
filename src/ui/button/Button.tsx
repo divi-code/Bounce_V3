@@ -127,7 +127,10 @@ export const NavLink: FC<CommonType & { href: string; as?: string; exact?: boole
 
 	return (
 		<>
-			{href.startsWith("http") || href.startsWith("mailto") || href.startsWith("tel") ? (
+			{href.startsWith("http") ||
+			href.startsWith("mailto") ||
+			href.startsWith("tel") ||
+			href.includes("download") ? (
 				<ButtonComponent
 					Component="a"
 					href={href}

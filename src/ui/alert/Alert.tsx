@@ -31,19 +31,22 @@ export const Alert: FC<AlertType & MaybeWithClassName> = ({
 		[ALERT_TYPE.default]: "var(--primary-black)",
 		[ALERT_TYPE.success]: "var(--success)",
 		[ALERT_TYPE.error]: "var(--error)",
+		[ALERT_TYPE.warning]: "var(--warning)",
 	};
 
 	return (
 		<div
-			className={classNames(className, styles.component, styles[type])}
+			className={classNames(className, styles.alert, styles[type], styles[`${type}Alert`])}
 			style={{ ...style, "--color": COLORS[type] } as CSSProperties}
 		>
-			{title && (
-				<>
-					<span className={classNames(styles.title, styles[`${type}Title`])}>{title}</span>{" "}
-				</>
-			)}
-			{text && <span className={styles.text}>{text}</span>}
+			<div className={styles.wrapper}>
+				{title && (
+					<>
+						<span className={styles.title}>{title}</span>{" "}
+					</>
+				)}
+				{text && <span className={styles.text}>{text}</span>}
+			</div>
 		</div>
 	);
 };
