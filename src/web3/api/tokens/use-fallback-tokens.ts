@@ -23,7 +23,7 @@ export const useFallbackTokens = () => {
 
 	const find = useCallback(
 		(address: string) => {
-			return tokenList.find((token) => token.address === address.toLowerCase());
+			return tokenList.find((token) => token.address === address?.toLowerCase());
 		},
 		[tokenList]
 	);

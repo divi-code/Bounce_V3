@@ -65,7 +65,7 @@ export const ListOfTokens: FC<ListOfTokensType> = ({
 }) => {
 	const [searchValue, setSearch] = useState("");
 	const handleOnSearch = (e: ChangeEvent<HTMLInputElement>) =>
-		setSearch(e.target.value.toLowerCase());
+		setSearch(e.target.value?.toLowerCase());
 
 	const tokens = useMemo(() => {
 		if (!searchValue) {
@@ -74,8 +74,8 @@ export const ListOfTokens: FC<ListOfTokensType> = ({
 
 		return options.filter(
 			(option) =>
-				option.title.toLowerCase().includes(searchValue) ||
-				option.key.toLowerCase().includes(searchValue)
+				option.title?.toLowerCase().includes(searchValue) ||
+				option.key?.toLowerCase().includes(searchValue)
 		);
 	}, [options, searchValue]);
 

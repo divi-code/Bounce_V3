@@ -97,7 +97,7 @@ const generateTokenList = inboxed(
 const mapToTokenLookup = kashe(
 	(tokens: ExtendedTokenInfo[]): TokenLookup<ExtendedTokenInfo> =>
 		tokens.reduce((acc, token) => {
-			acc[token.address.toLowerCase()] = token;
+			acc[token.address?.toLowerCase()] = token;
 
 			return acc;
 		}, {} as TokenLookup<ExtendedTokenInfo>)
@@ -124,7 +124,7 @@ const passAll = () => true;
 export const useTokenSearch = () => {
 	const tokens = useAllTokensSearch(passAll);
 
-	return useCallback((address: string) => (address ? tokens[address.toLowerCase()] : undefined), [
+	return useCallback((address: string) => (address ? tokens[address?.toLowerCase()] : undefined), [
 		tokens,
 	]);
 };
