@@ -1,3 +1,5 @@
+import { IToken } from "../types";
+
 export interface IPoolSearchParticipants {
 	account: string;
 	claimed: boolean;
@@ -6,18 +8,6 @@ export interface IPoolSearchParticipants {
 	id: number;
 	poolID: string;
 	swappedAmount0: string;
-}
-
-export interface IToken {
-	address: string;
-	coinGeckoID: string;
-	currentPrice: number;
-	decimals: number;
-	largeURL: string;
-	name: string;
-	smallURL: string;
-	symbol: string;
-	thumbURL: string;
 }
 export interface IPoolDetail {
 	amountTotal0: string;

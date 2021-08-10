@@ -1,14 +1,4 @@
-export interface IToken {
-	address: string;
-	coinGeckoID: string;
-	currentPrice: number;
-	decimals: number;
-	largeURL: string;
-	name: string;
-	smallURL: string;
-	symbol: string;
-	thumbURL: string;
-}
+import { IToken } from "../types";
 
 export type TBusinessType = 1 | 2; // 1: OTC,2: Auction
 export type TCategory = 1 | 2; // 1: OTC, 2: Fixed Swap

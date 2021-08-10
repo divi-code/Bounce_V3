@@ -1,17 +1,17 @@
 import classNames from "classnames";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 
+import { IToken } from "@app/api/types";
 import { MaybeWithClassName } from "@app/helper/react/types";
-import { GeckoCoin } from "@app/ui/icons/gecko-coin";
 import { Body1, Caption } from "@app/ui/typography";
-
-import { uriToHttp } from "@app/web3/api/tokens/ens/helpers";
 
 import { useTokenSearchWithFallback } from "@app/web3/api/tokens/use-fallback-tokens";
 
 import { Icon } from "../icon";
 
 import styles from "./Currency.module.scss";
+import GeckoCoin from "./assets/gecko-coin.svg";
+import UnknowCoin from "./assets/unknow-coin.svg";
 
 type CurrencyType = {
 	symbol: string;
@@ -36,20 +36,8 @@ export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClas
 	);
 };
 
-export interface ICoin {
-	address: string;
-	coinGeckoID: string;
-	currentPrice: number;
-	decimals: number;
-	name: string;
-	symbol: string;
-	thumbURL?: string;
-	smallURL?: string;
-	largeURL: string;
-}
-
 export const Currency: FC<
-	MaybeWithClassName & { token?: string; coin?: ICoin; small?: boolean }
+	MaybeWithClassName & { token?: string; coin?: IToken; small?: boolean }
 > = ({ token, coin, small }) => {
 	const tokenInfo = useTokenSearchWithFallback(token) as any;
 	const detail = coin || tokenInfo;
@@ -60,4 +48,18 @@ export const Currency: FC<
 	}
 
 	return <CurrencyView symbol={detail.symbol.toUpperCase()} img={logoURI} small={small} />;
+};
+
+export interface IGeckoTokenProps extends MaybeWithClassName {
+	isGecko: boolean;
+	token: string;
+}
+
+export const GeckoToken: FC<IGeckoTokenProps> = ({ isGecko = true, token, className }) => {
+	return (
+		<Caption className={classNames(className, styles.component, styles.small)} Component="span">
+			<Icon src={isGecko ? GeckoCoin : UnknowCoin} />
+			{token}
+		</Caption>
+	);
 };

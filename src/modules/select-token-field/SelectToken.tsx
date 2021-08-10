@@ -123,7 +123,7 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 				>
 					{active && (
 						<div className={styles.value}>
-							<Icon src={active.img} />
+							{active.img && <Icon src={active.img} />}
 							<span>{active.currency}</span>
 						</div>
 					)}

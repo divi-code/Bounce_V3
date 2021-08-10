@@ -177,21 +177,7 @@ export const Auction = () => {
 					<ul className={styles.cardList}>
 						{convertedPoolInformation.map((auction) => (
 							<li key={uid(auction)}>
-								<Card
-									href={auction.href}
-									id={auction.id}
-									status={auction.status}
-									name={auction.name}
-									address={auction.address}
-									type={auction.type}
-									token={auction.token}
-									total={auction.total}
-									currency={auction.currency}
-									price={auction.price}
-									fill={auction.fill}
-									needClaim={auction.needClaim}
-									bordered
-								/>
+								<Card {...auction} bordered />
 							</li>
 						))}
 					</ul>

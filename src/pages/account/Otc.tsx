@@ -3,8 +3,8 @@ import classNames from "classnames";
 import { useEffect, useMemo, useState } from "react";
 
 import { fetchOtcSearch } from "@app/api/my-otc/api";
-import { OtcSearchEntity } from "@app/api/my-otc/types";
 import { OTC_SHORT_NAME_MAPPING, OTC_TYPE } from "@app/api/otc/const";
+import { OtcSearchEntity } from "@app/api/otc/types";
 import { OTC_PATH } from "@app/const/const";
 import { DisplayOTCInfoType } from "@app/modules/otc-card";
 import { Card } from "@app/modules/otc-card";
@@ -167,19 +167,7 @@ export const Otc = () => {
 					<ul className={styles.cardList}>
 						{convertedPoolInformation.map((auction) => (
 							<li key={auction.id}>
-								<Card
-									href={auction.href}
-									id={auction.id}
-									status={auction.status}
-									name={auction.name}
-									address={auction.address}
-									type={auction.type}
-									token={auction.token}
-									currency={auction.currency}
-									price={auction.price}
-									fill={auction.fill}
-									bordered
-								/>
+								<Card {...auction} bordered />
 							</li>
 						))}
 					</ul>

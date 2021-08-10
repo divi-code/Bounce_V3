@@ -16,7 +16,7 @@ import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
 import { fromWei } from "@app/utils/bn/wei";
 import { getProgress, getSwapRatio, POOL_STATUS } from "@app/utils/pool";
-import { getDeltaTime, getIsOpen } from "@app/utils/time";
+import { getIsOpen } from "@app/utils/time";
 import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fallback-tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
@@ -224,9 +224,9 @@ export const Auction = () => {
 						name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
 						address: token0.address,
 						type: POOL_SHORT_NAME_MAPPING[auctionType],
-						token: token0.address,
+						from: token0,
+						to: token1,
 						total: parseFloat(fromWei(amountTotal1, token1.decimals).toFixed()),
-						currency: token1.address,
 						price: parseFloat(
 							getSwapRatio(amountTotal1, amountTotal0, token1.decimals, token0.decimals)
 						),

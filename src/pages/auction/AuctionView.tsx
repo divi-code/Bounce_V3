@@ -93,19 +93,7 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 									<ul className={styles.list}>
 										{result.map((auction) => (
 											<li key={uid(auction)}>
-												<Card
-													href={auction.href}
-													id={auction.id}
-													status={auction.status}
-													name={auction.name}
-													address={auction.address}
-													type={auction.type}
-													token={auction.token}
-													total={auction.total}
-													currency={auction.currency}
-													price={auction.price}
-													fill={auction.fill}
-												/>
+												<Card {...auction} />
 											</li>
 										))}
 									</ul>

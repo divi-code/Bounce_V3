@@ -218,6 +218,8 @@ export const OTC = () => {
 						address: token0.address,
 						type: OTC_SHORT_NAME_MAPPING[otcType],
 						token: token0.address,
+						from: token0,
+						to: token1,
 						total: parseFloat(fromWei(amountTotal1, token1.decimals).toFixed()),
 						currency: token1.address,
 						price: parseFloat(

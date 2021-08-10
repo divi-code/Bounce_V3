@@ -1,13 +1,13 @@
 import classNames from "classnames";
 import { FC } from "react";
 
+import { IToken } from "@app/api/types";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
-import { Currency } from "@app/modules/currency";
+import { Currency, GeckoToken } from "@app/modules/currency";
 import { NavLink } from "@app/ui/button";
 
 import { DescriptionList } from "@app/ui/description-list";
-// import { GeckoCoin } from "@app/ui/icons/gecko-coin";
 import { ProgressBar } from "@app/ui/progress-bar";
 import { Status } from "@app/ui/status";
 import { Caption, Heading2 } from "@app/ui/typography";
@@ -25,9 +25,9 @@ export type DisplayPoolInfoType = {
 	name: string;
 	address: string;
 	type: string;
-	token: string;
 	total: number;
-	currency: string;
+	from: IToken;
+	to: IToken;
 	price: number;
 	fill: number;
 	needClaim?: boolean;
@@ -43,9 +43,9 @@ export const Card: FC<DisplayPoolInfoType & MaybeWithClassName & { bordered?: bo
 	name,
 	address,
 	type,
-	token,
 	total,
-	currency,
+	from,
+	to,
 	price,
 	fill,
 }) => {
@@ -58,14 +58,16 @@ export const Card: FC<DisplayPoolInfoType & MaybeWithClassName & { bordered?: bo
 	};
 
 	const TOKEN_INFORMATION = {
-		"Contact address": <Currency token={walletConversion(address)} small />,
-		"Token symbol": <Currency token={token} small />,
+		"Contact address": (
+			<GeckoToken isGecko={!!from.coinGeckoID} token={walletConversion(address)} />
+		),
+		"Token symbol": <Currency coin={from} small />,
 	};
 
 	const AUCTION_INFORMATION = {
 		"Pool type": type,
 		"Auction amount": total,
-		"Auction currency": <Currency token={currency} small />,
+		"Auction currency": <Currency coin={to} small />,
 		"Price per unit, $": price,
 	};
 

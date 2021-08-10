@@ -23,8 +23,6 @@ export const useFallbackTokens = () => {
 
 	const find = useCallback(
 		(address: string) => {
-			console.log(">>>>.address", address);
-
 			return tokenList.find((token) => token.address === address.toLowerCase());
 		},
 		[tokenList]
