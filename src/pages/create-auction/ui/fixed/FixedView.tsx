@@ -130,7 +130,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 									{({ form }) => (
 										<button
 											className={styles.max}
-											onClick={() => form.change("amount", balance)}
+											onClick={() => form.change("amount", balance.toString())}
 											type="button"
 										>
 											MAX
