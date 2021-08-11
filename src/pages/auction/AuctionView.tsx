@@ -61,15 +61,15 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 				>
 					<Form className={styles.form} onSubmit={onSubmit} initialValues={initialSearchState}>
 						<div>
+							<SelectTokenField name="token-type" placeholder="Select a token" />
+						</div>
+						<div>
 							<SelectField
 								name="auctionType"
 								placeholder="Choose Auction Type"
 								options={LIST}
 								required
 							/>
-						</div>
-						<div>
-							<SelectTokenField name="token-type" placeholder="Select a token" />
 						</div>
 						<div>
 							<PoolSearchField placeholder="Pool Information (Optional)" name="pool" />
