@@ -30,6 +30,7 @@ const toStatus = {
 	open: 0,
 	closed: 1,
 	filled: 2,
+	comingSoon: 4,
 };
 
 export const fetchOtcSearch = async (
