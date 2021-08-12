@@ -15,7 +15,7 @@ type ProgressBarType = {
 export const ProgressBar: FC<ProgressBarType & MaybeWithClassName> = ({
 	className,
 	status,
-	fillInPercentage,
+	fillInPercentage = 0,
 }) => {
 	const COLORS: Record<POOL_STATUS, any> = {
 		[POOL_STATUS.COMING]: "var(--primary-black)",
@@ -26,15 +26,15 @@ export const ProgressBar: FC<ProgressBarType & MaybeWithClassName> = ({
 	};
 
 	return (
-		<span
+		<div
 			className={classNames(
 				className,
 				styles.component,
 				status === POOL_STATUS.COMING && styles.coming
 			)}
-			style={
-				{ "--color": COLORS[status], "--progress-bar": `${fillInPercentage}%` } as CSSProperties
-			}
-		/>
+			style={{ "--color": COLORS[status] } as CSSProperties}
+		>
+			<div style={{ width: `${fillInPercentage}%` }} />
+		</div>
 	);
 };

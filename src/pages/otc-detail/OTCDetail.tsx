@@ -330,7 +330,7 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 				setAlert(getAlertForOwner(pool.openAt, pool.amount, pool.total));
 			} else {
 				setAlert(
-					getAlertForUsers(userWhitelisted, pool.openAt, pool.amount, pool.total, userPlaced)
+					getAlertForUsers(userWhitelisted, pool.openAt, pool.amount, pool.total, !!userPlaced)
 				);
 			}
 		}
