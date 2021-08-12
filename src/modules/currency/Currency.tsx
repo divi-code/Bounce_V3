@@ -45,7 +45,7 @@ interface ICurrencyProps extends ICurrencyViewProps {
 }
 
 export const Currency: FC<ICurrencyProps> = ({ token, coin, small }) => {
-	const detail = useTokenSearchWithFallback(token || coin.address, coin) as any;
+	const detail = useTokenSearchWithFallback(coin?.address || token, coin) as any;
 	const logoURI = detail?.logoURI || detail?.thumbURL || detail?.smallURL || undefined;
 
 	if (!detail) {
