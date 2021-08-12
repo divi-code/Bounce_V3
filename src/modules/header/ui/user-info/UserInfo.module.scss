@@ -46,7 +46,7 @@
   right: 0;
 
   &:hover .dropdown,
-  #{mixin.$when-focus-rings-enabled} &:focus .dropdown {
+  &:focus .dropdown {
     opacity: 1;
     visibility: visible;
   }
@@ -162,7 +162,7 @@
   transition-property: background-color;
 
   &:hover,
-  #{mixin.$when-focus-rings-enabled} &:focus {
+  &:focus {
     background-color: #EDEDED;
   }
 }
@@ -188,7 +188,7 @@
   transition-property: background-color;
 
   &:hover,
-  #{mixin.$when-focus-rings-enabled} &:focus {
+  &:focus {
     background-color: #ededed;
   }
 }

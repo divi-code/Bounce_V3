@@ -16,6 +16,7 @@ import UnknowCoin from "./assets/unknow-coin.svg";
 type CurrencyType = {
 	symbol: string;
 	img?: React.ReactNode;
+	cacheKey?: string;
 };
 
 export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClassName> = ({
@@ -23,10 +24,11 @@ export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClas
 	symbol,
 	img,
 	small,
+	cacheKey,
 }) => {
 	return small ? (
 		<Caption className={classNames(className, styles.component, styles.small)} Component="span">
-			<Icon src={img} />
+			<Icon src={img} cacheKey={cacheKey} />
 			{symbol}
 		</Caption>
 	) : (
@@ -36,9 +38,12 @@ export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClas
 	);
 };
 
-export const Currency: FC<
-	MaybeWithClassName & { token?: string; coin?: IToken; small?: boolean }
-> = ({ token, coin, small }) => {
+interface CurrencyProps extends CurrencyType {
+	coin?: IToken;
+	token: string;
+}
+
+export const Currency: FC<CurrencyProps> = ({ token, coin, small }) => {
 	const tokenInfo = useTokenSearchWithFallback(token) as any;
 	const detail = coin || tokenInfo;
 	const logoURI = detail?.thumbURL || detail?.smallURL || detail?.logoURI || undefined;

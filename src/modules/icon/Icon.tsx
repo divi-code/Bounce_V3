@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
 
-// import { uriToHttp } from "@app/web3/api/tokens/ens/helpers";
-
 import EmptySVG from "./assets/empty.svg";
 
 export interface IIconProps {
 	src: React.ReactNode;
+	cacheKey?: string;
 }
 
-export const Icon: React.FC<IIconProps> = ({ src }) => {
+const CacheKeys = {};
+
+export const Icon: React.FC<IIconProps> = ({ src, cacheKey }) => {
 	const [error, setError] = useState<boolean>(false);
+
+	if (!CacheKeys[cacheKey]) {
+		CacheKeys[cacheKey] = src;
+	}
 
 	useEffect(() => {
 		setError(false);
@@ -19,5 +24,5 @@ export const Icon: React.FC<IIconProps> = ({ src }) => {
 		return <img src={EmptySVG} alt="" />;
 	}
 
-	return <img src={src as string} onError={() => setError(true)} alt="" />;
+	return <img src={(CacheKeys[cacheKey] || src) as string} onError={() => setError(true)} alt="" />;
 };

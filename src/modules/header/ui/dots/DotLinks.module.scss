@@ -1,14 +1,14 @@
 @use "../../../../helper/style/mixin";
 
 .component {
-  &:hover .dropdown,
-  #{mixin.$when-focus-rings-enabled} &:focus .dropdown {
+
+  &:hover .dropdown {
     opacity: 1;
     visibility: visible;
   }
+  
 
-  &:hover .colored,
-  #{mixin.$when-focus-rings-enabled} &:focus .colored {
+  &:hover .colored {
     opacity: 1;
   }
 }
@@ -105,7 +105,7 @@
   transition-property: background-color;
 
   &:hover,
-  #{mixin.$when-focus-rings-enabled} &:focus {
+  &:focus {
     background-color: #ededed;
   }
 }

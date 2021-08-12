@@ -43,7 +43,7 @@
   }
 
   &:hover::before,
-  #{mixin.$when-focus-rings-enabled} &:focus::before {
+  &:focus::before {
     box-shadow: 0 0 0 calc(0.5rem - 1px) #ececec, 0 0 0 0.5rem rgba(var(--primary-black), 1);
   }
 }
