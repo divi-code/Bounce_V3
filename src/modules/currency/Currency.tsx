@@ -47,7 +47,7 @@ export const Currency: FC<
 		return null;
 	}
 
-	return <CurrencyView symbol={detail.symbol.toUpperCase()} img={logoURI} small={small} />;
+	return <CurrencyView symbol={detail?.symbol?.toUpperCase()} img={logoURI} small={small} />;
 };
 
 export interface IGeckoTokenProps extends MaybeWithClassName {

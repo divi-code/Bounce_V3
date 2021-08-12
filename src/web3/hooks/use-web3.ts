@@ -17,7 +17,7 @@ export const useWeb3 = (): Web3 => {
 };
 
 export const useChainId = (): WEB3_NETWORKS => {
-	const { chainId = WEB3_NETWORKS.MAIN } = useWeb3React();
+	const { chainId = WEB3_NETWORKS.ETH } = useWeb3React();
 	useDebugValue(chainId);
 
 	return chainId;
