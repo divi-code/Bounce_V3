@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import classNames from "classnames";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { fetchOtcSearch } from "@app/api/my-otc/api";
 import { OTC_SHORT_NAME_MAPPING, OTC_TYPE } from "@app/api/otc/const";
@@ -10,6 +10,7 @@ import { DisplayOTCInfoType } from "@app/modules/otc-card";
 import { Card } from "@app/modules/otc-card";
 import { Pagination } from "@app/modules/pagination";
 
+import { Button } from "@app/ui/button";
 import { Select } from "@app/ui/select";
 import { fromWei } from "@app/utils/bn/wei";
 import { getProgress, getSwapRatio, POOL_STATUS } from "@app/utils/otc";
@@ -146,13 +147,20 @@ export const Otc = () => {
 	return (
 		<div>
 			<div className={styles.filters}>
-				<label className={styles.label}>
-					<input type="checkbox" onChange={() => setCheckbox(!checkbox)} checked={checkbox} />
-					<span className={classNames(styles.toggle, checkbox && styles.checked)}>Created</span>
-					<span className={classNames(styles.toggle, !checkbox && styles.checked)}>
+				<div className={styles.label}>
+					<Button
+						onClick={() => setCheckbox(true)}
+						className={classNames(styles.toggle, checkbox && styles.checked)}
+					>
+						Created
+					</Button>
+					<Button
+						onClick={() => setCheckbox(false)}
+						className={classNames(styles.toggle, !checkbox && styles.checked)}
+					>
 						Participated
-					</span>
-				</label>
+					</Button>
+				</div>
 				<Select
 					className={styles.select}
 					options={STATUS_OPTIONS}

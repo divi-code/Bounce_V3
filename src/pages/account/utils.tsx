@@ -21,7 +21,7 @@ enum EVENT {
 	CLAIMED = "Claim",
 	BID = "Bid",
 	BUY = "Buy",
-	SELL = "sell",
+	SELL = "Sell",
 }
 
 export const getEvent = (event: EventType, business, auction) => {

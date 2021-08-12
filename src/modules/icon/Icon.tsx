@@ -7,14 +7,8 @@ export interface IIconProps {
 	cacheKey?: string;
 }
 
-const CacheKeys = {};
-
-export const Icon: React.FC<IIconProps> = ({ src, cacheKey }) => {
+export const Icon: React.FC<IIconProps> = ({ src }) => {
 	const [error, setError] = useState<boolean>(false);
-
-	if (!CacheKeys[cacheKey]) {
-		CacheKeys[cacheKey] = src;
-	}
 
 	useEffect(() => {
 		setError(false);
@@ -24,5 +18,5 @@ export const Icon: React.FC<IIconProps> = ({ src, cacheKey }) => {
 		return <img src={EmptySVG} alt="" />;
 	}
 
-	return <img src={(CacheKeys[cacheKey] || src) as string} onError={() => setError(true)} alt="" />;
+	return <img src={src as string} onError={() => setError(true)} alt="" />;
 };

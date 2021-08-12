@@ -3,6 +3,18 @@
 
 .component {
   position: relative;
+  display: flex;
+  cursor: pointer;
+  &:hover{
+    opacity: 0.8;
+  }
+  > img{
+    cursor: pointer;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background-color: rgba(var(--primary-black), 0.1);
+  }
 }
 
 .input {
@@ -10,33 +22,26 @@
 }
 
 .label {
-  display: grid;
-  grid-template-areas: "icon currency" "icon title";
-  grid-column-gap: calc(var(--spacing-unit) * 2);
-  grid-row-gap: calc(var(--spacing-unit) * 0.4);
-  justify-content: start;
-  align-items: center;
-  cursor: pointer;
-  &:hover{
-    opacity: 0.6;
-  }
+  display: flex;  
+  flex-direction: column;
+  margin-left: 10px;
 }
 
-.label::before {
-  position: relative;
-  content: "";
-  grid-area: icon;
+// .label::before {
+//   position: relative;
+//   content: "";
+//   grid-area: icon;
 
-  width: 2.25rem;
-  height: 2.25rem;
+//   width: 2.25rem;
+//   height: 2.25rem;
 
-  border-radius: 50%;
+//   border-radius: 50%;
 
-  background-color: rgba(var(--primary-black), 0.1);
-  background-image: var(--icon);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+//   background-color: rgba(var(--primary-black), 0.1);
+//   background-image: var(--icon);
+//   background-position: center;
+//   background-repeat: no-repeat;
+//   background-size: cover;
 
-  overflow: hidden;
-}
+//   overflow: hidden;
+// }

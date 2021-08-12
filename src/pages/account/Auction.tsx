@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { uid } from "react-uid";
 
@@ -15,6 +15,7 @@ import { AUCTION_PATH } from "@app/const/const";
 import { Card, DisplayPoolInfoType } from "@app/modules/auction-card";
 import { Pagination } from "@app/modules/pagination";
 
+import { Button } from "@app/ui/button";
 import { Select } from "@app/ui/select";
 import { fromWei } from "@app/utils/bn/wei";
 import { getProgress, getSwapRatio, POOL_STATUS } from "@app/utils/pool";
@@ -149,13 +150,20 @@ export const Auction = () => {
 	return (
 		<div>
 			<div className={styles.filters}>
-				<label className={styles.label}>
-					<input type="checkbox" onChange={() => setCheckbox(!checkbox)} checked={checkbox} />
-					<span className={classNames(styles.toggle, checkbox && styles.checked)}>Created</span>
-					<span className={classNames(styles.toggle, !checkbox && styles.checked)}>
+				<div className={styles.label}>
+					<Button
+						onClick={() => setCheckbox(true)}
+						className={classNames(styles.toggle, checkbox && styles.checked)}
+					>
+						Created
+					</Button>
+					<Button
+						onClick={() => setCheckbox(false)}
+						className={classNames(styles.toggle, !checkbox && styles.checked)}
+					>
 						Participated
-					</span>
-				</label>
+					</Button>
+				</div>
 				<Select
 					className={styles.select}
 					options={STATUS_OPTIONS}
