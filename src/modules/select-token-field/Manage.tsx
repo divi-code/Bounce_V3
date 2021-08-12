@@ -26,15 +26,39 @@ enum TOGGLES {
 	list = "list",
 	tokens = "tokens",
 }
-
-export const Manage: FC<{
+interface IManageProps {
 	tokenLists: ShortTokenListInfo[];
 	tokenListControl: TokenListControl;
-}> = ({ tokenLists, tokenListControl }) => {
-	const [toggle, setToggle] = useState(TOGGLES.list);
-	const [localTokens, setLocalTokens] = useLocallyDefinedTokens();
-	const provider = useWeb3Provider();
+}
+interface IListsContentProps extends IManageProps {}
+
+const ListsContent: FC<IListsContentProps> = ({ tokenLists, tokenListControl }) => {
+	return (
+		<div className={styles.scroll}>
+			<StrollableContainer bar={ScrollBar} draggable>
+				<ul className={styles.list}>
+					{tokenLists.map((item) => (
+						<Toggle
+							key={uid(item)}
+							count={item.count}
+							img={item.img}
+							name={item.name}
+							checked={tokenListControl.activeLists.includes(item.key)}
+							reference={item.key}
+							onChange={tokenListControl.change}
+						/>
+					))}
+				</ul>
+			</StrollableContainer>
+		</div>
+	);
+};
+
+const TokensContent: FC = () => {
 	const chainId = useChainId();
+	const provider = useWeb3Provider();
+
+	const [localTokens, setLocalTokens] = useLocallyDefinedTokens();
 
 	const addTokenByAddress = async (e: ChangeEvent<HTMLInputElement>) => {
 		e.preventDefault();
@@ -48,6 +72,45 @@ export const Manage: FC<{
 		};
 		setLocalTokens([...localTokens, newToken]);
 	};
+
+	return (
+		<>
+			<div className={styles.search}>
+				<Input
+					name="search"
+					type="text"
+					placeholder={"0x0000 address"}
+					onChange={addTokenByAddress}
+				/>
+			</div>
+			<div className={styles.custom}>
+				<div>
+					{localTokens.length > 0 ? (
+						<StrollableContainer bar={ScrollBar} draggable>
+							<ul className={styles.customList}>
+								{localTokens.map((token) => (
+									<li key={uid(token)}>
+										<Currency token={token.address} />
+									</li>
+								))}
+							</ul>
+						</StrollableContainer>
+					) : (
+						<Body1>0 Custom Tokens</Body1>
+					)}
+				</div>
+				<div className={styles.footer}>
+					<Body1 Component="span" lighten={50}>
+						Tip: Custom tokens are stored locally in your browser
+					</Body1>
+				</div>
+			</div>
+		</>
+	);
+};
+
+export const Manage: FC<IManageProps> = (props) => {
+	const [toggle, setToggle] = useState(TOGGLES.list);
 
 	return (
 		<div className={styles.component}>
@@ -68,60 +131,9 @@ export const Manage: FC<{
 				>
 					Tokens
 				</Button>
-				{toggle === TOGGLES.tokens && (
-					<div className={styles.search}>
-						<Input
-							name="search"
-							type="text"
-							placeholder={"0x0000 address"}
-							onChange={addTokenByAddress}
-						/>
-					</div>
-				)}
 			</div>
-			{toggle === TOGGLES.list && (
-				<div className={styles.scroll}>
-					<StrollableContainer bar={ScrollBar} draggable>
-						<ul className={styles.list}>
-							{tokenLists.map((item) => (
-								<Toggle
-									key={uid(item)}
-									count={item.count}
-									img={item.img}
-									name={item.name}
-									checked={tokenListControl.activeLists.includes(item.key)}
-									reference={item.key}
-									onChange={tokenListControl.change}
-								/>
-							))}
-						</ul>
-					</StrollableContainer>
-				</div>
-			)}
-			{toggle === TOGGLES.tokens && (
-				<div className={styles.custom}>
-					<div>
-						{localTokens.length > 0 ? (
-							<StrollableContainer bar={ScrollBar} draggable>
-								<ul className={styles.customList}>
-									{localTokens.map((token) => (
-										<li key={uid(token)}>
-											<Currency token={token.address} />
-										</li>
-									))}
-								</ul>
-							</StrollableContainer>
-						) : (
-							<Body1>0 Custom Tokens</Body1>
-						)}
-					</div>
-					<div className={styles.footer}>
-						<Body1 Component="span" lighten={50}>
-							Tip: Custom tokens are stored locally in your browser
-						</Body1>
-					</div>
-				</div>
-			)}
+			{toggle === TOGGLES.tokens && <TokensContent />}
+			{toggle === TOGGLES.list && <ListsContent {...props} />}
 		</div>
 	);
 };
