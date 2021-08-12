@@ -1,5 +1,6 @@
 import { ALERT_TYPE } from "@app/ui/alert";
 import { isGreaterThanOrEqualTo } from "@app/utils/bn";
+import { isEqualZero } from "@app/utils/validation";
 
 export const getAlertForOwner = (
 	open: number,
@@ -77,19 +78,20 @@ export const getAlertForUsers = (
 	amount: number,
 	total: number,
 	placed: boolean,
-	claimed: boolean
+	claimed: boolean,
+	claimAt: number
 ) => {
 	const nowTime = new Date();
 	const openTime = new Date(+open);
 	const closeTime = new Date(+close);
 
 	const isOpen = nowTime > openTime;
-
 	const isClose = nowTime > closeTime;
-
 	const isFilled = amount && total && isGreaterThanOrEqualTo(amount, total);
 	const isPlaced = placed;
 	const isClaimed = claimed;
+	const isLockout = !(claimAt === 0);
+	console.log(claimAt, isLockout);
 
 	if (!whitelisted) {
 		return {
@@ -98,11 +100,20 @@ export const getAlertForUsers = (
 			type: ALERT_TYPE.error,
 		};
 	} else {
-		if (isOpen && !isClose && isPlaced && !isFilled) {
+		if (isOpen && !isClose && isPlaced && !isFilled && !isLockout) {
 			return {
 				title: "Bidded Tokens Sent.",
 				text:
 					"You have successfully bidded and your swapped tokens are automatically sent to your wallet. You can now make more bids.",
+				type: ALERT_TYPE.success,
+			};
+		}
+
+		if (isOpen && !isClose && isPlaced && !isFilled && isLockout) {
+			return {
+				title: "Tokens Bidded.",
+				text:
+					"You have successfully bidded. You can claim your bidded tokens once they are unlocked.",
 				type: ALERT_TYPE.success,
 			};
 		}
@@ -116,11 +127,20 @@ export const getAlertForUsers = (
 		}
 
 		if (isOpen && !isClose && isFilled && isPlaced && !isClaimed) {
-			return {
-				title: "Auction filled.",
-				text: "This auction is finished, please claim your token.",
-				type: ALERT_TYPE.default,
-			};
+			if (isLockout) {
+				return {
+					title: "Auction filled.",
+					text: "This auction is finished, please claim your token once they are unlocked.",
+					type: ALERT_TYPE.default,
+				};
+			} else {
+				return {
+					title: "Auction filled.",
+					text:
+						"This auction is finished, You have successfully bidded and your swapped tokens are automatically sent to your wallet.",
+					type: ALERT_TYPE.default,
+				};
+			}
 		}
 
 		if (isOpen && !isClose && isFilled && isPlaced && isClaimed) {
@@ -140,11 +160,20 @@ export const getAlertForUsers = (
 		}
 
 		if (isClose && isFilled && isPlaced && !isClaimed) {
-			return {
-				title: "Auction filled.",
-				text: "This auction is finished, please claim your token.",
-				type: ALERT_TYPE.default,
-			};
+			if (isLockout) {
+				return {
+					title: "Auction closed.",
+					text: "This auction is finished, please claim your token once they are unlocked.",
+					type: ALERT_TYPE.default,
+				};
+			} else {
+				return {
+					title: "Auction closed.",
+					text:
+						"This auction is finished, You have successfully bidded and your swapped tokens are automatically sent to your wallet.",
+					type: ALERT_TYPE.default,
+				};
+			}
 		}
 
 		if (isClose && isFilled && isPlaced && isClaimed) {

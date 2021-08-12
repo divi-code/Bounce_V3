@@ -123,13 +123,16 @@ export const createAuctionPool = (
 	contract: ContractType,
 	account: string,
 	data: AuctionPoolType,
-	whiteList: string[] | undefined
+	whiteList: string[] | undefined,
+	isPayable: boolean
 ) => {
 	const action = contract.methods.create(data, whiteList !== undefined ? whiteList : []);
 
 	action.estimateGas();
 
-	return action.send({ from: account });
+	const sendParams = isPayable ? { from: account, value: data.amountTotal0 } : { from: account };
+
+	return action.send(sendParams);
 };
 
 export const swapContracts = (

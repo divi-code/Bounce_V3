@@ -16,6 +16,7 @@ import { isLessThan } from "@app/utils/bn";
 import { fromWei, numToWei, weiToNum } from "@app/utils/bn/wei";
 import { getMatchedPool, MatchedPoolType, POOL_STATUS } from "@app/utils/pool";
 import { getDeltaTime } from "@app/utils/time";
+import { isEqualZero } from "@app/utils/validation";
 import { getBalance, getEthBalance, getTokenContract } from "@app/web3/api/bounce/erc";
 import {
 	approveAuctionPool,
@@ -163,7 +164,6 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		setPool(matchedPool);
 		setTo(to);
 		setUserPlaced(parseFloat(weiToNum(userBid, from.decimals)));
-		setUserClaimed(!!userClaim);
 		setCreatorClaimed(!!creatorClaim);
 		setUserWhitelisted(matchedPool.whitelist ? whitelistStatus : true);
 		setLimited(parseFloat(weiToNum(limit, to.decimals, 6)) > 0);
@@ -184,6 +184,8 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 				setBalance(parseFloat(fromWei(b, to.decimals).toFixed(4, 1)).toString())
 			);
 		}
+
+		setUserClaimed(!!userClaim || Number(pool.claimAt) === 0);
 	}, [account, auctionType, contract, poolID, provider, queryToken, web3]);
 
 	const onRequestData = updateData;
@@ -243,18 +245,15 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 
 				await swapContracts(contract, value, account, poolID, !isEth(to.address) ? "0" : value)
 					.on("transactionHash", (h) => {
-						console.log("hash", h);
 						setOperation(OPERATION.pending);
 					})
 					.on("receipt", (r) => {
-						console.log("receipt", r);
 						setOperation(OPERATION.placed);
 						updateData();
 						form.change("bid", undefined);
 						setLastOperation(null);
 					})
 					.on("error", (e) => {
-						console.error("error", e);
 						setOperation(OPERATION.failed);
 					});
 			} catch (e) {
@@ -282,17 +281,14 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 
 				await creatorClaim(contract, account, poolID)
 					.on("transactionHash", (h) => {
-						console.log("hash", h);
 						setOperation(OPERATION.pending);
 					})
 					.on("receipt", (r) => {
-						console.log("receipt", r);
 						setOperation(OPERATION.claimed);
 						updateData();
 						setLastOperation(null);
 					})
 					.on("error", (e) => {
-						console.error("error", e);
 						setOperation(OPERATION.failed);
 					});
 			} catch (e) {
@@ -301,8 +297,6 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 				} else {
 					setOperation(OPERATION.failed);
 				}
-
-				console.log("err", e);
 			} finally {
 				// close modal
 			}
@@ -322,17 +316,14 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 
 				await userClaim(contract, account, poolID)
 					.on("transactionHash", (h) => {
-						console.log("hash", h);
 						setOperation(OPERATION.pending);
 					})
 					.on("receipt", (r) => {
-						console.log("receipt", r);
 						setOperation(OPERATION.claimed);
 						updateData();
 						setLastOperation(null);
 					})
 					.on("error", (e) => {
-						console.error("error", e);
 						setOperation(OPERATION.failed);
 					});
 			} catch (e) {
@@ -341,8 +332,6 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 				} else {
 					setOperation(OPERATION.failed);
 				}
-
-				console.log("err", e);
 			} finally {
 				// close modal
 			}
@@ -426,7 +415,8 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 						pool.amount,
 						pool.total,
 						!!userPlaced,
-						userClaimed
+						userClaimed,
+						pool.claimAt
 					)
 				);
 			}
@@ -486,19 +476,19 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 					>
 						{isCreator && (creatorClaimed ? "Tokens claimed" : "Claim your unswapped tokens")}
 						{!isCreator &&
-							(userClaimed ? (
+							(pool && userClaimed ? (
 								"Tokens claimed"
 							) : (
 								<>
 									Claim Token
-									{getDeltaTime(pool.claimAt) > 0 && (
+									{getDeltaTime(pool?.claimAt) > 0 && (
 										<Caption
 											className={styles.timer}
 											Component="span"
 											style={{ color: "inherit" }}
 											weight="regular"
 										>
-											<Timer timer={pool.claimAt} onZero={onRequestData} />
+											<Timer timer={pool?.claimAt} onZero={onRequestData} />
 										</Caption>
 									)}
 								</>

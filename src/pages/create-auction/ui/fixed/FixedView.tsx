@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 
-import { FormSpy, Field } from "react-final-form";
+import { FormSpy } from "react-final-form";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { Currency } from "@app/modules/currency";
@@ -160,26 +160,32 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 				</Label>
 
 				<FormSpy subscription={{ values: true }}>
-					{(props) =>
-						props.values.allocation === "limited" && (
-							<Label Component="label" label="Limit">
-								<TextField
-									type="text"
-									name="limit"
-									key={props.values.allocation}
-									placeholder="0.00"
-									step={FLOAT}
-									after={<Currency token={props.values.tokenTo} />}
-									required={props.values.allocation === "limited"}
-									validate={
-										props.values.allocation === "limited"
-											? composeValidators(isEqualZero, isValidWei)
-											: undefined
-									}
-								/>
-							</Label>
-						)
-					}
+					{(props) => {
+						if (props.values.allocation === "limited") {
+							return (
+								<Label Component="label" label="Limit">
+									<TextField
+										type="text"
+										name="limit"
+										key={props.values.allocation}
+										placeholder="0.00"
+										step={FLOAT}
+										after={<Currency token={props.values.tokenTo} />}
+										required={props.values.allocation === "limited"}
+										validate={
+											props.values.allocation === "limited"
+												? composeValidators(isEqualZero, isValidWei)
+												: undefined
+										}
+									/>
+								</Label>
+							);
+						} else {
+							props.values.limit = 0;
+
+							return <></>;
+						}
+					}}
 				</FormSpy>
 				<FormSpy>
 					{(form) => (
