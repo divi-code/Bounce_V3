@@ -369,6 +369,16 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 
 	//set action
 
+	const [hasStart, setHasStart] = useState(false);
+
+	useEffect(() => {
+		if (getDeltaTime(pool?.openAt) > 0) {
+			setHasStart(false);
+		} else {
+			setHasStart(true);
+		}
+	}, [pool]);
+
 	const [action, setAction] = useState<ACTION>(undefined);
 
 	useEffect(() => {
@@ -510,7 +520,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 						onSubmit={bidAction}
 					>
 						<>
-							Place a Bid{" "}
+							{hasStart ? "Place a Bid" : "Auction will be live in"}
 							{pool.status === POOL_STATUS.COMING && (
 								<Caption
 									className={styles.timer}
@@ -518,7 +528,13 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 									style={{ color: "inherit" }}
 									weight="regular"
 								>
-									<Timer timer={pool.openAt} onZero={onRequestData} />
+									<Timer
+										timer={pool.openAt}
+										onZero={() => {
+											setHasStart(true);
+											onRequestData();
+										}}
+									/>
 								</Caption>
 							)}
 						</>
