@@ -13,13 +13,14 @@ import styles from "./Currency.module.scss";
 import GeckoCoin from "./assets/gecko-coin.svg";
 import UnknowCoin from "./assets/unknow-coin.svg";
 
-type CurrencyType = {
-	symbol: string;
+interface ICurrencyViewProps extends MaybeWithClassName {
+	symbol?: string;
 	img?: React.ReactNode;
 	cacheKey?: string;
-};
+	small?: boolean;
+}
 
-export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClassName> = ({
+export const CurrencyView: FC<ICurrencyViewProps> = ({
 	className,
 	symbol,
 	img,
@@ -38,12 +39,12 @@ export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClas
 	);
 };
 
-interface CurrencyProps extends CurrencyType {
+interface ICurrencyProps extends ICurrencyViewProps {
 	coin?: IToken;
-	token: string;
+	token?: string;
 }
 
-export const Currency: FC<CurrencyProps> = ({ token, coin, small }) => {
+export const Currency: FC<ICurrencyProps> = ({ token, coin, small }) => {
 	const tokenInfo = useTokenSearchWithFallback(token) as any;
 	const detail = coin || tokenInfo;
 	const logoURI = detail?.thumbURL || detail?.smallURL || detail?.logoURI || undefined;
