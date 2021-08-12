@@ -28,7 +28,7 @@ const SettingsImp = () => {
 			startPool: values.startPool,
 			endPool: values.endPool,
 			delayClaim: values.delayToken.length > 0,
-			claimStart: values.delayToken.length > 0 ? values.claimStart : values.endPool,
+			claimStart: values.delayToken.length > 0 ? values.claimStart : 0,
 			whitelist: values.whitelist === WHITELIST_TYPE.yes,
 			whiteListList:
 				values.whitelist === WHITELIST_TYPE.yes && values.whiteListList.length > 0

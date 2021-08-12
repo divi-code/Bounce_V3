@@ -77,7 +77,7 @@ export const SellingView: FC<MaybeWithClassName & SellingViewType> = ({
 								{({ form }) => (
 									<button
 										className={styles.max}
-										onClick={() => form.change("amount", balance)}
+										onClick={() => form.change("amount", balance.toString())}
 										type="button"
 									>
 										MAX
