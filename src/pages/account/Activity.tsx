@@ -45,7 +45,6 @@ export const Activity = () => {
 			});
 			setTotalCount(total);
 			setActivityList(foundPools);
-			console.log("Activities", foundPools);
 		})();
 	}, [page, chainId]);
 

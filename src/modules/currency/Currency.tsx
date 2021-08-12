@@ -45,26 +45,38 @@ interface ICurrencyProps extends ICurrencyViewProps {
 }
 
 export const Currency: FC<ICurrencyProps> = ({ token, coin, small }) => {
-	const tokenInfo = useTokenSearchWithFallback(token) as any;
-	const detail = coin || tokenInfo;
-	const logoURI = detail?.thumbURL || detail?.smallURL || detail?.logoURI || undefined;
+	const detail = useTokenSearchWithFallback(token || coin.address, coin) as any;
+	const logoURI = detail?.logoURI || detail?.thumbURL || detail?.smallURL || undefined;
 
 	if (!detail) {
 		return null;
 	}
 
-	return <CurrencyView symbol={detail?.symbol?.toUpperCase()} img={logoURI} small={small} />;
+	return (
+		<CurrencyView
+			cacheKey={detail.address}
+			symbol={detail?.symbol?.toUpperCase()}
+			img={logoURI}
+			small={small}
+		/>
+	);
 };
 
 export interface IGeckoTokenProps extends MaybeWithClassName {
 	isGecko: boolean;
 	token: string;
+	cacheKey?: string;
 }
 
-export const GeckoToken: FC<IGeckoTokenProps> = ({ isGecko = true, token, className }) => {
+export const GeckoToken: FC<IGeckoTokenProps> = ({
+	cacheKey,
+	isGecko = true,
+	token,
+	className,
+}) => {
 	return (
 		<Caption className={classNames(className, styles.component, styles.small)} Component="span">
-			<Icon src={isGecko ? GeckoCoin : UnknowCoin} />
+			<Icon cacheKey={cacheKey} src={isGecko ? GeckoCoin : UnknowCoin} />
 			{token}
 		</Caption>
 	);

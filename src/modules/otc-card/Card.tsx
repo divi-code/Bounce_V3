@@ -56,7 +56,11 @@ export const Card: FC<DisplayOTCInfoType & MaybeWithClassName & { bordered?: boo
 
 	const TOKEN_INFORMATION = {
 		"Contact address": (
-			<GeckoToken isGecko={!!from.coinGeckoID} token={walletConversion(address)} />
+			<GeckoToken
+				cacheKey={from.address}
+				isGecko={!!from.coinGeckoID}
+				token={walletConversion(address)}
+			/>
 		),
 		"OTC type": type,
 		"Token symbol": <Currency coin={from} small />,

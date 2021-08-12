@@ -57,7 +57,11 @@ export const Card: FC<DisplayPoolInfoType & MaybeWithClassName & { bordered?: bo
 
 	const TOKEN_INFORMATION = {
 		"Contact address": (
-			<GeckoToken isGecko={!!from.coinGeckoID} token={walletConversion(from.address)} />
+			<GeckoToken
+				cacheKey={from.address}
+				isGecko={!!from.coinGeckoID}
+				token={walletConversion(from.address)}
+			/>
 		),
 		"Token symbol": <Currency coin={from} small />,
 	};

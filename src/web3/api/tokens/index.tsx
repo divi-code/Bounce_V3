@@ -5,6 +5,7 @@ import { createContext, FC, useCallback, useContext, useEffect, useState } from 
 
 import { AbstractProvider } from "web3-core";
 
+import { IToken } from "@app/api/types";
 import { queryERC20Token } from "@app/web3/api/eth/api";
 import { useLocallyDefinedTokens } from "@app/web3/api/tokens/local-tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
@@ -46,14 +47,12 @@ export const TokenListProvider: FC = ({ children }) => {
 		if (active) {
 			Promise.all(
 				DEFAULT_LIST_OF_LISTS.map((listUrl) =>
-					getTokenList(listUrl, ensResolver).catch((e) => {
-						console.log(e);
-
+					getTokenList(listUrl, ensResolver).catch(() => {
 						return undefined;
 					})
 				)
 			).then((allTokens) => {
-				setTokens(allTokens.filter(Boolean));
+				setTokens(allTokens);
 			});
 		}
 	}, [ensResolver, active]);
@@ -119,10 +118,18 @@ export const useAllTokensSearch = (filter: (list: TokenList) => boolean) => {
 	return mapToTokenLookup(tokens);
 };
 
-const passAll = () => true;
+const passAll = (n: any) => !!n;
 
-export const useTokenSearch = () => {
+export const useTokenSearch = (coin?: IToken) => {
 	const tokens = useAllTokensSearch(passAll);
+	const address = coin?.address?.toLowerCase();
+
+	if (address && !tokens[address]) {
+		tokens[address] = {
+			...coin,
+			source: address,
+		};
+	}
 
 	return useCallback((address: string) => (address ? tokens[address?.toLowerCase()] : undefined), [
 		tokens,
