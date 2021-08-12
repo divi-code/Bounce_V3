@@ -160,7 +160,6 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 			auctionType,
 			account
 		);
-		console.log(weiToNum(userBid, to.decimals), userBid, to.decimals);
 		setPool(matchedPool);
 		setTo(to);
 		setUserPlaced(parseFloat(weiToNum(userBid, from.decimals)));
