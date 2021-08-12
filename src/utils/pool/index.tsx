@@ -131,7 +131,7 @@ export const getMatchedPool = async (
 		openAt: openAt,
 		closeAt: closeAt,
 		creator: pool.creator,
-		claimAt: claimAt > closeAt ? claimAt : closeAt,
+		claimAt: claimAt,
 		limit: parseFloat(fromWei(limit, to.decimals).toString()),
 		whitelist: pool.enableWhiteList,
 	};

@@ -11,6 +11,7 @@ import { TextField } from "@app/modules/text-field";
 
 import { PrimaryButton } from "@app/ui/button";
 import { Spinner } from "@app/ui/spinner";
+import { isGreaterThan } from "@app/utils/bn";
 import { isNotGreaterThan } from "@app/utils/validation";
 
 import styles from "./PlaceBid.module.scss";
@@ -59,7 +60,22 @@ export const PlaceBid: FC<AuctionDetailPlaceBidType & WithChildren> = ({
 								{({ form }) => (
 									<button
 										className={styles.max}
-										onClick={() => form.change("bid", balance)}
+										onClick={() => {
+											if (!isLimit) {
+												// 如果是无限制的，则填充用户的余额
+												form.change("bid", balance);
+											} else {
+												// 如果是有限制的
+												//  首先判断用户还可以购买多少
+												if (isGreaterThan(balance, limit)) {
+													// 如果余额充足
+													form.change("bid", limit);
+												} else {
+													// 如果余额不够
+													form.change("bid", balance);
+												}
+											}
+										}}
 										type="button"
 									>
 										MAX

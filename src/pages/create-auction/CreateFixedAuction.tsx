@@ -14,6 +14,7 @@ import { defineFlow } from "@app/modules/flow/definition";
 import { ProcessingPopUp } from "@app/modules/processing-pop-up";
 import { isLessThan } from "@app/utils/bn";
 import { numToWei } from "@app/utils/bn/wei";
+import { isEqualZero } from "@app/utils/validation";
 import { getTokenContract } from "@app/web3/api/bounce/erc";
 import {
 	approveAuctionPool,
@@ -101,28 +102,36 @@ export const CreateFixedAuction: FC<MaybeWithClassName> = () => {
 			const limit = data.limit ? numToWei(data.limit, tokenTo.decimals, 0) : "0";
 
 			try {
-				const tokenContract = getTokenContract(provider, tokenFrom.address);
+				let isPayable = true;
 
-				const allowance = await getAllowance(
-					tokenContract,
-					POOL_ADDRESS_MAPPING[type],
-					chainId,
-					account
-				);
+				if (!isEqualZero(tokenFrom.address)) {
+					// 如果是 ETH 则需要先授权
+					isPayable = false;
 
-				if (isLessThan(allowance, fromAmount)) {
-					const result = await approveAuctionPool(
+					const tokenContract = getTokenContract(provider, tokenFrom.address);
+					// 获取授权额度
+					const allowance = await getAllowance(
 						tokenContract,
 						POOL_ADDRESS_MAPPING[type],
 						chainId,
-						account,
-						fromAmount
+						account
 					);
 
-					if (!result.status) {
-						setOperation(OPERATION.error);
+					// 判断额度是否足够
+					if (isLessThan(allowance, fromAmount)) {
+						const result = await approveAuctionPool(
+							tokenContract,
+							POOL_ADDRESS_MAPPING[type],
+							chainId,
+							account,
+							fromAmount
+						);
 
-						return;
+						if (!result.status) {
+							setOperation(OPERATION.error);
+
+							return;
+						}
 					}
 				}
 
@@ -145,7 +154,8 @@ export const CreateFixedAuction: FC<MaybeWithClassName> = () => {
 						maxAmount1PerWallet: limit,
 						onlyBot: false,
 					},
-					data.whiteListList
+					data.whiteListList,
+					isPayable
 				)
 					.on("transactionHash", (h) => {
 						console.log("hash", h);
