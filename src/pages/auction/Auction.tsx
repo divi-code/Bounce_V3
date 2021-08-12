@@ -202,8 +202,6 @@ export const Auction = () => {
 	const queryToken = useTokenSearchWithFallbackService();
 
 	useEffect(() => {
-		console.log(">>>>>>>>>>>>>", poolList);
-
 		if (poolList.length > 0) {
 			Promise.all(
 				poolList.map(async (pool) => {

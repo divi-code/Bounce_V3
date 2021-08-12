@@ -33,7 +33,7 @@ export const Pagination: FC<PaginationType & MaybeWithClassName> = ({
 						className={styles.button}
 						onClick={onBack}
 						disabled={currentPage === 0}
-						icon={<RightArrow style={{ width: 6, height: "auto", transform: `rotate(180deg)` }} />}
+						icon={<RightArrow style={{ width: 6, transform: `rotate(180deg)` }} />}
 					>
 						Back
 					</Button>
@@ -52,7 +52,7 @@ export const Pagination: FC<PaginationType & MaybeWithClassName> = ({
 						className={styles.button}
 						onClick={onNext}
 						disabled={currentPage === numberOfPages - 1}
-						icon={<RightArrow style={{ width: 6, height: "auto" }} />}
+						icon={<RightArrow style={{ width: 6 }} />}
 					>
 						Next
 					</Button>

@@ -34,10 +34,12 @@ export const View: FC<DisplayOTCInfoType & OTCDetailViewType> = ({
 	alert,
 	children,
 	address,
-	token,
+	// token,
 	type,
 	amount,
-	currency,
+	// currency,
+	from,
+	to,
 	price,
 	total,
 	status,
@@ -49,11 +51,11 @@ export const View: FC<DisplayOTCInfoType & OTCDetailViewType> = ({
 }) => {
 	const TOKEN_INFORMATION = {
 		"Contact address": <CopyAddress className={styles.copy} address={address} />,
-		"Token symbol": <Currency token={token} small />,
+		"Token symbol": <Currency token={from.address} small />,
 	};
 
 	const OTC_INFORMATION = {
-		"Payment currency": <Currency token={currency} small />,
+		"Payment currency": <Currency token={to.address} small />,
 		"Price per unit, $": price,
 	};
 
@@ -106,7 +108,7 @@ export const View: FC<DisplayOTCInfoType & OTCDetailViewType> = ({
 									Auction progress
 								</Caption>
 								<Caption Component="span" weight="regular">
-									{amount} <Symbol token={currency} /> / {total} <Symbol token={currency} />
+									{amount} <Symbol token={to.address} /> / {total} <Symbol token={to.address} />
 								</Caption>
 								<ProgressBar className={styles.bar} status={status} fillInPercentage={fill} />
 							</div>

@@ -1,5 +1,6 @@
 import { AbstractProvider } from "web3-core";
 
+import { IToken } from "@app/api/types";
 import { getContract } from "@app/web3/contracts/helpers";
 import { WEB3_NETWORKS } from "@app/web3/networks/const";
 import { ADDRESS_MAPPING, getChainAddressMapping } from "@app/web3/networks/mapping";

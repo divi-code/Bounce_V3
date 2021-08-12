@@ -117,7 +117,7 @@ export const BuyingView: FC<MaybeWithClassName & BuyingViewType> = ({
 					<PrimaryButton
 						className={styles.submit}
 						size="large"
-						iconAfter={<RightArrow2 width={18} height="auto" style={{ marginLeft: 12 }} />}
+						iconAfter={<RightArrow2 width={18} style={{ marginLeft: 12 }} />}
 						submit
 					>
 						{initialValues.amount && form.dirty ? "Save" : "Next Step"}

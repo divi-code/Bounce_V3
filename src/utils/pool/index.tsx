@@ -1,3 +1,4 @@
+// import { TokenInfo } from "@uniswap/token-lists";
 import { TokenInfo } from "@uniswap/token-lists";
 import { Contract as ContractType } from "web3-eth-contract";
 
@@ -74,12 +75,14 @@ export type MatchedPoolType = {
 	status: POOL_STATUS;
 	id: number;
 	name: string;
-	address: string;
+	// address: string;
 	type: string;
-	token: string;
+	from: TokenInfo;
+	to: TokenInfo;
+	// token: string;
 	total: number;
 	amount: number;
-	currency: string;
+	// currency: string;
 	price: number;
 	fill: number;
 	openAt: number;
@@ -118,12 +121,11 @@ export const getMatchedPool = async (
 		status: isClaimed ? POOL_STATUS.CLOSED : getStatus(openAt, closeAt, toAmount, toTotal),
 		id: id,
 		name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
-		address: from.address,
+		from: from,
+		to: to,
 		type: POOL_SHORT_NAME_MAPPING[auctionType],
-		token: from.address,
 		total: parseFloat(fromWei(toTotal, to.decimals).toString()),
 		amount: toAmount ? parseFloat(fromWei(toAmount, to.decimals).toString()) : 0,
-		currency: to.address,
 		price: parseFloat(getSwapRatio(toTotal, fromTotal, to.decimals, from.decimals)),
 		fill: getProgress(toAmount, toTotal, to.decimals),
 		openAt: openAt,

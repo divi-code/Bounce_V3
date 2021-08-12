@@ -23,7 +23,6 @@ export type DisplayPoolInfoType = {
 	status: POOL_STATUS;
 	id: string | number;
 	name: string;
-	address: string;
 	type: string;
 	total: number;
 	from: IToken;
@@ -41,7 +40,6 @@ export const Card: FC<DisplayPoolInfoType & MaybeWithClassName & { bordered?: bo
 	href,
 	id,
 	name,
-	address,
 	type,
 	total,
 	from,
@@ -59,7 +57,7 @@ export const Card: FC<DisplayPoolInfoType & MaybeWithClassName & { bordered?: bo
 
 	const TOKEN_INFORMATION = {
 		"Contact address": (
-			<GeckoToken isGecko={!!from.coinGeckoID} token={walletConversion(address)} />
+			<GeckoToken isGecko={!!from.coinGeckoID} token={walletConversion(from.address)} />
 		),
 		"Token symbol": <Currency coin={from} small />,
 	};

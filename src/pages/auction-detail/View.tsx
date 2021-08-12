@@ -36,11 +36,10 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 	name,
 	alert,
 	children,
-	address,
-	token,
+	from,
+	to,
 	type,
 	amount,
-	currency,
 	price,
 	total,
 	status,
@@ -56,14 +55,14 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 	const convertDate = useConvertDate();
 
 	const TOKEN_INFORMATION = {
-		"Contact address": <CopyAddress className={styles.copy} address={address} />,
-		"Token symbol": <Currency token={token} small />,
+		"Contact address": <CopyAddress className={styles.copy} address={from.address} />,
+		"Token symbol": <Currency token={from.address} small />,
 	};
 
 	const AUCTION_INFORMATION = {
 		"Pool type": type,
 		"Auction amount": total,
-		"Auction currency": <Currency token={currency} small />,
+		"Auction currency": <Currency token={to.address} small />,
 		"Price per unit, $": price,
 		"Allocation per Wallet": limit > 0 ? limit : "No",
 		"Delay Unlocking Token": claimAt ? convertDate(new Date(claimAt), "long") : "No",
@@ -115,7 +114,7 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 									Auction progress
 								</Caption>
 								<Caption Component="span" weight="regular">
-									{amount} <Symbol token={currency} /> / {total} <Symbol token={currency} />
+									{amount} <Symbol token={to.address} /> / {total} <Symbol token={to.address} />
 								</Caption>
 								<ProgressBar className={styles.bar} status={status} fillInPercentage={fill} />
 							</div>

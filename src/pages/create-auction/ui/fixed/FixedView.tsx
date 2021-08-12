@@ -13,7 +13,7 @@ import { TextField } from "@app/modules/text-field";
 
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
 import { PrimaryButton } from "@app/ui/button";
-import { FoldableSection } from "@app/ui/foldable-section";
+// import { FoldableSection } from "@app/ui/foldable-section";
 import { RightArrow2 } from "@app/ui/icons/arrow-right-2";
 import { RadioGroup } from "@app/ui/radio-group";
 import { Body1 } from "@app/ui/typography";
@@ -186,7 +186,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 						<PrimaryButton
 							className={styles.submit}
 							size="large"
-							iconAfter={<RightArrow2 width={18} height="auto" style={{ marginLeft: 12 }} />}
+							iconAfter={<RightArrow2 width={18} style={{ marginLeft: 12 }} />}
 							submit
 						>
 							{initialValues.amount && form.dirty ? "Save" : "Next Step"}

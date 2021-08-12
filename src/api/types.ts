@@ -1,11 +1,13 @@
-export interface IToken {
-	address: string;
-	coinGeckoID: string;
-	currentPrice: number;
-	decimals: number;
-	largeURL: string;
+import { TokenInfo } from "@uniswap/token-lists";
+
+export interface IToken extends TokenInfo {
 	name: string;
-	smallURL: string;
+	address: string;
 	symbol: string;
-	thumbURL: string;
+	decimals: number;
+	coinGeckoID?: string;
+	currentPrice?: number;
+	largeURL?: string;
+	smallURL?: string;
+	thumbURL?: string;
 }
