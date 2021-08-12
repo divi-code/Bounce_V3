@@ -41,7 +41,7 @@ export const Currency: FC<
 > = ({ token, coin, small }) => {
 	const tokenInfo = useTokenSearchWithFallback(token) as any;
 	const detail = coin || tokenInfo;
-	const logoURI = detail?.thumbURL || detail?.smallURL || tokenInfo?.logoURI || undefined;
+	const logoURI = detail?.thumbURL || detail?.smallURL || detail?.logoURI || undefined;
 
 	if (!detail) {
 		return null;
