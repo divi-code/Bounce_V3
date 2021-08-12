@@ -87,7 +87,7 @@ export const OTCView: FC<OTCType & MaybeWithClassName> = ({
 								<>
 									<ul className={styles.list}>
 										{result.map((auction) => (
-											<li key={auction.id}>
+											<li key={auction.id} className="animate__animated animate__flipInY">
 												<Card {...auction} />
 											</li>
 										))}

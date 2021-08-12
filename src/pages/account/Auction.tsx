@@ -169,7 +169,7 @@ export const Auction = () => {
 				<div>
 					<ul className={styles.cardList}>
 						{convertedPoolInformation.map((auction) => (
-							<li key={uid(auction)}>
+							<li key={uid(auction)} className="animate__animated animate__flipInY">
 								<Card {...auction} bordered />
 							</li>
 						))}

@@ -136,7 +136,6 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		//get pool info
 
 		const pool = await getPools(contract, poolID);
-		console.log({ pool });
 
 		if (!pool) {
 			// @ts-ignore

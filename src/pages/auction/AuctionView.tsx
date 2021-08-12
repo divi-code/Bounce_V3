@@ -92,7 +92,7 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 								<>
 									<ul className={styles.list}>
 										{result.map((auction) => (
-											<li key={uid(auction)}>
+											<li key={uid(auction)} className="animate__animated animate__flipInY">
 												<Card {...auction} />
 											</li>
 										))}

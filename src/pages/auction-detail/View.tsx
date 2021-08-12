@@ -1,3 +1,4 @@
+import classnames from "classnames";
 import { FC, ReactNode } from "react";
 
 import { useConvertDate } from "@app/hooks/use-convert-data";
@@ -119,7 +120,7 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 								<ProgressBar className={styles.bar} status={status} fillInPercentage={fill} />
 							</div>
 						</div>
-						<div className={styles.action}>
+						<div className={classnames("animate__animated animate__flipInY", styles.action)}>
 							<div className={styles.header}>
 								<Heading2 className={styles.actionTitle}>{actionTitle}</Heading2>
 								<Status status={status} captions={STATUS} />

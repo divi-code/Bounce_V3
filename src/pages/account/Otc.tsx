@@ -165,7 +165,7 @@ export const Otc = () => {
 				<div>
 					<ul className={styles.cardList}>
 						{convertedPoolInformation.map((auction) => (
-							<li key={auction.id}>
+							<li key={auction.id} className="animate__animated animate__flipInY">
 								<Card {...auction} bordered />
 							</li>
 						))}

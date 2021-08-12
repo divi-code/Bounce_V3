@@ -1,3 +1,4 @@
+import classnames from "classnames";
 import { FC, ReactNode } from "react";
 
 import { CopyAddress } from "@app/modules/copy-to-clipboard";
@@ -113,7 +114,7 @@ export const View: FC<DisplayOTCInfoType & OTCDetailViewType> = ({
 								<ProgressBar className={styles.bar} status={status} fillInPercentage={fill} />
 							</div>
 						</div>
-						<div className={styles.action}>
+						<div className={classnames("animate__animated animate__flipInY", styles.action)}>
 							<div className={styles.header}>
 								<Heading2 className={styles.actionTitle}>{actionTitle}</Heading2>
 								<Status status={status} captions={STATUS} />
