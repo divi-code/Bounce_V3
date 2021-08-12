@@ -59,13 +59,26 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 		"Contact address": <CopyAddress className={styles.copy} address={from.address} />,
 		"Token symbol": <Currency token={from.address} small />,
 	};
+	const allocationPerWallet = (
+		<Caption Component="span" weight="regular">
+			{limit} <Symbol token={to.address} />
+		</Caption>
+	);
 
 	const AUCTION_INFORMATION = {
 		"Pool type": type,
 		"Auction amount": total,
 		"Auction currency": <Currency token={to.address} small />,
 		"Price per unit, $": price,
-		"Allocation per Wallet": limit > 0 ? limit : "No",
+		"Allocation per Wallet":
+			limit > 0 ? (
+				<span>
+					{"Limit"} {allocationPerWallet}
+				</span>
+			) : (
+				"No"
+			),
+		// "Allocation per Wallet": limit > 0 ? `Limit ${limit} ` : "No",
 		"Delay Unlocking Token": claimAt ? convertDate(new Date(claimAt), "long") : "No",
 	};
 
