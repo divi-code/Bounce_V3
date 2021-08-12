@@ -366,7 +366,7 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 							to={pool.to}
 							price={pool.price}
 							amount={pool.amount}
-							isNonAction={!isCreator}
+							isNonAction={!isCreator || pool.status === POOL_STATUS.CLOSED}
 							disabled={operation === OPERATION.loading}
 							loading={operation === OPERATION.loading}
 							onClick={isCreator ? deleteOTC : undefined}

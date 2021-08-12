@@ -115,9 +115,10 @@ export const Otc = () => {
 					const { token0, token1, amountTotal0, amountTotal1, swappedAmount0, openAt } = pool;
 					const isOpen = getIsOpen(openAt * 1000);
 					const otcType = ToAuctionType[pool.otcType];
+					const tempStatus = isOpen ? ToAuctionStatus[pool.status] : POOL_STATUS.COMING;
 
 					return {
-						status: isOpen ? ToAuctionStatus[pool.status] : POOL_STATUS.COMING,
+						status: pool.status === 1 ? ToAuctionStatus[pool.status] : tempStatus,
 						id: +pool.poolID,
 						name: `${pool.name} ${OTC_SHORT_NAME_MAPPING[otcType]}`,
 						address: token0.address,
