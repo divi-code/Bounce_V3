@@ -17,13 +17,19 @@ import { RightArrow2 } from "@app/ui/icons/arrow-right-2";
 import { Body1 } from "@app/ui/typography";
 
 import { fromWei } from "@app/utils/bn/wei";
-import { composeValidators, isEqualZero, isValidWei } from "@app/utils/validation";
+import {
+	composeValidators,
+	isEqualZero,
+	isFromToTokensDifferent,
+	isValidWei,
+} from "@app/utils/validation";
 import { getBalance, getEthBalance, getTokenContract } from "@app/web3/api/bounce/erc";
 import { isEth } from "@app/web3/api/eth/use-eth";
 import { useTokenSearch } from "@app/web3/api/tokens";
 import { useWeb3, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
 import styles from "./Buying.module.scss";
+import { getAlert } from "./getAlerts";
 
 type BuyingViewType = {
 	onSubmit(values): void;
@@ -40,13 +46,26 @@ export const BuyingView: FC<MaybeWithClassName & BuyingViewType> = ({
 	balance,
 	initialValues,
 }) => {
-	const [tokenTo, setTokenTo] = useState("");
+	const [alert, setAlert] = useState<AlertType | undefined>();
+	const [tokenTo, setTokenTo] = useState();
 	const [newBalance, setNewBalance] = useState(0);
 	const findToken = useTokenSearch();
 	const web3 = useWeb3();
 	const provider = useWeb3Provider();
 	const { account } = useWeb3React();
 	const tokenContract = getTokenContract(provider, findToken(tokenTo)?.address);
+
+	type AlertType = {
+		title: string;
+		text: string;
+		type: ALERT_TYPE;
+	};
+
+	useEffect(() => {
+		if (tokenFrom && tokenTo) {
+			setAlert(getAlert(tokenFrom, tokenTo));
+		}
+	}, [tokenFrom, tokenTo]);
 
 	useEffect(() => {
 		if (!tokenTo) {
@@ -65,22 +84,38 @@ export const BuyingView: FC<MaybeWithClassName & BuyingViewType> = ({
 	}, [web3, tokenContract, account, findToken, tokenTo]);
 
 	return (
-		<Form onSubmit={onSubmit} className={styles.form} initialValues={initialValues}>
-			<Alert
-				title={
-					<span
-						style={{
-							display: "inline-grid",
-							gridAutoFlow: "column",
-							alignItems: "center",
-							gridColumnGap: 12,
-						}}
-					>
-						You are buying <Currency token={tokenFrom} small />
-					</span>
-				}
-				type={ALERT_TYPE.default}
-			/>
+		<Form
+			onSubmit={onSubmit}
+			className={styles.form}
+			initialValues={initialValues}
+			validate={(values) => {
+				setTokenTo(values.tokenTo);
+
+				return { tokenTo: isFromToTokensDifferent<string>(tokenFrom, values.tokenTo) };
+			}}
+		>
+			{alert && (
+				<div className={styles.alert}>
+					<Alert title={alert.title} text={alert.text} type={alert.type} />
+				</div>
+			)}
+			{!alert && (
+				<Alert
+					title={
+						<span
+							style={{
+								display: "inline-grid",
+								gridAutoFlow: "column",
+								alignItems: "center",
+								gridColumnGap: 12,
+							}}
+						>
+							You are buying <Currency token={tokenFrom} small />
+						</span>
+					}
+					type={ALERT_TYPE.default}
+				/>
+			)}
 			<Label Component="div" label="Payment Currency">
 				<SelectTokenField name="tokenTo" placeholder="Select a token you want to pay" required />
 			</Label>

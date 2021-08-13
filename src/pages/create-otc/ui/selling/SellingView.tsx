@@ -48,14 +48,13 @@ export const SellingView: FC<MaybeWithClassName & SellingViewType> = ({
 	initialValues,
 }) => {
 	const [alert, setAlert] = useState<AlertType | undefined>();
-	const [fromToken, setFromToken] = useState<string>();
 	const [toToken, setToToken] = useState<string>();
 
 	useEffect(() => {
-		if (fromToken && toToken) {
-			setAlert(getAlert(fromToken, toToken));
+		if (tokenFrom && toToken) {
+			setAlert(getAlert(tokenFrom, toToken));
 		}
-	}, [fromToken, toToken]);
+	}, [tokenFrom, toToken]);
 
 	return (
 		<Form
@@ -63,10 +62,9 @@ export const SellingView: FC<MaybeWithClassName & SellingViewType> = ({
 			className={styles.form}
 			initialValues={initialValues}
 			validate={(values) => {
-				setFromToken(values.tokenFrom);
 				setToToken(values.tokenTo);
 
-				return { tokenTo: isFromToTokensDifferent<string>(values.tokenFrom, values.tokenTo) };
+				return { tokenTo: isFromToTokensDifferent<string>(tokenFrom, values.tokenTo) };
 			}}
 		>
 			{alert && (
