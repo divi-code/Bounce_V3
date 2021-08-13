@@ -197,7 +197,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		// 3. 如果作为创建者 池子 faild 了，也是不需要 calim 的
 		const isLockout = Number(pool.claimAt) !== 0;
 		// const isCreatorFaild =
-		setUserClaimed(!!userClaim || !isLockout);
+		setUserClaimed(!!userClaim || (!isLockout && !isCreator));
 	}, [account, auctionType, contract, poolID, provider, queryToken, web3]);
 
 	const onRequestData = updateData;
@@ -441,7 +441,6 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		return null;
 	}
 
-	// console.log('pool', pool)
 	return (
 		<>
 			<View
@@ -477,7 +476,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 							(pool.status !== POOL_STATUS.CLOSED && isCreator) ||
 							(pool.status === POOL_STATUS.FILLED && !userPlacedAmount0 && !isCreator) ||
 							(pool.status === POOL_STATUS.CLOSED && !userPlacedAmount0 && !isCreator) ||
-							pool.fill === 100
+							(pool.fill === 100 && isCreator)
 						}
 						disabled={
 							operation === OPERATION.loading ||
