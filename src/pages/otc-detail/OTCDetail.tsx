@@ -327,7 +327,7 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 	useEffect(() => {
 		if (pool) {
 			if (isCreator) {
-				setAlert(getAlertForOwner(pool.openAt, pool.amount, pool.total));
+				setAlert(getAlertForOwner(pool.openAt, pool.amount, pool.total, pool.status));
 			} else {
 				setAlert(
 					getAlertForUsers(userWhitelisted, pool.openAt, pool.amount, pool.total, !!userPlaced)
@@ -385,6 +385,7 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 							}
 							loading={operation === OPERATION.loading}
 							onSubmit={bidAction}
+							totalAmount={pool.total}
 						>
 							<>
 								{type === OTC_TYPE.buy && "Sell"}

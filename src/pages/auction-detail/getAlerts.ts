@@ -91,7 +91,6 @@ export const getAlertForUsers = (
 	const isPlaced = placed;
 	const isClaimed = claimed;
 	const isLockout = !(claimAt === 0);
-	console.log(claimAt, isLockout);
 
 	if (!whitelisted) {
 		return {

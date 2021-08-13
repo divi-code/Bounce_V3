@@ -16,7 +16,7 @@ import { isLessThan } from "@app/utils/bn";
 import { fromWei, numToWei, weiToNum } from "@app/utils/bn/wei";
 import { getMatchedPool, MatchedPoolType, POOL_STATUS } from "@app/utils/pool";
 import { getDeltaTime } from "@app/utils/time";
-import { isEqualZero } from "@app/utils/validation";
+// import { isEqualZero } from "@app/utils/validation";
 import { getBalance, getEthBalance, getTokenContract } from "@app/web3/api/bounce/erc";
 import {
 	approveAuctionPool,
@@ -26,6 +26,7 @@ import {
 	getCreatorClaimed,
 	getLimitAmount,
 	getMyAmount0,
+	// getMyAmount1,
 	getMyClaimed,
 	getPools,
 	getWhitelistedStatus,
@@ -112,7 +113,8 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 	const [pool, setPool] = useState<MatchedPoolType>();
 
 	const [userWhitelisted, setUserWhitelisted] = useState<boolean>(false);
-	const [userPlaced, setUserPlaced] = useState<number>(0);
+	const [userPlacedAmount0, setUserPlacedAmount0] = useState<number>(0);
+	const [userPlacedAmount1, setUserPlacedAmount1] = useState<number>(0);
 	const [userClaimed, setUserClaimed] = useState<boolean>(false);
 	const [creatorClaimed, setCreatorClaimed] = useState<boolean>(false);
 
@@ -149,6 +151,9 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		const to = await queryToken(pool.token1);
 		const limit = await getLimitAmount(contract, poolID);
 		const userBid = await getMyAmount0(contract, account, poolID);
+		// const userPay = await getMyAmount1(contract, account, poolID);
+		// console.log('userBid',userBid)  // 100000000000000000
+		// console.log('userPay',userPay)	// 0
 		const whitelistStatus = await getWhitelistedStatus(contract, poolID, account);
 		const creatorClaim = await getCreatorClaimed(contract, account, poolID);
 		const userClaim = await getMyClaimed(contract, account, poolID);
@@ -163,14 +168,15 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		);
 		setPool(matchedPool);
 		setTo(to);
-		setUserPlaced(parseFloat(weiToNum(userBid, from.decimals)));
+		setUserPlacedAmount0(parseFloat(weiToNum(userBid, from.decimals)));
+		// setUserPlacedAmount1(parseFloat(weiToNum(userPay, to.decimals)));
 		setCreatorClaimed(!!creatorClaim);
 		setUserWhitelisted(matchedPool.whitelist ? whitelistStatus : true);
 		setLimited(parseFloat(weiToNum(limit, to.decimals, 6)) > 0);
 		setCreator(pool.creator === account);
 
 		setLimit(
-			parseFloat(weiToNum(limit, to.decimals, 6)) - parseFloat(weiToNum(userBid, to.decimals, 6))
+			parseFloat(weiToNum(limit, to.decimals, 6)) - parseFloat(weiToNum(userBid, from.decimals, 6))
 		);
 
 		if (!isEth(to.address)) {
@@ -185,7 +191,13 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 			);
 		}
 
-		setUserClaimed(!!userClaim || Number(pool.claimAt) === 0);
+		// 用户是否 Claimed 情况判断
+		// 1. userClaim 没有了 claim 的余额
+		// 2. 如果是不锁仓的池子，默认看做自动 claim 了
+		// 3. 如果作为创建者 池子 faild 了，也是不需要 calim 的
+		const isLockout = Number(pool.claimAt) !== 0;
+		// const isCreatorFaild =
+		setUserClaimed(!!userClaim || !isLockout);
 	}, [account, auctionType, contract, poolID, provider, queryToken, web3]);
 
 	const onRequestData = updateData;
@@ -389,12 +401,12 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 	useEffect(() => {
 		if (isCreator) {
 			setTitle("My Pool");
-		} else if (userPlaced) {
+		} else if (userPlacedAmount0) {
 			setTitle("You Joined");
 		} else {
 			setTitle("Join The Pool");
 		}
-	}, [userPlaced, isCreator]);
+	}, [userPlacedAmount0, isCreator]);
 
 	//set alerts
 
@@ -414,14 +426,14 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 						pool.closeAt,
 						pool.amount,
 						pool.total,
-						!!userPlaced,
+						!!userPlacedAmount0,
 						userClaimed,
 						pool.claimAt
 					)
 				);
 			}
 		}
-	}, [creatorClaimed, isCreator, pool, userClaimed, userPlaced, userWhitelisted]);
+	}, [creatorClaimed, isCreator, pool, userClaimed, userPlacedAmount0, userWhitelisted]);
 
 	const { back: goBack } = useRouter();
 
@@ -429,6 +441,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		return null;
 	}
 
+	// console.log('pool', pool)
 	return (
 		<>
 			<View
@@ -453,7 +466,8 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 			>
 				{action === ACTION.claim && (
 					<Claim
-						userBid={userPlaced}
+						userBid={userPlacedAmount0}
+						userPay={userPlacedAmount1}
 						from={pool.from as any}
 						to={pool.to as any}
 						price={pool.price}
@@ -461,14 +475,15 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 						isNonAction={
 							userClaimed ||
 							(pool.status !== POOL_STATUS.CLOSED && isCreator) ||
-							(pool.status === POOL_STATUS.FILLED && !userPlaced && !isCreator) ||
-							(pool.status === POOL_STATUS.CLOSED && !userPlaced && !isCreator)
+							(pool.status === POOL_STATUS.FILLED && !userPlacedAmount0 && !isCreator) ||
+							(pool.status === POOL_STATUS.CLOSED && !userPlacedAmount0 && !isCreator) ||
+							pool.fill === 100
 						}
 						disabled={
 							operation === OPERATION.loading ||
 							getDeltaTime(pool.claimAt) > 0 ||
 							(isCreator && creatorClaimed) ||
-							(!isCreator && !userPlaced) ||
+							(!isCreator && !userPlacedAmount0) ||
 							(!isCreator && !userWhitelisted)
 						}
 						loading={operation === OPERATION.loading}

@@ -109,6 +109,7 @@ export const Auction = () => {
 	}, [page, chainId, type, status]);
 
 	const queryToken = useTokenSearchWithFallbackService();
+	console.log("poolList", poolList);
 
 	useEffect(() => {
 		if (poolList.length > 0) {
@@ -122,6 +123,13 @@ export const Auction = () => {
 						swappedAmount0,
 						openAt,
 					} = pool.poolDetail;
+					// 需要 claim 的情况
+					// 1. 有 participants 中的 currentTotal0 数据
+					// 2. 池子状态：close  , status === 1
+					const needClaim =
+						pool.participants?.length &&
+						pool.participants[0].currentTotal0 !== "0" &&
+						pool.status === 1;
 					const isOpen = getIsOpen(openAt * 1000);
 					const auctionType = ToAuctionType[pool.auctionType];
 
@@ -139,6 +147,7 @@ export const Auction = () => {
 						),
 						fill: getProgress(swappedAmount0, amountTotal0, token0.decimals),
 						href: `${AUCTION_PATH}/${auctionType}/${pool.poolID}`,
+						needClaim,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));
