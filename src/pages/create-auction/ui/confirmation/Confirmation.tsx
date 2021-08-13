@@ -124,7 +124,7 @@ export const ConfirmationImp: FC<CommonType> = ({ type }) => {
 			allocation={
 				allocation === ALLOCATION_TYPE.limited ? (
 					<>
-						Limit {limit} <Symbol token={tokenTo} />
+						{limit} <Symbol token={tokenTo} />
 					</>
 				) : (
 					"No Limits"
