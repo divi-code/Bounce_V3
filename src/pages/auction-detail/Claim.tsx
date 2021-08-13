@@ -21,6 +21,7 @@ type AuctionDetailClaimType = {
 	children?: ReactNode;
 	onClick?(): void;
 	userBid: number;
+	userPay: number;
 };
 
 export const Claim: FC<AuctionDetailClaimType> = ({
@@ -35,6 +36,7 @@ export const Claim: FC<AuctionDetailClaimType> = ({
 	loading,
 	isNonAction,
 	userBid,
+	userPay,
 }) => {
 	return (
 		<div className={styles.component}>

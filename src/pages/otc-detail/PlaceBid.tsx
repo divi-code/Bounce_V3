@@ -12,6 +12,8 @@ import { TextField } from "@app/modules/text-field";
 import { PrimaryButton } from "@app/ui/button";
 import { Spinner } from "@app/ui/spinner";
 
+import { isGreaterThanOrEqualTo } from "@app/utils/bn";
+
 import styles from "./PlaceBid.module.scss";
 
 type OtcDetailPlaceBidType = {
@@ -20,6 +22,7 @@ type OtcDetailPlaceBidType = {
 	currency: string;
 	balance: string;
 	onSubmit(values: Record<string, any>, form: FormApi): void;
+	totalAmount: number;
 };
 
 const FLOAT = "0.0001";
@@ -31,6 +34,7 @@ export const PlaceBid: FC<OtcDetailPlaceBidType & WithChildren> = ({
 	balance,
 	currency,
 	onSubmit,
+	totalAmount,
 }) => {
 	return (
 		<Form onSubmit={onSubmit} className={styles.component}>
@@ -53,7 +57,13 @@ export const PlaceBid: FC<OtcDetailPlaceBidType & WithChildren> = ({
 								{({ form }) => (
 									<button
 										className={styles.max}
-										onClick={() => form.change("bid", balance)}
+										onClick={() => {
+											if (isGreaterThanOrEqualTo(balance, totalAmount)) {
+												form.change("bid", totalAmount);
+											} else {
+												form.change("bid", balance);
+											}
+										}}
 										type="button"
 									>
 										MAX

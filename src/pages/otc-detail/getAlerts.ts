@@ -1,13 +1,18 @@
 import { ALERT_TYPE } from "@app/ui/alert";
 import { isGreaterThanOrEqualTo } from "@app/utils/bn";
+import { POOL_STATUS } from "@app/utils/pool";
 
-export const getAlertForOwner = (open: number, amount: number, total: number) => {
+export const getAlertForOwner = (
+	open: number,
+	amount: number,
+	total: number,
+	poolStatus: POOL_STATUS
+) => {
 	const nowTime = new Date();
 	const openTime = new Date(+open);
-
 	const isFilled = amount && total && isGreaterThanOrEqualTo(amount, total);
-
 	const isOpen = nowTime > openTime;
+	const isClose = poolStatus === POOL_STATUS.CLOSED;
 
 	if (!isOpen) {
 		return {
@@ -15,6 +20,10 @@ export const getAlertForOwner = (open: number, amount: number, total: number) =>
 			text: "Please wait patiently until your auction is filled or closed.",
 			type: ALERT_TYPE.default,
 		};
+	}
+
+	if (isClose) {
+		return undefined;
 	}
 
 	if (isOpen && !isFilled) {
