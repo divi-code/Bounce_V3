@@ -83,7 +83,7 @@ export const SellingView: FC<MaybeWithClassName & SellingViewType> = ({
 								gridColumnGap: 12,
 							}}
 						>
-							You are selling <Currency token={tokenFrom} />
+							You are selling <Currency token={tokenFrom} small />
 						</span>
 					}
 					type={ALERT_TYPE.default}
