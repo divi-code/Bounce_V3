@@ -464,7 +464,7 @@ export const DatePicker: FC<DatePickerType & MaybeWithClassName> = ({
 									color="primary-black"
 									variant="contained"
 								>
-									Close
+									Set
 								</Button>
 							</div>
 						</div>

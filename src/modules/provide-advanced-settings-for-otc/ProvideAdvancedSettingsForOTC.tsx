@@ -46,7 +46,7 @@ export const ProvideAdvancedSettingsForOTC: FC<
 				<TextField type="text" name="poolName" required validate={isNotLongerThan(15)} />
 			</Label>
 			<div ref={setBlockRef}>
-				<Label Component="div" label="Start Time">
+				<Label Component="div" label="Start Time (Local Time)">
 					<DateField
 						placeholder="10.01.2021"
 						name="startPool"
