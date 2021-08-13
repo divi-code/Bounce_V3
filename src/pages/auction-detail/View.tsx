@@ -70,14 +70,7 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 		"Auction amount": total,
 		"Auction currency": <Currency token={to.address} small />,
 		"Price per unit, $": price,
-		"Allocation per Wallet":
-			limit > 0 ? (
-				<span>
-					{"Limit"} {allocationPerWallet}
-				</span>
-			) : (
-				"No Limit"
-			),
+		"Allocation per Wallet": limit > 0 ? <span>{allocationPerWallet}</span> : "No Limit",
 		// "Allocation per Wallet": limit > 0 ? `Limit ${limit} ` : "No",
 		"Delay Unlocking Token": claimAt ? convertDate(new Date(claimAt), "long") : "No",
 	};
