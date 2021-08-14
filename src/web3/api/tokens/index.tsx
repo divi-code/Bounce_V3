@@ -124,7 +124,7 @@ export const useTokenSearch = (coin?: IToken) => {
 	const tokens = useAllTokensSearch(passAll);
 	const address = coin?.address?.toLowerCase();
 
-	if (address && !tokens[address]) {
+	if (address) {
 		tokens[address] = {
 			...coin,
 			source: address,
