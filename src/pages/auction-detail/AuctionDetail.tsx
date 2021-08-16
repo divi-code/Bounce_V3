@@ -196,9 +196,8 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		// 2. 如果是不锁仓的池子，默认看做自动 claim 了
 		// 3. 如果作为创建者 池子 faild 了，也是不需要 calim 的
 		const isLockout = Number(pool.claimAt) !== 0;
-		// const isCreatorFaild =
 		setUserClaimed(!!userClaim || (!isLockout && !isCreator));
-	}, [account, auctionType, contract, poolID, provider, queryToken, web3]);
+	}, [account, auctionType, contract, poolID, provider, queryToken, web3, isCreator]);
 
 	const onRequestData = updateData;
 
@@ -441,7 +440,8 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 		return null;
 	}
 
-	// console.log('pool', pool)
+	console.log("pool", pool);
+
 	return (
 		<>
 			<View
@@ -464,7 +464,7 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 				alert={alert && <Alert title={alert.title} text={alert.text} type={alert.type} />}
 				onBack={() => goBack()}
 			>
-				{action === ACTION.claim && (
+				{action === ACTION.claim && pool && (
 					<Claim
 						userBid={userPlacedAmount0}
 						userPay={userPlacedAmount1}
@@ -475,9 +475,9 @@ export const AuctionDetail: FC<{ poolID: number; auctionType: POOL_TYPE }> = ({
 						isNonAction={
 							userClaimed ||
 							(pool.status !== POOL_STATUS.CLOSED && isCreator) ||
+							(pool.status === POOL_STATUS.CLOSED && isCreator && pool.fill === 100) ||
 							(pool.status === POOL_STATUS.FILLED && !userPlacedAmount0 && !isCreator) ||
-							(pool.status === POOL_STATUS.CLOSED && !userPlacedAmount0 && !isCreator) ||
-							(pool.fill === 100 && isCreator)
+							(pool.status === POOL_STATUS.CLOSED && !userPlacedAmount0 && !isCreator)
 						}
 						disabled={
 							operation === OPERATION.loading ||
