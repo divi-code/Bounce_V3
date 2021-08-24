@@ -34,6 +34,7 @@ const result: DisplayGovernanceInfoType[] = [
 		description: "We propose",
 		forAmount: 1000,
 		againstAmount: 10000000,
+		endTime: 1629805512,
 	},
 	{
 		id: 2,
@@ -46,6 +47,7 @@ const result: DisplayGovernanceInfoType[] = [
 			"We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. ",
 		forAmount: 1000,
 		againstAmount: 500000000,
+		endTime: 1629805512,
 	},
 	{
 		id: 3,
@@ -58,6 +60,7 @@ const result: DisplayGovernanceInfoType[] = [
 			"We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. ",
 		forAmount: 1000,
 		againstAmount: 500000000,
+		endTime: 1629805512,
 	},
 	{
 		id: 4,
@@ -70,6 +73,7 @@ const result: DisplayGovernanceInfoType[] = [
 			"We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. ",
 		forAmount: 1000,
 		againstAmount: 500000000,
+		endTime: 1629805512,
 	},
 	{
 		id: 5,
@@ -82,6 +86,7 @@ const result: DisplayGovernanceInfoType[] = [
 			"We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. ",
 		forAmount: 1000,
 		againstAmount: 500000000,
+		endTime: 1629805512,
 	},
 ];
 
@@ -108,6 +113,7 @@ export const GovernanceView: FC<GovernanceType & MaybeWithClassName> = ({
 												description={proposal.description}
 												forAmount={proposal.forAmount}
 												againstAmount={proposal.againstAmount}
+												endTime={proposal.endTime}
 											/>
 										</li>
 									))}

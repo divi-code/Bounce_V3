@@ -15,13 +15,9 @@ import styles from "./Card.module.scss";
 export type DisplayGovernanceInfoType = {
 	href?: string;
 	status: POOL_STATUS;
+	endTime: number;
 	id: number;
 	name: string;
-	// address: string;
-	// type: string;
-	// currency: string;
-	// token: string;
-	// price: number;
 	fill: number;
 	proposer: string;
 	description: string;
@@ -31,8 +27,9 @@ export type DisplayGovernanceInfoType = {
 
 export const Card: FC<DisplayGovernanceInfoType & MaybeWithClassName & { bordered?: boolean }> = ({
 	className,
-	status,
 	href,
+	status,
+	endTime,
 	id,
 	fill,
 	name,
