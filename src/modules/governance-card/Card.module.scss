@@ -1,0 +1,109 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+	display: grid;
+	grid-template-columns: auto auto;
+	justify-content: stretch;
+	grid-template-areas: "status id" "name name" "proposer proposer" "description description" "strVoteFor strVoteAgainst" "bar bar" "forAmount againstAmount";
+
+	padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3.5)
+		calc(var(--spacing-unit) * 5);
+
+	box-sizing: border-box;
+
+	border-radius: 0.375rem;
+	background-color: rgba(var(--primary-white), 1);
+}
+
+.bordered {
+	border: 1px solid rgba(var(--primary-black), 0.2);
+}
+
+.status {
+	grid-area: status;
+}
+
+.id {
+	grid-area: id;
+
+	text-align: right;
+}
+
+.title {
+	grid-area: name;
+
+	width: 100%;
+	margin: 0;
+	margin-top: calc(var(--spacing-unit) * 4);
+	// padding-bottom: calc(var(--spacing-unit) * 3.5);
+	padding-bottom: calc(var(--spacing-unit));
+
+	// border-bottom: 1px solid rgba(var(--primary-black), 0.1);
+
+	overflow: hidden;
+}
+
+.title span {
+	display: block;
+	width: 100%;
+
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	text-align: center;
+
+	overflow: hidden;
+}
+
+.proposer {
+	grid-area: proposer;
+
+	text-align: left;
+	padding-top: 0;
+	padding-bottom: calc(var(--spacing-unit) * 3.5);
+	border-bottom: 1px solid rgba(var(--primary-black), 0.1);
+}
+
+.description {
+	grid-area: description;
+
+	margin-top: calc(var(--spacing-unit) * 3);
+	margin-bottom: calc(var(--spacing-unit) * 3);
+
+	height: 5.6rem;
+	overflow: hidden;
+	display: -webkit-box /*盒子模型微弹性伸缩模型*/;
+	-webkit-box-orient: vertical /*伸缩盒子的子元素垂直排列*/;
+	-webkit-line-clamp: 4 /*文本显示4行*/;
+}
+
+.strVoteFor {
+	grid-area: strVoteFor;
+
+	text-align: left;
+}
+
+.strVoteAgainst {
+	grid-area: strVoteAgainst;
+
+	text-align: right;
+}
+
+.bar {
+	grid-area: bar;
+
+	margin-top: calc(var(--spacing-unit));
+	margin-bottom: calc(var(--spacing-unit));
+}
+
+.forAmount {
+	grid-area: forAmount;
+
+	text-align: left;
+}
+
+.againstAmount {
+	grid-area: againstAmount;
+
+	text-align: right;
+}
