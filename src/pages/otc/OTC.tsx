@@ -32,6 +32,17 @@ const EMPTY_ARRAY = [];
 
 type SearchFilters = any;
 
+const ToAuctionType = {
+	0: OTC_TYPE.sell,
+	1: OTC_TYPE.buy,
+};
+
+const ToAuctionStatus = {
+	0: POOL_STATUS.LIVE,
+	1: POOL_STATUS.CLOSED,
+	2: POOL_STATUS.FILLED,
+};
+
 const useURLControl = (
 	searchFilters: SearchFilters,
 	provider: any,
@@ -139,17 +150,17 @@ export const OTC = () => {
 			}
 		}
 
-		if (JSON.stringify(LAST_QUERY.condition) === JSON.stringify(values)) {
-			setSearchFilters(LAST_QUERY.searchFilters);
-			setPoolList(LAST_QUERY.poolList);
-			setPage(LAST_QUERY.page);
-			// setPoolInformation(LAST_QUERY.poolInformation);
-			setConvertedPoolInformation(LAST_QUERY.convertedPoolInformation);
+		// if (JSON.stringify(LAST_QUERY.condition) === JSON.stringify(values)) {
+		// 	setSearchFilters(LAST_QUERY.searchFilters);
+		// 	setPoolList(LAST_QUERY.poolList);
+		// 	setPage(LAST_QUERY.page);
+		// 	// setPoolInformation(LAST_QUERY.poolInformation);
+		// 	setConvertedPoolInformation(LAST_QUERY.convertedPoolInformation);
 
-			return;
-		}
+		// 	return;
+		// }
 
-		setSearchFilters(values);
+		setSearchFilters({ ...values });
 		setPage(0);
 	};
 
@@ -196,47 +207,34 @@ export const OTC = () => {
 		if (poolList.length > 0) {
 			Promise.all(
 				poolList.map(async (pool) => {
-					const from = await queryToken(pool.token0);
-					const to = await queryToken(pool.token1);
-
-					const total0 = pool.amountTotal0;
-					const total = pool.amountTotal1;
-					const amount = pool.swappedAmount0;
-
-					const toAuctionType = {
-						0: OTC_TYPE.sell,
-						1: OTC_TYPE.buy,
-					};
-
-					const auctionType = toAuctionType[pool.otcType];
-
-					const toAuctionStatus = {
-						0: POOL_STATUS.LIVE,
-						1: POOL_STATUS.CLOSED,
-						2: POOL_STATUS.FILLED,
-					};
-
-					const isOpen = getIsOpen(pool.openAt * 1000);
+					const { token0, token1, amountTotal0, amountTotal1, swappedAmount0, openAt } = pool;
+					const isOpen = getIsOpen(openAt * 1000);
+					const otcType = ToAuctionType[pool.otcType];
+					const tempStatus = isOpen ? ToAuctionStatus[pool.status] : POOL_STATUS.COMING;
 
 					return {
-						status: isOpen ? toAuctionStatus[pool.status] : POOL_STATUS.COMING,
+						status: pool.status === 1 ? ToAuctionStatus[pool.status] : tempStatus,
 						id: +pool.poolID,
-						name: `${pool.name} ${OTC_SHORT_NAME_MAPPING[auctionType]}`,
-						address: from.address,
-						type: OTC_SHORT_NAME_MAPPING[auctionType],
-						token: from.address,
-						total: parseFloat(fromWei(total, to.decimals).toString()),
-						currency: to.address,
-						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
-						fill: getProgress(amount, total0, from.decimals),
-						href: `${OTC_PATH}/${auctionType}/${pool.poolID}`,
+						name: `${pool.name} ${OTC_SHORT_NAME_MAPPING[otcType]}`,
+						address: token0.address,
+						type: OTC_SHORT_NAME_MAPPING[otcType],
+						token: token0.address,
+						from: token0,
+						to: token1,
+						total: parseFloat(fromWei(amountTotal1, token1.decimals).toFixed()),
+						currency: token1.address,
+						price: parseFloat(
+							getSwapRatio(amountTotal1, amountTotal0, token1.decimals, token0.decimals)
+						),
+						fill: getProgress(swappedAmount0, amountTotal0, token0.decimals),
+						href: `${OTC_PATH}/${otcType}/${pool.poolID}`,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));
 		} else {
 			setConvertedPoolInformation(EMPTY_ARRAY);
 		}
-	}, [poolList, provider, queryToken]);
+	}, [contract, poolList, provider, queryToken]);
 
 	const initialSearchState = useURLControl(searchFilters, provider, onSubmit);
 

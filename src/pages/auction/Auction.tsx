@@ -9,20 +9,32 @@ import {
 	POOL_TYPE,
 } from "@app/api/pool/const";
 
-import { PoolSearchEntity } from "@app/api/pool/types";
+import { IPoolSearchEntity } from "@app/api/pool/types";
 import { AUCTION_PATH } from "@app/const/const";
 import { DisplayPoolInfoType } from "@app/modules/auction-card";
 import { useConnectWalletControl } from "@app/modules/connect-wallet-modal";
 
 import { fromWei } from "@app/utils/bn/wei";
 import { getProgress, getSwapRatio, POOL_STATUS } from "@app/utils/pool";
-import { getDeltaTime, getIsOpen } from "@app/utils/time";
+import { getIsOpen } from "@app/utils/time";
 import { useTokenSearchWithFallbackService } from "@app/web3/api/tokens/use-fallback-tokens";
 import { useChainId, useWeb3Provider } from "@app/web3/hooks/use-web3";
 
 import { AuctionView } from "./AuctionView";
 
 const WINDOW_SIZE = 9;
+
+export const ToAuctionType = {
+	0: POOL_TYPE.all,
+	1: POOL_TYPE.fixed,
+};
+
+export const ToAuctionStatus = {
+	0: POOL_STATUS.LIVE,
+	1: POOL_STATUS.CLOSED,
+	2: POOL_STATUS.FILLED,
+	3: POOL_STATUS.CLOSED,
+};
 
 const tryParseJSON = (tryThis: string, orThis: any): any => {
 	try {
@@ -118,7 +130,7 @@ export const Auction = () => {
 	const chainId = useChainId();
 	const walletControl = useConnectWalletControl();
 
-	const [poolList, setPoolList] = useState<PoolSearchEntity[]>([]);
+	const [poolList, setPoolList] = useState<IPoolSearchEntity[]>([]);
 	const [searchFilters, setSearchFilters] = useState<SearchFilters>({});
 	const [page, setPage] = useState(0);
 	const [totalCount, setTotalCount] = useState(0);
@@ -143,17 +155,17 @@ export const Auction = () => {
 			}
 		}
 
-		if (JSON.stringify(LAST_QUERY.condition) === JSON.stringify(values)) {
-			setSearchFilters(LAST_QUERY.searchFilters);
-			setPoolList(LAST_QUERY.poolList);
-			setPage(LAST_QUERY.page);
-			// setPoolInformation(LAST_QUERY.poolInformation);
-			setConvertedPoolInformation(LAST_QUERY.convertedPoolInformation);
+		// if (JSON.stringify(LAST_QUERY.condition) === JSON.stringify(values)) {
+		// 	setSearchFilters(LAST_QUERY.searchFilters);
+		// 	setPoolList(LAST_QUERY.poolList);
+		// 	setPage(LAST_QUERY.page);
+		// 	// setPoolInformation(LAST_QUERY.poolInformation);
+		// 	setConvertedPoolInformation(LAST_QUERY.convertedPoolInformation);
 
-			return;
-		}
+		// 	return;
+		// }
 
-		setSearchFilters(values);
+		setSearchFilters({ ...values });
 		setPage(0);
 	};
 
@@ -193,40 +205,30 @@ export const Auction = () => {
 		if (poolList.length > 0) {
 			Promise.all(
 				poolList.map(async (pool) => {
-					const from = await queryToken(pool.token0);
-					const to = await queryToken(pool.token1);
-
-					const total0 = pool.amountTotal0;
-					const total = pool.amountTotal1;
-					const amount = pool.swappedAmount0;
-
-					const toAuctionType = {
-						0: POOL_TYPE.all,
-						1: POOL_TYPE.fixed,
-					};
-
-					const auctionType = toAuctionType[pool.auctionType];
-
-					const toAuctionStatus = {
-						0: POOL_STATUS.LIVE,
-						1: POOL_STATUS.CLOSED,
-						2: POOL_STATUS.FILLED,
-						3: POOL_STATUS.CLOSED,
-					};
-
-					const isOpen = getIsOpen(pool.openAt * 1000);
+					const {
+						token0,
+						token1,
+						amountTotal0,
+						amountTotal1,
+						swappedAmount0,
+						openAt,
+					} = pool.poolDetail;
+					const isOpen = getIsOpen(openAt * 1000);
+					const auctionType = ToAuctionType[pool.auctionType];
 
 					return {
-						status: isOpen ? toAuctionStatus[pool.status] : POOL_STATUS.COMING,
+						status: isOpen ? ToAuctionStatus[pool.status] : POOL_STATUS.COMING,
 						id: +pool.poolID,
 						name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
-						address: from.address,
+						address: token0.address,
 						type: POOL_SHORT_NAME_MAPPING[auctionType],
-						token: from.address,
-						total: parseFloat(fromWei(total, to.decimals).toFixed()),
-						currency: to.address,
-						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
-						fill: getProgress(amount, total0, from.decimals),
+						from: token0,
+						to: token1,
+						total: parseFloat(fromWei(amountTotal1, token1.decimals).toFixed()),
+						price: parseFloat(
+							getSwapRatio(amountTotal1, amountTotal0, token1.decimals, token0.decimals)
+						),
+						fill: getProgress(swappedAmount0, amountTotal0, token0.decimals),
 						href: `${AUCTION_PATH}/${auctionType}/${pool.poolID}`,
 					};
 				})

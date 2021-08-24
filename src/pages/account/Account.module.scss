@@ -133,7 +133,7 @@
   transition-duration: 250ms;
 
   &:hover,
-  #{mixin.$when-focus-rings-enabled} &:focus {
+  &:focus {
     opacity: 1;
   }
 }
@@ -305,4 +305,8 @@
 
 .pagination {
   margin-top: auto;
+}
+
+.cellAmount {
+  color: rgba(var(--primary-black), 0.4);
 }

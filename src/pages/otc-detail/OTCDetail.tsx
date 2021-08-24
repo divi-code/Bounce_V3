@@ -10,8 +10,8 @@ import { Timer } from "@app/modules/timer";
 
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
 import { Caption } from "@app/ui/typography";
-import { isGreaterThan, isLessThan } from "@app/utils/bn";
-import { fromWei, numToWei } from "@app/utils/bn/wei";
+import { isLessThan } from "@app/utils/bn";
+import { fromWei, numToWei, weiToNum } from "@app/utils/bn/wei";
 import { getMatchedOTCPool, MatchedOTCType, POOL_STATUS } from "@app/utils/otc";
 import { getBalance, getEthBalance, getTokenContract } from "@app/web3/api/bounce/erc";
 import {
@@ -107,7 +107,7 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 	const [type, setType] = useState<OTC_TYPE>();
 
 	const [userWhitelisted, setUserWhitelisted] = useState<boolean>(false);
-	const [userPlaced, setUserPlaced] = useState<boolean>(false);
+	const [userPlaced, setUserPlaced] = useState<number>(0);
 
 	const [isCreator, setCreator] = useState<boolean>(false);
 	const [balance, setBalance] = useState<string | undefined>("");
@@ -141,7 +141,8 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 		setCreator(pool.creator === account);
 		setUserWhitelisted(matchedPool.whitelist ? whitelistStatus : true);
 
-		setUserPlaced(isGreaterThan(userBid, 0));
+		// setUserPlaced(isGreaterThan(userBid, 0));
+		setUserPlaced(parseFloat(weiToNum(userBid, from.decimals)));
 
 		if (!isEth(to.address)) {
 			const tokenContract = getTokenContract(provider, to.address);
@@ -326,10 +327,10 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 	useEffect(() => {
 		if (pool) {
 			if (isCreator) {
-				setAlert(getAlertForOwner(pool.openAt, pool.amount, pool.total));
+				setAlert(getAlertForOwner(pool.openAt, pool.amount, pool.total, pool.status));
 			} else {
 				setAlert(
-					getAlertForUsers(userWhitelisted, pool.openAt, pool.amount, pool.total, userPlaced)
+					getAlertForUsers(userWhitelisted, pool.openAt, pool.amount, pool.total, !!userPlaced)
 				);
 			}
 		}
@@ -344,8 +345,10 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 					name={pool.name}
 					address={pool.address}
 					type={OTC_SHORT_NAME_MAPPING[type]}
-					currency={pool.currency}
-					token={pool.token}
+					from={pool.from}
+					to={pool.to}
+					// currency={pool.currency}
+					// token={pool.token}
 					price={pool.price}
 					fill={pool.fill}
 					actionTitle={title}
@@ -358,11 +361,12 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 				>
 					{action === ACTION.claim && (
 						<Claim
-							token={pool.token}
+							userBid={userPlaced}
+							from={pool.from}
+							to={pool.to}
 							price={pool.price}
-							currency={pool.currency}
 							amount={pool.amount}
-							isNonAction={!isCreator}
+							isNonAction={!isCreator || pool.status === POOL_STATUS.CLOSED}
 							disabled={operation === OPERATION.loading}
 							loading={operation === OPERATION.loading}
 							onClick={isCreator ? deleteOTC : undefined}
@@ -372,7 +376,7 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 					)}
 					{action === ACTION.place && (
 						<PlaceBid
-							currency={pool.currency}
+							currency={pool.to.address}
 							balance={balance}
 							disabled={
 								operation === OPERATION.loading ||
@@ -381,6 +385,7 @@ export const OTCDetail: FC<{ poolID: number; otcType: OTC_TYPE }> = ({ poolID })
 							}
 							loading={operation === OPERATION.loading}
 							onSubmit={bidAction}
+							totalAmount={pool.total}
 						>
 							<>
 								{type === OTC_TYPE.buy && "Sell"}

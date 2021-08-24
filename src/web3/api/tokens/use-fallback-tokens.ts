@@ -1,7 +1,8 @@
 import { TokenInfo } from "@uniswap/token-lists";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
+import { IToken } from "@app/api/types";
 import { useLocalStorage, LocalStorageControl } from "@app/hooks/use-local-storage";
 import { queryERC20Token } from "@app/web3/api/eth/api";
 import { useTokenSearch } from "@app/web3/api/tokens/index";
@@ -23,7 +24,7 @@ export const useFallbackTokens = () => {
 
 	const find = useCallback(
 		(address: string) => {
-			return tokenList.find((token) => token.address === address.toLowerCase());
+			return tokenList.find((token) => token.address === address?.toLowerCase());
 		},
 		[tokenList]
 	);
@@ -54,8 +55,8 @@ export const useFallbackTokens = () => {
 	);
 };
 
-export const useTokenSearchWithFallbackService = () => {
-	const findToken = useTokenSearch();
+export const useTokenSearchWithFallbackService = (coin?: IToken) => {
+	const findToken = useTokenSearch(coin);
 	const fallbackTokens = useFallbackTokens();
 
 	return useCallback(
@@ -72,8 +73,8 @@ export const useTokenSearchWithFallbackService = () => {
 	);
 };
 
-export const useTokenSearchWithFallback = (token: string) => {
-	const find = useTokenSearchWithFallbackService();
+export const useTokenSearchWithFallback = (token: string, coin?: IToken) => {
+	const find = useTokenSearchWithFallbackService(coin);
 
 	return token ? find(token) : undefined;
 };

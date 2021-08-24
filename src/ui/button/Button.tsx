@@ -32,20 +32,20 @@ export type ButtonComponentType = {
 type ButtonProps<T extends EmptyObject> = ButtonComponentType &
 	(
 		| {
-			Component: "button" | undefined;
-			type: ButtonType;
-		}
+				Component: "button" | undefined;
+				type: ButtonType;
+		  }
 		| {
-			Component: HTMLLinkType;
-			activeClassName?: string;
-			href?: string;
-			role: "link";
-			target?: "_blank";
-			rel?: "noopener noreferrer";
-		}
+				Component: HTMLLinkType;
+				activeClassName?: string;
+				href?: string;
+				role: "link";
+				target?: "_blank";
+				rel?: "noopener noreferrer";
+		  }
 		| ({
-			Component: ComponentType<T>;
-		} & T)
+				Component: ComponentType<T>;
+		  } & T)
 	);
 
 export type CommonType = ButtonComponentType & MaybeWithClassName & WithChildren;
@@ -127,7 +127,10 @@ export const NavLink: FC<CommonType & { href: string; as?: string; exact?: boole
 
 	return (
 		<>
-			{href.startsWith("http") || href.startsWith("mailto") || href.startsWith("tel") || href.includes("download") ? (
+			{href.startsWith("http") ||
+			href.startsWith("mailto") ||
+			href.startsWith("tel") ||
+			href.includes("download") ? (
 				<ButtonComponent
 					Component="a"
 					href={href}

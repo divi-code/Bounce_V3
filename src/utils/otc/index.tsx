@@ -2,6 +2,7 @@ import { TokenInfo } from "@uniswap/token-lists";
 import { Contract as ContractType } from "web3-eth-contract";
 
 import { OTC_TYPE } from "@app/api/otc/const";
+import { IToken } from "@app/api/types";
 import { divide, isGreaterThanOrEqualTo, roundedDivide } from "@app/utils/bn";
 import { fromWei } from "@app/utils/bn/wei";
 import { getCreatorClaimed, getSwap1Amount, OtcPoolType } from "@app/web3/api/bounce/otc";
@@ -54,10 +55,12 @@ export type MatchedOTCType = {
 	name: string;
 	address: string;
 	type: string;
-	token: string;
+	from: IToken;
+	to: IToken;
+	// token: string;
 	total: number;
 	amount: number;
-	currency: string;
+	// currency: string;
 	price: number;
 	fill: number;
 	openAt: number;
@@ -91,10 +94,12 @@ export const getMatchedOTCPool = async (
 		name: `${pool.name} OTC`,
 		address: from.address,
 		type: MATCHED_TYPE[pool.poolType],
-		token: from.address,
+		from,
+		to,
+		// token: from.address,
 		total: parseFloat(fromWei(toTotal, to.decimals).toString()),
 		amount: toAmount ? parseFloat(fromWei(toAmount, to.decimals).toString()) : 0,
-		currency: to.address,
+		// currency: to.address,
 		price: parseFloat(getSwapRatio(toTotal, fromTotal, to.decimals, from.decimals)),
 		fill: getProgress(toAmount, toTotal, to.decimals),
 		openAt: openAt,

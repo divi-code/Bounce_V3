@@ -87,19 +87,8 @@ export const OTCView: FC<OTCType & MaybeWithClassName> = ({
 								<>
 									<ul className={styles.list}>
 										{result.map((auction) => (
-											<li key={auction.id}>
-												<Card
-													href={auction.href}
-													id={auction.id}
-													status={auction.status}
-													name={auction.name}
-													address={auction.address}
-													type={auction.type}
-													token={auction.token}
-													currency={auction.currency}
-													price={auction.price}
-													fill={auction.fill}
-												/>
+											<li key={auction.id} className="animate__animated animate__flipInY">
+												<Card {...auction} />
 											</li>
 										))}
 									</ul>

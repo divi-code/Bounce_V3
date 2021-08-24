@@ -1,3 +1,4 @@
+import classnames from "classnames";
 import { FC, ReactNode } from "react";
 
 import { useConvertDate } from "@app/hooks/use-convert-data";
@@ -36,11 +37,10 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 	name,
 	alert,
 	children,
-	address,
-	token,
+	from,
+	to,
 	type,
 	amount,
-	currency,
 	price,
 	total,
 	status,
@@ -56,16 +56,22 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 	const convertDate = useConvertDate();
 
 	const TOKEN_INFORMATION = {
-		"Contact address": <CopyAddress className={styles.copy} address={address} />,
-		"Token symbol": <Currency token={token} small />,
+		"Contact address": <CopyAddress className={styles.copy} address={from.address} />,
+		"Token symbol": <Currency token={from.address} small />,
 	};
+	const allocationPerWallet = (
+		<Caption Component="span" weight="regular">
+			{limit} <Symbol token={to.address} />
+		</Caption>
+	);
 
 	const AUCTION_INFORMATION = {
 		"Pool type": type,
 		"Auction amount": total,
-		"Auction currency": <Currency token={currency} small />,
+		"Auction currency": <Currency token={to.address} small />,
 		"Price per unit, $": price,
-		"Allocation per Wallet": limit > 0 ? limit : "No",
+		"Allocation per Wallet": limit > 0 ? <span>{allocationPerWallet}</span> : "No Limit",
+		// "Allocation per Wallet": limit > 0 ? `Limit ${limit} ` : "No",
 		"Delay Unlocking Token": claimAt ? convertDate(new Date(claimAt), "long") : "No",
 	};
 
@@ -115,12 +121,12 @@ export const View: FC<DisplayPoolInfoType & AuctionDetailViewType> = ({
 									Auction progress
 								</Caption>
 								<Caption Component="span" weight="regular">
-									{amount} <Symbol token={currency} /> / {total} <Symbol token={currency} />
+									{amount} <Symbol token={to.address} /> / {total} <Symbol token={to.address} />
 								</Caption>
 								<ProgressBar className={styles.bar} status={status} fillInPercentage={fill} />
 							</div>
 						</div>
-						<div className={styles.action}>
+						<div className={classnames("animate__animated animate__flipInY", styles.action)}>
 							<div className={styles.header}>
 								<Heading2 className={styles.actionTitle}>{actionTitle}</Heading2>
 								<Status status={status} captions={STATUS} />

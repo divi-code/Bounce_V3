@@ -123,7 +123,7 @@ export const SelectTokenView: FC<SelectTokenType & MaybeWithClassName> = ({
 				>
 					{active && (
 						<div className={styles.value}>
-							<Icon src={active.img} />
+							{active.img && <Icon src={active.img} />}
 							<span>{active.currency}</span>
 						</div>
 					)}
@@ -175,7 +175,7 @@ export const SelectToken: FC<
 	const { activeLists } = tokenListControl;
 
 	const tokens = useAllTokens(
-		useCallback((list) => activeLists.includes(list.name), [activeLists])
+		useCallback((list) => activeLists.includes(list?.name), [activeLists])
 	);
 
 	const options: ShortTokenInfo[] = useMemo(
@@ -192,14 +192,16 @@ export const SelectToken: FC<
 		[filter, tokens]
 	);
 
-	const convertedTokensList: ShortTokenListInfo[] = tokenList.map((value) => {
-		return {
-			key: value.name,
-			name: value.name,
-			img: value.logoURI,
-			count: value.tokens.length,
-		};
-	});
+	const convertedTokensList: ShortTokenListInfo[] = tokenList
+		.filter((item) => !!item)
+		.map((value) => {
+			return {
+				key: value.name,
+				name: value.name,
+				img: value.logoURI,
+				count: value.tokens.length,
+			};
+		});
 
 	return (
 		<SelectTokenView

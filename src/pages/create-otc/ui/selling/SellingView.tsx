@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { FormSpy } from "react-final-form";
 
@@ -18,17 +18,25 @@ import { Body1 } from "@app/ui/typography";
 import {
 	composeValidators,
 	isEqualZero,
+	isFromToTokensDifferent,
 	isNotGreaterThan,
 	isValidWei,
 } from "@app/utils/validation";
 
 import styles from "./Selling.module.scss";
+import { getAlert } from "./getAlerts";
 
 type SellingViewType = {
 	onSubmit(values): void;
 	tokenFrom: string;
 	balance: number;
 	initialValues: any;
+};
+
+type AlertType = {
+	title: string;
+	text: string;
+	type: ALERT_TYPE;
 };
 
 const FLOAT = "0.0001";
@@ -39,23 +47,49 @@ export const SellingView: FC<MaybeWithClassName & SellingViewType> = ({
 	balance,
 	initialValues,
 }) => {
+	const [alert, setAlert] = useState<AlertType | undefined>();
+	const [toToken, setToToken] = useState<string>();
+
+	useEffect(() => {
+		if (tokenFrom && toToken) {
+			setAlert(getAlert(tokenFrom, toToken));
+		}
+	}, [tokenFrom, toToken]);
+
 	return (
-		<Form onSubmit={onSubmit} className={styles.form} initialValues={initialValues}>
-			<Alert
-				title={
-					<span
-						style={{
-							display: "inline-grid",
-							gridAutoFlow: "column",
-							alignItems: "center",
-							gridColumnGap: 12,
-						}}
-					>
-						You are selling <Currency token={tokenFrom} />
-					</span>
-				}
-				type={ALERT_TYPE.default}
-			/>
+		<Form
+			onSubmit={onSubmit}
+			className={styles.form}
+			initialValues={initialValues}
+			validate={(values) => {
+				setToToken(values.tokenTo);
+
+				return { tokenTo: isFromToTokensDifferent<string>(tokenFrom, values.tokenTo) };
+			}}
+		>
+			{alert && (
+				<div className={styles.alert}>
+					<Alert title={alert.title} text={alert.text} type={alert.type} />
+				</div>
+			)}
+			{!alert && (
+				<Alert
+					title={
+						<span
+							style={{
+								display: "inline-grid",
+								gridAutoFlow: "column",
+								alignItems: "center",
+								gridColumnGap: 12,
+							}}
+						>
+							You are selling <Currency token={tokenFrom} small />
+						</span>
+					}
+					type={ALERT_TYPE.default}
+				/>
+			)}
+
 			<Label
 				Component="label"
 				label="Amount"
@@ -77,7 +111,7 @@ export const SellingView: FC<MaybeWithClassName & SellingViewType> = ({
 								{({ form }) => (
 									<button
 										className={styles.max}
-										onClick={() => form.change("amount", balance)}
+										onClick={() => form.change("amount", balance.toString())}
 										type="button"
 									>
 										MAX
@@ -128,7 +162,7 @@ export const SellingView: FC<MaybeWithClassName & SellingViewType> = ({
 					<PrimaryButton
 						className={styles.submit}
 						size="large"
-						iconAfter={<RightArrow2 width={18} height="auto" style={{ marginLeft: 12 }} />}
+						iconAfter={<RightArrow2 width={18} style={{ marginLeft: 12 }} />}
 						submit
 					>
 						{initialValues.amount && form.dirty ? "Save" : "Next Step"}

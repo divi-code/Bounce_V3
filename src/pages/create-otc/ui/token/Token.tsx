@@ -50,7 +50,7 @@ const TokenImp = () => {
 	};
 
 	const getLinkByNetwork = defineNetworkMapper({
-		[WEB3_NETWORKS.MAIN]: `https://mainnet.etherscan.io/address/${address}`,
+		[WEB3_NETWORKS.ETH]: `https://mainnet.etherscan.io/address/${address}`,
 		[WEB3_NETWORKS.RINKEBY]: `https://rinkeby.etherscan.io/address/${address}`,
 		[WEB3_NETWORKS.BINANCE]: `https://rinkeby.etherscan.io/address/${address}`,
 	});

@@ -75,7 +75,7 @@
   cursor: pointer;
 
   &:not(:disabled):not(.active):hover,
-  #{mixin.$when-focus-rings-enabled} &:not(:disabled):not(.active):focus {
+  &:not(:disabled):not(.active):focus {
     color: rgba(var(--ocean-blue), 1);
 
     border-color: rgba(var(--primary-black), 1);

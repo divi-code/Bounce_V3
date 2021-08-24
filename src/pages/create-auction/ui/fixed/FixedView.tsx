@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 
-import { FormSpy, Field } from "react-final-form";
+import { FormSpy } from "react-final-form";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { Currency } from "@app/modules/currency";
@@ -13,7 +13,7 @@ import { TextField } from "@app/modules/text-field";
 
 import { Alert, ALERT_TYPE } from "@app/ui/alert";
 import { PrimaryButton } from "@app/ui/button";
-import { FoldableSection } from "@app/ui/foldable-section";
+// import { FoldableSection } from "@app/ui/foldable-section";
 import { RightArrow2 } from "@app/ui/icons/arrow-right-2";
 import { RadioGroup } from "@app/ui/radio-group";
 import { Body1 } from "@app/ui/typography";
@@ -130,7 +130,7 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 									{({ form }) => (
 										<button
 											className={styles.max}
-											onClick={() => form.change("amount", balance)}
+											onClick={() => form.change("amount", balance.toString())}
 											type="button"
 										>
 											MAX
@@ -160,33 +160,39 @@ export const FixedView: FC<MaybeWithClassName & FixedViewType> = ({
 				</Label>
 
 				<FormSpy subscription={{ values: true }}>
-					{(props) =>
-						props.values.allocation === "limited" && (
-							<Label Component="label" label="Limit">
-								<TextField
-									type="text"
-									name="limit"
-									key={props.values.allocation}
-									placeholder="0.00"
-									step={FLOAT}
-									after={<Currency token={props.values.tokenTo} />}
-									required={props.values.allocation === "limited"}
-									validate={
-										props.values.allocation === "limited"
-											? composeValidators(isEqualZero, isValidWei)
-											: undefined
-									}
-								/>
-							</Label>
-						)
-					}
+					{(props) => {
+						if (props.values.allocation === "limited") {
+							return (
+								<Label Component="label" label="Limit">
+									<TextField
+										type="text"
+										name="limit"
+										key={props.values.allocation}
+										placeholder="0.00"
+										step={FLOAT}
+										after={<Currency token={props.values.tokenTo} />}
+										required={props.values.allocation === "limited"}
+										validate={
+											props.values.allocation === "limited"
+												? composeValidators(isEqualZero, isValidWei)
+												: undefined
+										}
+									/>
+								</Label>
+							);
+						} else {
+							props.values.limit = 0;
+
+							return <></>;
+						}
+					}}
 				</FormSpy>
 				<FormSpy>
 					{(form) => (
 						<PrimaryButton
 							className={styles.submit}
 							size="large"
-							iconAfter={<RightArrow2 width={18} height="auto" style={{ marginLeft: 12 }} />}
+							iconAfter={<RightArrow2 width={18} style={{ marginLeft: 12 }} />}
 							submit
 						>
 							{initialValues.amount && form.dirty ? "Save" : "Next Step"}

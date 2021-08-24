@@ -1,15 +1,16 @@
 import { useWeb3React } from "@web3-react/core";
 import classNames from "classnames";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { fetchOtcSearch } from "@app/api/my-otc/api";
-import { OtcSearchEntity } from "@app/api/my-otc/types";
 import { OTC_SHORT_NAME_MAPPING, OTC_TYPE } from "@app/api/otc/const";
+import { OtcSearchEntity } from "@app/api/otc/types";
 import { OTC_PATH } from "@app/const/const";
 import { DisplayOTCInfoType } from "@app/modules/otc-card";
 import { Card } from "@app/modules/otc-card";
 import { Pagination } from "@app/modules/pagination";
 
+import { Button } from "@app/ui/button";
 import { Select } from "@app/ui/select";
 import { fromWei } from "@app/utils/bn/wei";
 import { getProgress, getSwapRatio, POOL_STATUS } from "@app/utils/otc";
@@ -29,6 +30,10 @@ const STATUS_OPTIONS = [
 		key: "all",
 	},
 	{
+		label: "Coming soon",
+		key: "comingSoon",
+	},
+	{
 		label: "Live",
 		key: "open",
 	},
@@ -41,6 +46,15 @@ const STATUS_OPTIONS = [
 		key: "filled",
 	},
 ];
+const ToAuctionType = {
+	0: OTC_TYPE.sell,
+	1: OTC_TYPE.buy,
+};
+const ToAuctionStatus = {
+	0: POOL_STATUS.LIVE,
+	1: POOL_STATUS.CLOSED,
+	2: POOL_STATUS.FILLED,
+};
 
 export const Otc = () => {
 	const chainId = useChainId();
@@ -99,40 +113,27 @@ export const Otc = () => {
 		if (poolList.length > 0) {
 			Promise.all(
 				poolList.map(async (pool) => {
-					const from = await queryToken(pool.token0);
-					const to = await queryToken(pool.token1);
-
-					const total0 = pool.amountTotal0;
-					const total = pool.amountTotal1;
-					const amount = pool.swappedAmount0;
-
-					const toAuctionType = {
-						0: OTC_TYPE.sell,
-						1: OTC_TYPE.buy,
-					};
-
-					const auctionType = toAuctionType[pool.otcType];
-
-					const toAuctionStatus = {
-						0: POOL_STATUS.LIVE,
-						1: POOL_STATUS.CLOSED,
-						2: POOL_STATUS.FILLED,
-					};
-
-					const isOpen = getIsOpen(pool.openAt * 1000);
+					const { token0, token1, amountTotal0, amountTotal1, swappedAmount0, openAt } = pool;
+					const isOpen = getIsOpen(openAt * 1000);
+					const otcType = ToAuctionType[pool.otcType];
+					const tempStatus = isOpen ? ToAuctionStatus[pool.status] : POOL_STATUS.COMING;
 
 					return {
-						status: isOpen ? toAuctionStatus[pool.status] : POOL_STATUS.COMING,
+						status: pool.status === 1 ? ToAuctionStatus[pool.status] : tempStatus,
 						id: +pool.poolID,
-						name: `${pool.name} ${OTC_SHORT_NAME_MAPPING[auctionType]}`,
-						address: from.address,
-						type: OTC_SHORT_NAME_MAPPING[auctionType],
-						token: from.address,
-						total: parseFloat(fromWei(total, to.decimals).toString()),
-						currency: to.address,
-						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
-						fill: getProgress(amount, total0, from.decimals),
-						href: `${OTC_PATH}/${auctionType}/${pool.poolID}`,
+						name: `${pool.name} ${OTC_SHORT_NAME_MAPPING[otcType]}`,
+						address: token0.address,
+						type: OTC_SHORT_NAME_MAPPING[otcType],
+						token: token0.address,
+						from: token0,
+						to: token1,
+						total: parseFloat(fromWei(amountTotal1, token1.decimals).toFixed()),
+						currency: token1.address,
+						price: parseFloat(
+							getSwapRatio(amountTotal1, amountTotal0, token1.decimals, token0.decimals)
+						),
+						fill: getProgress(swappedAmount0, amountTotal0, token0.decimals),
+						href: `${OTC_PATH}/${otcType}/${pool.poolID}`,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));
@@ -146,13 +147,20 @@ export const Otc = () => {
 	return (
 		<div>
 			<div className={styles.filters}>
-				<label className={styles.label}>
-					<input type="checkbox" onChange={() => setCheckbox(!checkbox)} checked={checkbox} />
-					<span className={classNames(styles.toggle, checkbox && styles.checked)}>Created</span>
-					<span className={classNames(styles.toggle, !checkbox && styles.checked)}>
+				<div className={styles.label}>
+					<Button
+						onClick={() => setCheckbox(true)}
+						className={classNames(styles.toggle, checkbox && styles.checked)}
+					>
+						Created
+					</Button>
+					<Button
+						onClick={() => setCheckbox(false)}
+						className={classNames(styles.toggle, !checkbox && styles.checked)}
+					>
 						Participated
-					</span>
-				</label>
+					</Button>
+				</div>
 				<Select
 					className={styles.select}
 					options={STATUS_OPTIONS}
@@ -166,20 +174,8 @@ export const Otc = () => {
 				<div>
 					<ul className={styles.cardList}>
 						{convertedPoolInformation.map((auction) => (
-							<li key={auction.id}>
-								<Card
-									href={auction.href}
-									id={auction.id}
-									status={auction.status}
-									name={auction.name}
-									address={auction.address}
-									type={auction.type}
-									token={auction.token}
-									currency={auction.currency}
-									price={auction.price}
-									fill={auction.fill}
-									bordered
-								/>
+							<li key={auction.id} className="animate__animated animate__flipInY">
+								<Card {...auction} bordered />
 							</li>
 						))}
 					</ul>

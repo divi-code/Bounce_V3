@@ -43,7 +43,7 @@ export const Account: FC<{ type: "otc" | "auction" | "activity" } & MaybeWithCla
 						</div>
 					</div>
 					{/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
-					<Body1 Component="div" className={styles.alert}>
+					{/* <Body1 Component="div" className={styles.alert}>
 						🔥 <span className={styles.alertBold}>Bounce app new version is live.</span>
 						<span className={styles.alertText}>
 							If you want to use previous version{" "}
@@ -51,7 +51,7 @@ export const Account: FC<{ type: "otc" | "auction" | "activity" } & MaybeWithCla
 								click here.
 							</a>
 						</span>
-					</Body1>
+					</Body1> */}
 					<div className={styles.tabs}>
 						<NavLink
 							className={styles.tab}

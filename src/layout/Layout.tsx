@@ -1,11 +1,15 @@
 import classNames from "classnames";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { createContext, FC, memo, ReactNode } from "react";
+import React, { createContext, FC, memo, ReactNode } from "react";
+
+import { CSSProperties } from "react";
 
 import { ApplicationWrappers } from "@app/layout/ApplicationWrappers";
 import { ConnectWalletProvider } from "@app/modules/connect-wallet-modal/ConnectWalletProvider";
 import { Header } from "@app/modules/header";
+
+import { Vector } from "@app/ui/icons/vector";
 
 import { Web3ProviderRoot } from "../web3/provider/Web3Provider";
 
@@ -74,6 +78,14 @@ export const Layout: FC<LayoutType> = ({
 						Sorry, this event is unavailable on mobile. Please visit our desktop website to
 						participate.
 					</div>
+					<a
+						className={classNames(styles.vector)}
+						href="https://forms.gle/Bv6yr9ysWogjnuQQ9"
+						target="__blank"
+						title="forms"
+					>
+						<Vector />
+					</a>
 				</main>
 				<footer />
 			</div>

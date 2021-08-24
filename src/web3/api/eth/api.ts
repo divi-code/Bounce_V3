@@ -20,7 +20,7 @@ export const queryERC20Token = async (
 		throw new Error("empty address given");
 	}
 
-	const address = dirtyAddress.toLowerCase();
+	const address = dirtyAddress?.toLowerCase();
 
 	if (isEqualTo(address, 0)) {
 		if (chainID === WEB3_NETWORKS.BINANCE) {

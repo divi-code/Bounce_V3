@@ -54,7 +54,7 @@ const FixedImp = () => {
 			swapRatio: parseFloat(values.swapRatio),
 			amount: parseFloat(values.amount),
 			allocation: values.allocation,
-			limit: parseFloat(values.limit),
+			limit: values.allocation === "limited" ? parseFloat(values.limit) : 0,
 			fixedFormValues: values,
 		});
 

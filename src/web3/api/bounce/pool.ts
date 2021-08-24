@@ -1,5 +1,6 @@
 import { AbstractProvider } from "web3-core";
 
+import { IToken } from "@app/api/types";
 import { getContract } from "@app/web3/contracts/helpers";
 import { WEB3_NETWORKS } from "@app/web3/networks/const";
 import { ADDRESS_MAPPING, getChainAddressMapping } from "@app/web3/networks/mapping";
@@ -122,13 +123,16 @@ export const createAuctionPool = (
 	contract: ContractType,
 	account: string,
 	data: AuctionPoolType,
-	whiteList: string[] | undefined
+	whiteList: string[] | undefined,
+	isPayable: boolean
 ) => {
 	const action = contract.methods.create(data, whiteList !== undefined ? whiteList : []);
 
 	action.estimateGas();
 
-	return action.send({ from: account });
+	const sendParams = isPayable ? { from: account, value: data.amountTotal0 } : { from: account };
+
+	return action.send(sendParams);
 };
 
 export const swapContracts = (

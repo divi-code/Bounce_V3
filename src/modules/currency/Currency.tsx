@@ -1,73 +1,83 @@
 import classNames from "classnames";
-import { CSSProperties, FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 
+import { IToken } from "@app/api/types";
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { Body1, Caption } from "@app/ui/typography";
 
-import { uriToHttp } from "@app/web3/api/tokens/ens/helpers";
-
 import { useTokenSearchWithFallback } from "@app/web3/api/tokens/use-fallback-tokens";
 
+import { Icon } from "../icon";
+
 import styles from "./Currency.module.scss";
-import EMPTY from "./assets/empty.svg";
+import GeckoCoin from "./assets/gecko-coin.svg";
+import UnknowCoin from "./assets/unknow-coin.svg";
 
-type CurrencyType = {
-	symbol: string;
-	img?: string;
-};
+interface ICurrencyViewProps extends MaybeWithClassName {
+	symbol?: string;
+	img?: React.ReactNode;
+	cacheKey?: string;
+	small?: boolean;
+}
 
-export const CurrencyView: FC<{ small?: boolean } & CurrencyType & MaybeWithClassName> = ({
+export const CurrencyView: FC<ICurrencyViewProps> = ({
 	className,
 	symbol,
 	img,
 	small,
+	cacheKey,
 }) => {
-	const [logoIsOk, setLogoIsOk] = useState(true);
-
-	const realImage = img ? uriToHttp(img)[0] : undefined;
-
-	useEffect(() => {
-		if (realImage) {
-			const testImage = new Image();
-			testImage.onerror = () => setLogoIsOk(false);
-			testImage.src = realImage;
-		}
-	}, [realImage]);
-
 	return small ? (
-		<Caption
-			className={classNames(className, styles.component, styles.small)}
-			Component="span"
-			style={{ "--icon": img && logoIsOk ? `url(${img})` : `url(${EMPTY})` } as CSSProperties}
-		>
+		<Caption className={classNames(className, styles.component, styles.small)} Component="span">
+			<Icon src={img} cacheKey={cacheKey} />
 			{symbol}
 		</Caption>
 	) : (
-		<Body1
-			className={classNames(className, styles.component)}
-			Component="span"
-			style={{ "--icon": img && logoIsOk ? `url(${img})` : `url(${EMPTY})` } as CSSProperties}
-		>
+		<Body1 className={classNames(className, styles.component)} Component="span">
 			{symbol}
 		</Body1>
 	);
 };
 
-export const Currency: FC<MaybeWithClassName & { token: string; small?: boolean }> = ({
-	token,
-	small,
-}) => {
-	const tokenInfo = useTokenSearchWithFallback(token);
+interface ICurrencyProps extends ICurrencyViewProps {
+	coin?: IToken;
+	token?: string;
+}
 
-	if (!tokenInfo) {
+export const Currency: FC<ICurrencyProps> = ({ token, coin, small }) => {
+	const detail = useTokenSearchWithFallback(coin?.address || token, coin) as any;
+	const logoURI = detail?.logoURI || detail?.thumbURL || detail?.smallURL || undefined;
+
+	if (!detail) {
 		return null;
 	}
 
 	return (
 		<CurrencyView
-			symbol={tokenInfo.symbol}
-			img={tokenInfo ? tokenInfo.logoURI : undefined}
+			cacheKey={detail.address}
+			symbol={detail?.symbol?.toUpperCase()}
+			img={logoURI}
 			small={small}
 		/>
+	);
+};
+
+export interface IGeckoTokenProps extends MaybeWithClassName {
+	isGecko: boolean;
+	token: string;
+	cacheKey?: string;
+}
+
+export const GeckoToken: FC<IGeckoTokenProps> = ({
+	cacheKey,
+	isGecko = true,
+	token,
+	className,
+}) => {
+	return (
+		<Caption className={classNames(className, styles.component, styles.small)} Component="span">
+			<Icon cacheKey={cacheKey} src={isGecko ? GeckoCoin : UnknowCoin} />
+			{token}
+		</Caption>
 	);
 };

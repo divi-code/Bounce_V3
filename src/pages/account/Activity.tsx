@@ -1,5 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import classNames from "classnames";
+import moment from "moment";
 import { useEffect, useState } from "react";
 
 import { uid } from "react-uid";
@@ -44,7 +45,6 @@ export const Activity = () => {
 			});
 			setTotalCount(total);
 			setActivityList(foundPools);
-			console.log("Activities", foundPools);
 		})();
 	}, [page, chainId]);
 
@@ -54,15 +54,16 @@ export const Activity = () => {
 		if (activityList.length > 0) {
 			Promise.all(
 				activityList.map(async (pool) => {
-					const token = await queryToken(pool.token);
+					// const token = await queryToken(pool.token);
 
 					return {
 						event: getEvent(pool.event as EventType, pool.businessType, pool.otc_type),
 						category: getActivity(pool.businessType, pool.auctionType, pool.otc_type),
 						id: +pool.poolID,
-						token: token.address,
-						amount: fromWei(pool.amount, token.decimals).toString(),
-						date: "",
+						token: pool.token,
+						amount: fromWei(pool.amount, pool.token.decimals).toString(),
+						date: moment(pool.txTime * 1000).fromNow(),
+						transactionAmount: pool.transactionAmount,
 					};
 				})
 			).then((info) => setConvertedActivityInformation(info));
@@ -115,10 +116,11 @@ export const Activity = () => {
 									#{activity.id}
 								</Body1>
 								<Body1 className={styles.cell} Component="span">
-									<Currency token={activity.token} />
+									<Currency coin={activity.token} />
 								</Body1>
 								<Body1 className={styles.cell} Component="span">
-									{activity.amount}
+									<span>{activity.amount}</span>&nbsp;
+									<span className={styles.cellAmount}>(${activity.transactionAmount})</span>
 								</Body1>
 								<Body1 className={styles.cell} Component="span">
 									{activity.date}

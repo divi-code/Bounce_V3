@@ -1,20 +1,21 @@
 import { useWeb3React } from "@web3-react/core";
 import classNames from "classnames";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { uid } from "react-uid";
 
 import { fetchPoolSearch } from "@app/api/my-pool/api";
-import { PoolSearchEntity } from "@app/api/my-pool/types";
 import {
 	POOL_SHORT_NAME_MAPPING,
 	POOL_SPECIFIC_NAME_MAPPING,
 	POOL_TYPE,
 } from "@app/api/pool/const";
+import { IPoolSearchEntity } from "@app/api/pool/types";
 import { AUCTION_PATH } from "@app/const/const";
 import { Card, DisplayPoolInfoType } from "@app/modules/auction-card";
 import { Pagination } from "@app/modules/pagination";
 
+import { Button } from "@app/ui/button";
 import { Select } from "@app/ui/select";
 import { fromWei } from "@app/utils/bn/wei";
 import { getProgress, getSwapRatio, POOL_STATUS } from "@app/utils/pool";
@@ -33,6 +34,10 @@ const STATUS_OPTIONS = [
 		key: "all",
 	},
 	{
+		label: "Coming soon",
+		key: "comingSoon",
+	},
+	{
 		label: "Live",
 		key: "open",
 	},
@@ -44,11 +49,18 @@ const STATUS_OPTIONS = [
 		label: "Filled",
 		key: "filled",
 	},
-	{
-		label: "Claimed",
-		key: "claimed",
-	},
 ];
+
+const ToAuctionType = {
+	0: POOL_TYPE.all,
+	1: POOL_TYPE.fixed,
+};
+const ToAuctionStatus = {
+	0: POOL_STATUS.LIVE,
+	1: POOL_STATUS.CLOSED,
+	2: POOL_STATUS.FILLED,
+	3: POOL_STATUS.CLOSED,
+};
 
 export const Auction = () => {
 	const chainId = useChainId();
@@ -60,7 +72,7 @@ export const Auction = () => {
 
 	const numberOfPages = Math.ceil(totalCount / WINDOW_SIZE);
 
-	const [poolList, setPoolList] = useState<PoolSearchEntity[]>([]);
+	const [poolList, setPoolList] = useState<IPoolSearchEntity[]>([]);
 
 	const [convertedPoolInformation, setConvertedPoolInformation] = useState<DisplayPoolInfoType[]>(
 		[]
@@ -80,16 +92,16 @@ export const Auction = () => {
 			const {
 				data: foundPools,
 				meta: { total },
-			} = await fetchPoolSearch(
+			} = await fetchPoolSearch({
+				status,
 				chainId,
-				account,
-				type,
-				{
+				address: account,
+				poolType: type,
+				pagination: {
 					page,
 					perPage: WINDOW_SIZE,
 				},
-				status
-			);
+			});
 			setTotalCount(total);
 			setPoolList(foundPools);
 			console.log("Auctions", foundPools);
@@ -97,53 +109,45 @@ export const Auction = () => {
 	}, [page, chainId, type, status]);
 
 	const queryToken = useTokenSearchWithFallbackService();
+	console.log("poolList", poolList);
 
 	useEffect(() => {
 		if (poolList.length > 0) {
 			Promise.all(
 				poolList.map(async (pool) => {
-					const from = await queryToken(pool.token0);
-					const to = await queryToken(pool.token1);
-
-					const total0 = pool.amountTotal0;
-					const total = pool.amountTotal1;
-					const amount = pool.swappedAmount0;
-
-					const toAuctionType = {
-						0: POOL_TYPE.all,
-						1: POOL_TYPE.fixed,
-					};
-
-					const auctionType = toAuctionType[pool.auctionType];
-
-					const toAuctionStatus = {
-						0: POOL_STATUS.LIVE,
-						1: POOL_STATUS.CLOSED,
-						2: POOL_STATUS.FILLED,
-						3: POOL_STATUS.CLOSED,
-					};
-
-					const isOpen = getIsOpen(pool.openAt * 1000);
-
-					const isClosed = getIsClosed(pool.closeAt * 1000);
-
-					console.log("isClosed", isClosed);
-					console.log("status", pool.status);
-					console.log(isClosed && pool.status !== 3);
+					const {
+						token0,
+						token1,
+						amountTotal0,
+						amountTotal1,
+						swappedAmount0,
+						openAt,
+					} = pool.poolDetail;
+					// 需要 claim 的情况
+					// 1. 有 participants 中的 currentTotal0 数据
+					// 2. 池子状态：close  , status === 1
+					const needClaim =
+						pool.participants?.length &&
+						pool.participants[0].currentTotal0 !== "0" &&
+						pool.status === 1;
+					const isOpen = getIsOpen(openAt * 1000);
+					const auctionType = ToAuctionType[pool.auctionType];
 
 					return {
-						status: isOpen ? toAuctionStatus[pool.status] : POOL_STATUS.COMING,
+						status: isOpen ? ToAuctionStatus[pool.status] : POOL_STATUS.COMING,
 						id: +pool.poolID,
 						name: `${pool.name} ${POOL_SPECIFIC_NAME_MAPPING[auctionType]}`,
-						address: from.address,
+						address: token0.address,
 						type: POOL_SHORT_NAME_MAPPING[auctionType],
-						token: from.address,
-						total: parseFloat(fromWei(total, to.decimals).toString()),
-						currency: to.address,
-						price: parseFloat(getSwapRatio(total, total0, to.decimals, from.decimals)),
-						fill: getProgress(amount, total0, from.decimals),
+						from: token0,
+						to: token1,
+						total: parseFloat(fromWei(amountTotal1, token1.decimals).toFixed()),
+						price: parseFloat(
+							getSwapRatio(amountTotal1, amountTotal0, token1.decimals, token0.decimals)
+						),
+						fill: getProgress(swappedAmount0, amountTotal0, token0.decimals),
 						href: `${AUCTION_PATH}/${auctionType}/${pool.poolID}`,
-						needClaim: isClosed && pool.status !== 3,
+						needClaim,
 					};
 				})
 			).then((info) => setConvertedPoolInformation(info));
@@ -155,13 +159,20 @@ export const Auction = () => {
 	return (
 		<div>
 			<div className={styles.filters}>
-				<label className={styles.label}>
-					<input type="checkbox" onChange={() => setCheckbox(!checkbox)} checked={checkbox} />
-					<span className={classNames(styles.toggle, checkbox && styles.checked)}>Created</span>
-					<span className={classNames(styles.toggle, !checkbox && styles.checked)}>
+				<div className={styles.label}>
+					<Button
+						onClick={() => setCheckbox(true)}
+						className={classNames(styles.toggle, checkbox && styles.checked)}
+					>
+						Created
+					</Button>
+					<Button
+						onClick={() => setCheckbox(false)}
+						className={classNames(styles.toggle, !checkbox && styles.checked)}
+					>
 						Participated
-					</span>
-				</label>
+					</Button>
+				</div>
 				<Select
 					className={styles.select}
 					options={STATUS_OPTIONS}
@@ -175,22 +186,8 @@ export const Auction = () => {
 				<div>
 					<ul className={styles.cardList}>
 						{convertedPoolInformation.map((auction) => (
-							<li key={uid(auction)}>
-								<Card
-									href={auction.href}
-									id={auction.id}
-									status={auction.status}
-									name={auction.name}
-									address={auction.address}
-									type={auction.type}
-									token={auction.token}
-									total={auction.total}
-									currency={auction.currency}
-									price={auction.price}
-									fill={auction.fill}
-									needClaim={auction.needClaim}
-									bordered
-								/>
+							<li key={uid(auction)} className="animate__animated animate__flipInY">
+								<Card {...auction} bordered />
 							</li>
 						))}
 					</ul>

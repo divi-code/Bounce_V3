@@ -1,1 +1,1 @@
-export { Currency } from "./Currency";
+export { Currency, GeckoToken } from "./Currency";

@@ -79,7 +79,7 @@
   }
   
   &:hover,
-  #{mixin.$when-focus-rings-enabled} &:focus {
+  &:focus {
     color: rgba(var(--primary-black), 0.4);
   }
 }

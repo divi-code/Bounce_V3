@@ -1,35 +1,44 @@
 import { FC, ReactNode } from "react";
 
+import { IToken } from "@app/api/types";
 import { Currency } from "@app/modules/currency";
 
 import { PrimaryButton } from "@app/ui/button";
 import { DescriptionList } from "@app/ui/description-list";
 import { Spinner } from "@app/ui/spinner";
 
+import { divide, roundedMultiplied } from "@app/utils/bn";
+
 import styles from "./Claim.module.scss";
 
 type AuctionDetailClaimType = {
-	token: string;
+	// token: string;
 	amount: number;
 	price: number;
-	currency: string;
+	to: IToken;
+	from: IToken;
 	disabled: boolean;
 	isNonAction: boolean;
 	loading: boolean;
 	children?: ReactNode;
 	onClick?(): void;
+	userBid: number;
+	userPay: number;
 };
 
 export const Claim: FC<AuctionDetailClaimType> = ({
 	children,
-	token,
+	// token,
 	amount,
 	price,
-	currency,
+	from,
+	to,
 	onClick,
 	disabled,
 	loading,
 	isNonAction,
+	userBid,
+	userPay,
 }) => {
 	return (
 		<div className={styles.component}>
@@ -38,18 +47,25 @@ export const Claim: FC<AuctionDetailClaimType> = ({
 					"Bid swap ratio": (
 						<span style={{ display: "grid", alignItems: "center", gridAutoFlow: "column" }}>
 							1{"\u00a0"}
-							<Currency token={token} small />
+							<Currency token={from.address} small />
 							{"\u00a0"}={"\u00a0"}
 							{price}
 							{"\u00a0"}
-							<Currency token={currency} small />
+							<Currency token={to.address} small />
 						</span>
 					),
 					"Total bid amount": (
 						<span style={{ display: "grid", alignItems: "center", gridAutoFlow: "column" }}>
-							{amount}
+							{roundedMultiplied(userBid, price).toString()}
 							{"\u00a0"}
-							<Currency token={currency} small />
+							<Currency token={to.address} small />
+						</span>
+					),
+					"Successful bid amount": (
+						<span style={{ display: "grid", alignItems: "center", gridAutoFlow: "column" }}>
+							{userBid}
+							{"\u00a0"}
+							<Currency token={from.address} small />
 						</span>
 					),
 				}}

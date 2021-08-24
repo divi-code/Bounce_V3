@@ -7,7 +7,7 @@
   display: grid;
   grid-template-columns: auto auto;
   justify-content: stretch;
-  grid-template-areas: "status id" "name name" "token token" "auction auction" "bar bar";
+  grid-template-areas: "status id""name name""token token""auction auction""bar bar";
 
   padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3.5) calc(var(--spacing-unit) * 5);
 
@@ -17,6 +17,15 @@
   background-color: rgba(var(--primary-white), 1);
 
   overflow: hidden;
+  
+  transition: box-shadow .2s ease;
+  &:hover {
+    box-shadow: 0 0 20px rgba(var(--primary-black), 0.1);
+  }
+
+  &:active {
+    box-shadow: none;
+  }
 }
 
 .bordered {

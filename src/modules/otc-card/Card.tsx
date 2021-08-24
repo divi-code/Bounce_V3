@@ -1,9 +1,9 @@
 import classNames from "classnames";
-import { FC } from "react";
+import React, { FC } from "react";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
-import { Currency } from "@app/modules/currency";
+import { Currency, GeckoToken } from "@app/modules/currency";
 import { NavLink } from "@app/ui/button";
 
 import { DescriptionList } from "@app/ui/description-list";
@@ -17,6 +17,8 @@ import { POOL_STATUS } from "@app/utils/pool";
 
 import styles from "./Card.module.scss";
 
+import type { IToken } from "@app/api/types";
+
 export type DisplayOTCInfoType = {
 	href?: string;
 	status: POOL_STATUS;
@@ -24,10 +26,10 @@ export type DisplayOTCInfoType = {
 	name: string;
 	address: string;
 	type: string;
-	currency: string;
-	token: string;
 	price: number;
 	fill: number;
+	from: IToken;
+	to: IToken;
 };
 
 export const Card: FC<DisplayOTCInfoType & MaybeWithClassName & { bordered?: boolean }> = ({
@@ -38,8 +40,8 @@ export const Card: FC<DisplayOTCInfoType & MaybeWithClassName & { bordered?: boo
 	name,
 	address,
 	type,
-	token,
-	currency,
+	from,
+	to,
 	price,
 	fill,
 	bordered,
@@ -53,13 +55,19 @@ export const Card: FC<DisplayOTCInfoType & MaybeWithClassName & { bordered?: boo
 	};
 
 	const TOKEN_INFORMATION = {
-		"Contact address": walletConversion(address),
+		"Contact address": (
+			<GeckoToken
+				cacheKey={from.address}
+				isGecko={!!from.coinGeckoID}
+				token={walletConversion(address)}
+			/>
+		),
 		"OTC type": type,
-		"Token symbol": <Currency token={token} small />,
+		"Token symbol": <Currency coin={from} small />,
 	};
 
 	const OTC_INFORMATION = {
-		"Acceptable currency": <Currency token={currency} small />,
+		"Acceptable currency": <Currency coin={to} small />,
 		"Price per unit, $": price,
 	};
 

@@ -3,11 +3,12 @@ export const GITHUB_PATH = "https://app.bounce.finance/statistic";
 export const TELEGRAM_PATH = "";
 export const TWITTER_PATH = "";
 export const DOCS_PATH = "https://docs.bounce.finance";
-export const AUDIT_PATH = "/download/Certik%20Final%20Report%20for%20Bounce.pdf";
+export const AUDIT_PATH =
+	"https://github.com/bouncefinance/audit/blob/main/Smart%20contract%20security%20audit%20report-BounceNFT.pdf";
 export const COMMUNITY_PATH = "https://www.bounce.community";
 export const FANGIBLE_PATH = "https://fangible.com";
 export const CERTIFIED_PATH = "https://certified.bounce.finance";
-export const V2_PATH = "https://app.bounce.finance";
+export const V2_PATH = "https://v1.app.bounce.finance";
 
 export const AUCTION_PATH = "/auction";
 export const OTC_PATH = "/otc";

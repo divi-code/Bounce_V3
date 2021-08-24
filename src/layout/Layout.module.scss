@@ -19,6 +19,15 @@
   flex-grow: 1;
 }
 
+.vector {
+  position: fixed;
+  bottom: 3%;
+  right: 3%;
+  z-index: 99999;
+  width: 40px;
+  height: 40px;
+}
+
 .mobile {
   @include mixin.from(media.$lg) {
     display: none;

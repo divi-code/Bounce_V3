@@ -93,7 +93,7 @@
   transition-property: background-color, color;
 
   &:not(:disabled):hover,
-  #{mixin.$when-focus-rings-enabled} &:not(:disabled):focus {
+  &:not(:disabled):focus {
     color: rgba(var(--primary-white), 1);
 
     background-color: rgba(var(--primary-black), 1);
