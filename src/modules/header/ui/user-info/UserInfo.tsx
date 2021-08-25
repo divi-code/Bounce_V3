@@ -103,7 +103,7 @@ export const UserInfo = () => {
 	return (
 		<UserInfoView
 			address={account}
-			token={chainId === WEB3_NETWORKS.BINANCE ? "BNS" : "ETH"}
+			token={chainId === WEB3_NETWORKS.BINANCE ? "BNB" : "ETH"}
 			balance={parseFloat(fromWei(balance, 18).toFixed(4, 1)).toString()}
 			onLogout={disconnectWallet}
 		/>

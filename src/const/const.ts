@@ -12,7 +12,8 @@ export const V2_PATH = "https://v1.app.bounce.finance";
 
 export const AUCTION_PATH = "/auction";
 export const OTC_PATH = "/otc";
-export const FARM_PATH = "https://v1.app.bounce.finance/earning ";
+// export const FARM_PATH = "https://v1.app.bounce.finance/earning ";
+export const FARM_PATH = "/farm";
 export const GOVERNANCE_PATH = "https://v1.app.bounce.finance/governance";
 export const CREATE_PATH = "/create";
 
