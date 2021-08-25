@@ -154,6 +154,8 @@ export const Farm: FC<MaybeWithClassName> = ({ className }) => {
 					});
 			}
 		} catch (e) {
+			console.log("stake>>err", e);
+
 			if (e.code === 4001) {
 				setOperationStatus(OPERATION.cancel);
 				!processPopUp.defined && openProcess();
@@ -186,6 +188,8 @@ export const Farm: FC<MaybeWithClassName> = ({ className }) => {
 					!processPopUp.defined && openProcess();
 				});
 		} catch (err) {
+			console.log("UnStake>>err", err);
+
 			if (err.code === 4001) {
 				setOperationStatus(OPERATION.cancel);
 				!processPopUp.defined && openProcess();
