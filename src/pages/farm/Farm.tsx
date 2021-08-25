@@ -252,10 +252,10 @@ export const Farm: FC<MaybeWithClassName> = ({ className }) => {
 							</span>
 							<span className={styles.logoTit}>Auction</span>
 						</div>
-						<div className={styles.headRightContent}>
+						{/* <div className={styles.headRightContent}>
 							<span className={styles.label}>APY</span>
 							<span className={styles.value}>30%</span>
-						</div>
+						</div> */}
 					</div>
 					<div className={styles.rewardWrap}>
 						<div className={styles.rewardsLable}>
