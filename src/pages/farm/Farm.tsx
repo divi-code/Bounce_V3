@@ -8,7 +8,7 @@ import { StakePopUp } from "@app/modules/stake-pop-up";
 import { Button } from "@app/ui/button";
 import { GutterBox } from "@app/ui/gutter-box";
 import { ShortLogo } from "@app/ui/icons/short-logo";
-import { toWei, weiToNum } from "@app/utils/bn/wei";
+import { numToWei, weiToNum } from "@app/utils/bn/wei";
 import BounceERC20ABI from "@app/web3/api/bounce/BounceERC20.abi.json";
 import bounceStake from "@app/web3/api/bounce/bounceStake.abi.json";
 import { getAuctionAddress, getStakingAddress } from "@app/web3/api/bounce/contractAddress";
@@ -126,7 +126,7 @@ export const Farm: FC<MaybeWithClassName> = ({ className }) => {
 		setOperationStatus(OPERATION.approval);
 		openProcess();
 
-		const weiAmount = toWei(amount, 18);
+		const weiAmount = numToWei(amount, 18, 0);
 
 		try {
 			const result = await auctionContract.methods
@@ -167,7 +167,7 @@ export const Farm: FC<MaybeWithClassName> = ({ className }) => {
 	};
 
 	const handleUnStake = async (amount) => {
-		const weiAmount = toWei(amount, 18);
+		const weiAmount = numToWei(amount, 18, 0);
 		setOperationStatus(OPERATION.confirm);
 		openProcess();
 
