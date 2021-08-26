@@ -1,3 +1,4 @@
+import { Button as A_Button } from "antd";
 import classNames from "classnames";
 import { FC } from "react";
 
@@ -53,6 +54,7 @@ export const AuctionView: FC<AuctionType & MaybeWithClassName> = ({
 	return (
 		<>
 			<div className={classNames(className, styles.component)}>
+				<A_Button>132461</A_Button>
 				<Search
 					className={classNames(styles.search, result === undefined && styles.fullscreen)}
 					title="Find Auction"

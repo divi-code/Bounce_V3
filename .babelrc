@@ -1,15 +1,15 @@
 {
-  "presets": [
-    [
-      "next/babel",
-      {
-        "preset-env": {
-          "targets": {
-            "esmodules": true
-          }
-        }
-      }
-    ]
-  ],
-  "plugins": []
+	"presets": [
+		[
+			"next/babel",
+			{
+				"preset-env": {
+					"targets": {
+						"esmodules": true
+					}
+				}
+			}
+		]
+	],
+	"plugins": [["import", { "libraryName": "antd", "style": true }]]
 }
