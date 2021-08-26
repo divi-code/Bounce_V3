@@ -8,9 +8,10 @@ import { Copy, Copied } from "@app/ui/icons/copy";
 
 import styles from "./CopyAddress.module.scss";
 
-export const CopyAddress: FC<{ address: string } & MaybeWithClassName> = ({
+export const CopyAddress: FC<{ address: string; labelAddress?: string } & MaybeWithClassName> = ({
 	className,
 	address,
+	labelAddress,
 }) => {
 	const [isCopy, setCopy] = useState<boolean>(false);
 
@@ -22,7 +23,7 @@ export const CopyAddress: FC<{ address: string } & MaybeWithClassName> = ({
 
 	return (
 		<span className={classNames(className, styles.component)}>
-			{address}
+			{labelAddress || address}
 			<CopyToClipboard text={address} onCopy={() => setCopy(true)}>
 				{isCopy ? <Copied /> : <Copy className={styles.copy} />}
 			</CopyToClipboard>

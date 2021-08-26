@@ -1,0 +1,201 @@
+@use "../../helper/style/mixin";
+@use "../../helper/style/media";
+
+.component {
+	display: grid;
+
+	padding: calc(var(--spacing-unit) * 5) 0;
+	min-height: calc(100vh - var(--header-height) - 1px);
+
+	box-sizing: border-box;
+}
+
+.wrapper {
+	position: relative;
+	display: grid;
+	align-content: flex-start;
+
+	padding: calc(var(--spacing-unit) * 7.5) calc(var(--spacing-unit) * 7.5);
+
+	border-radius: 0.5rem;
+	background-color: rgba(var(--primary-white), 1);
+
+	@include mixin.from(media.$xl) {
+		padding: calc(var(--spacing-unit) * 7.5) calc(var(--spacing-unit) * 14.5);
+	}
+}
+
+.navigation {
+	position: absolute;
+	top: calc(var(--spacing-unit) * 5);
+	left: calc(var(--spacing-unit) * 6.5);
+	right: calc(var(--spacing-unit) * 6.5);
+
+	display: grid;
+	grid-auto-flow: column;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.titleTimer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	position: relative;
+	top: -1.25rem;
+
+	.title {
+		margin: calc(var(--spacing-unit) * 2.5) 0 0 0;
+
+		text-align: center;
+	}
+
+	.copy {
+		grid-area: address;
+
+		font-family: var(--primary-font);
+		font-weight: var(--regular);
+		font-size: var(--caption);
+		color: rgba(var(--primary-black), 0.5);
+
+		margin: auto;
+	}
+
+	.copy svg {
+		width: 20px;
+		color: rgba(var(--primary-black), 0.3);
+	}
+}
+
+.infoWrapper {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(31rem, 1fr));
+	column-gap: 2.5rem;
+
+	.description {
+		height: 11.25rem;
+		overflow: hidden;
+		display: -webkit-box /*盒子模型微弹性伸缩模型*/;
+		-webkit-box-orient: vertical /*伸缩盒子的子元素垂直排列*/;
+		-webkit-line-clamp: 8 /*文本显示8行*/;
+	}
+
+	.voteInfo {
+		display: grid;
+		grid-template-columns: auto auto;
+		justify-content: stretch;
+		grid-template-areas: "votesAmount votesAmount" "strVoteFor strVoteAgainst" "bar bar" "forAmount againstAmount";
+
+		padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3.5)
+			calc(var(--spacing-unit) * 5);
+
+		box-sizing: border-box;
+
+		border-radius: 0.5rem;
+		border: 1px solid rgba(var(--primary-black), 0.1);
+		background-color: rgba(var(--primary-white), 1);
+
+		.votesAmount {
+			grid-area: votesAmount;
+		}
+
+		.strVoteFor {
+			grid-area: strVoteFor;
+
+			text-align: left;
+		}
+
+		.strVoteAgainst {
+			grid-area: strVoteAgainst;
+
+			text-align: right;
+		}
+
+		.bar {
+			grid-area: bar;
+
+			margin-top: calc(var(--spacing-unit));
+			margin-bottom: calc(var(--spacing-unit));
+		}
+
+		.forAmount {
+			grid-area: forAmount;
+
+			text-align: left;
+		}
+
+		.againstAmount {
+			grid-area: againstAmount;
+
+			text-align: right;
+		}
+	}
+}
+
+.votePanel {
+	background: #f7f7f7;
+	border-radius: 0.5rem;
+	justify-items: center;
+
+	.strMakeDecision {
+	}
+
+	.description {
+		text-align: center;
+	}
+
+	.strSubmit {
+		color: rgba(var(--primary-white), 1);
+	}
+
+	.submitBtn {
+		max-width: 25rem;
+    width: max-content;
+		height: 3.75rem;
+		background-color: rgba(var(--primary-black), 1);
+		border-radius: 0.75rem;
+	}
+}
+
+.tabsWrapper {
+	width: 100%;
+	max-width: 45rem;
+	margin: 0 auto;
+	// border-bottom: 1px solid rgba(var(--primary-black), 0.1);
+
+	.tabs {
+		width: 100%;
+		float: right;
+		list-style-type: none;
+
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+
+		position: relative;
+
+		.tab {
+			width: 100%;
+			cursor: pointer;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			box-sizing: border-box;
+
+			border-bottom: 1px solid rgba(var(--primary-black), 0.1);
+
+			&:hover {
+				background-color: rgba(var(--primary-black), 0.1);
+			}
+
+			.price {
+				padding-bottom: 1.37rem;
+			}
+		}
+
+		.active {
+			border-bottom: 5px solid rgba(var(--primary-black), 1);
+		}
+	}
+}

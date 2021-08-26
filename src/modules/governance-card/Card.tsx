@@ -4,17 +4,17 @@ import { FC } from "react";
 import { MaybeWithClassName } from "@app/helper/react/types";
 import { NavLink } from "@app/ui/button";
 import { ProgressBar } from "@app/ui/governance-progress-bar";
-import { Status } from "@app/ui/status";
+import { Status } from "@app/ui/governance-status";
 import { Caption, Heading2, Body1 } from "@app/ui/typography";
 
-import { POOL_STATUS } from "@app/utils/pool";
+import { PROPOSAL_STATUS } from "@app/utils/governance";
 import { toThousands } from "@app/utils/toThousands";
 
 import styles from "./Card.module.scss";
 
 export type DisplayGovernanceInfoType = {
 	href?: string;
-	status: POOL_STATUS;
+	status: PROPOSAL_STATUS;
 	endTime: number;
 	id: number;
 	name: string;
@@ -39,12 +39,10 @@ export const Card: FC<DisplayGovernanceInfoType & MaybeWithClassName & { bordere
 	forAmount,
 	againstAmount,
 }) => {
-	const STATUS: Record<POOL_STATUS, string> = {
-		[POOL_STATUS.COMING]: "Coming soon",
-		[POOL_STATUS.LIVE]: "Live",
-		[POOL_STATUS.FILLED]: "Filled",
-		[POOL_STATUS.CLOSED]: "Closed",
-		[POOL_STATUS.ERROR]: "Error",
+	const STATUS: Record<PROPOSAL_STATUS, string> = {
+		[PROPOSAL_STATUS.LIVE]: "Live",
+		[PROPOSAL_STATUS.PASSED]: "Passed",
+		[PROPOSAL_STATUS.FAILED]: "Failed",
 	};
 
 	return (
@@ -52,7 +50,7 @@ export const Card: FC<DisplayGovernanceInfoType & MaybeWithClassName & { bordere
 			className={classNames(className, styles.component, bordered && styles.bordered)}
 			href={href}
 		>
-			<Status className={styles.status} status={POOL_STATUS.LIVE} captions={STATUS} />
+			<Status className={styles.status} status={PROPOSAL_STATUS.LIVE} captions={STATUS} />
 			<Caption Component="span" className={styles.id} lighten={50}>
 				#{id}
 			</Caption>

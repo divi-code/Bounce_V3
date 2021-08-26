@@ -3,12 +3,12 @@ import { CSSProperties, FC } from "react";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
 
-import { POOL_STATUS } from "@app/utils/pool";
+import { PROPOSAL_STATUS } from "@app/utils/governance";
 
 import styles from "./ProgressBar.module.scss";
 
 type ProgressBarType = {
-	status: POOL_STATUS;
+	status: PROPOSAL_STATUS;
 	fillInPercentage: number;
 };
 
@@ -17,12 +17,11 @@ export const ProgressBar: FC<ProgressBarType & MaybeWithClassName> = ({
 	status,
 	fillInPercentage,
 }) => {
-	const COLORS: Record<POOL_STATUS, any> = {
-		[POOL_STATUS.COMING]: "var(--primary-black)",
-		[POOL_STATUS.LIVE]: "var(--success)",
-		[POOL_STATUS.FILLED]: "var(--process)",
-		[POOL_STATUS.CLOSED]: "var(--error)",
-		[POOL_STATUS.ERROR]: "var(--error)",
+	const COLORS: Record<PROPOSAL_STATUS, any> = {
+		// [PROPOSAL_STATUS.COMING]: "var(--primary-black)",
+		[PROPOSAL_STATUS.PASSED]: "var(--success)",
+		[PROPOSAL_STATUS.LIVE]: "var(--process)",
+		[PROPOSAL_STATUS.FAILED]: "var(--error)",
 	};
 
 	return (
@@ -30,7 +29,7 @@ export const ProgressBar: FC<ProgressBarType & MaybeWithClassName> = ({
 			className={classNames(
 				className,
 				styles.component,
-				status === POOL_STATUS.COMING && styles.coming
+				status === PROPOSAL_STATUS.LIVE && styles.coming
 			)}
 			style={
 				{ "--color": COLORS[status], "--progress-bar": `${fillInPercentage}%` } as CSSProperties
