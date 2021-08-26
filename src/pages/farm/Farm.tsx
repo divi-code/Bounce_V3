@@ -38,6 +38,19 @@ export const Farm: FC<MaybeWithClassName> = ({ className }) => {
 	const provider = useWeb3Provider();
 	const auctionContract = getContract(provider, BounceERC20ABI.abi, getAuctionAddress(chainId));
 	const stakingContract = getContract(provider, bounceStake.abi, getStakingAddress(chainId));
+	const [disbleUnStake, setDisbleunStake] = useState(false);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const handleUnStakeTime = async () => {
+		const stakeEndTime = await stakingContract.methods.myStakeEndTime(account).call();
+		setDisbleunStake(Date.now() <= stakeEndTime * 1000);
+	};
+
+	useEffect(() => {
+		if (stakingContract && account) {
+			handleUnStakeTime();
+		}
+	}, [account, handleUnStakeTime, stakingContract]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const loadAuctionStaking = () => {
@@ -265,7 +278,7 @@ export const Farm: FC<MaybeWithClassName> = ({ className }) => {
 							</Button>
 						</div>
 						<div className={styles.rewardsValue}>
-							<span>{rewards && weiToNum(rewards, 18, 2)}</span>
+							<span>{rewards && weiToNum(rewards, 18, 6)}</span>
 							<span>Auction</span>
 						</div>
 						<div className={styles.buttons}>
@@ -282,6 +295,7 @@ export const Farm: FC<MaybeWithClassName> = ({ className }) => {
 								color="primary-black"
 								variant="contained"
 								onClick={() => handlePopUp("unStake")}
+								disabled={disbleUnStake}
 							>
 								Unstake
 							</Button>

@@ -164,7 +164,7 @@ export const ClaimBody: FC<IContent> = ({ onClose, onSubmit, amount, stakeAmount
 		<div className={styles.component}>
 			<div className={styles.claimTitle}>Your total staking rewards:</div>
 			<div className={styles.rewardsWrap}>
-				<span>{weiToNum(amount.toString(), 18, 2)}</span>
+				<span>{weiToNum(amount.toString(), 18, 6)}</span>
 				<span>Auction</span>
 			</div>
 			<PrimaryButton size="large" onClick={handleSubmit}>
