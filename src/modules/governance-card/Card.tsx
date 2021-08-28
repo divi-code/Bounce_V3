@@ -1,46 +1,59 @@
 import classNames from "classnames";
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 
 import { MaybeWithClassName } from "@app/helper/react/types";
+import { Timer } from "@app/modules/timer";
 import { NavLink } from "@app/ui/button";
 import { ProgressBar } from "@app/ui/governance-progress-bar";
-import { Status } from "@app/ui/governance-status";
+import { Status } from "@app/ui/proposal-status";
 import { Caption, Heading2, Body1 } from "@app/ui/typography";
 
-import { PROPOSAL_STATUS } from "@app/utils/governance";
+import { PROPOSAL_STATUS, IProposal } from "@app/utils/governance";
 import { toThousands } from "@app/utils/toThousands";
 
 import styles from "./Card.module.scss";
 
-export type DisplayGovernanceInfoType = {
+// export type DisplayGovernanceInfoType = {
+// 	href?: string;
+// 	status: PROPOSAL_STATUS;
+// 	endTime: number;
+// 	id: number;
+// 	name: string;
+// 	fill: number;
+// 	proposer: string;
+// 	description: string;
+// 	forAmount: number;
+// 	againstAmount: number;
+// };
+
+interface DisplayGovernanceInfoType extends IProposal {
 	href?: string;
-	status: PROPOSAL_STATUS;
-	endTime: number;
-	id: number;
-	name: string;
-	fill: number;
-	proposer: string;
-	description: string;
-	forAmount: number;
-	againstAmount: number;
-};
+}
 
 export const Card: FC<DisplayGovernanceInfoType & MaybeWithClassName & { bordered?: boolean }> = ({
 	className,
-	href,
+	bordered = false,
+	href = "www.baidu.com",
+	content,
+	yesCount,
+	noCount,
+	cancelCount,
+	creator,
+	index,
 	status,
-	endTime,
-	id,
-	fill,
-	name,
-	bordered,
-	proposer,
-	description,
-	forAmount,
-	againstAmount,
+	time,
+	title,
+	voteResult,
 }) => {
-	const STATUS: Record<PROPOSAL_STATUS, string> = {
-		[PROPOSAL_STATUS.LIVE]: "Live",
+	const STATUS: Record<PROPOSAL_STATUS, ReactNode> = {
+		[PROPOSAL_STATUS.LIVE]: (
+			<Timer
+				timer={Number(time) * 1000}
+				onZero={() => {
+					console.log("on Zero");
+				}}
+			/>
+		),
 		[PROPOSAL_STATUS.PASSED]: "Passed",
 		[PROPOSAL_STATUS.FAILED]: "Failed",
 	};
@@ -50,20 +63,20 @@ export const Card: FC<DisplayGovernanceInfoType & MaybeWithClassName & { bordere
 			className={classNames(className, styles.component, bordered && styles.bordered)}
 			href={href}
 		>
-			<Status className={styles.status} status={PROPOSAL_STATUS.LIVE} captions={STATUS} />
+			<Status className={styles.status} status={status} captions={STATUS} />
 			<Caption Component="span" className={styles.id} lighten={50}>
-				#{id}
+				#{index}
 			</Caption>
 
 			<Heading2 className={styles.title} Component="h3">
-				<span className={styles.name}>{name}</span>
+				<span className={styles.name}>{title}</span>
 			</Heading2>
 			<Caption Component="span" className={styles.proposer} lighten={50}>
-				{`Proposer: ${proposer.replace(/^(.{7}).*(.{5})$/, "$1...$2")}`}
+				{`Proposer: ${creator?.replace(/^(.{7}).*(.{5})$/, "$1...$2") || "--"}`}
 			</Caption>
 
 			<Body1 className={styles.description} lighten={50}>
-				{description}
+				{content?.summary || ""}
 			</Body1>
 
 			<Caption Component="span" className={styles.strVoteFor} lighten={50}>
@@ -73,13 +86,17 @@ export const Card: FC<DisplayGovernanceInfoType & MaybeWithClassName & { bordere
 				Votes Against:
 			</Caption>
 
-			<ProgressBar className={styles.bar} fillInPercentage={fill} status={status} />
+			<ProgressBar
+				className={styles.bar}
+				fillInPercentage={(Number(yesCount) / (Number(noCount) + Number(yesCount))) * 100}
+				status={status}
+			/>
 
 			<Caption Component="span" className={styles.forAmount} lighten={50}>
-				{`${toThousands(forAmount) || "--"} Auction`}
+				{`${toThousands(Number(yesCount) / 1e18) || "--"} Auction`}
 			</Caption>
 			<Caption Component="span" className={styles.againstAmount} lighten={50}>
-				{`${toThousands(againstAmount) || "--"} Auction`}
+				{`${toThousands(Number(noCount) / 1e18) || "--"} Auction`}
 			</Caption>
 		</NavLink>
 	);

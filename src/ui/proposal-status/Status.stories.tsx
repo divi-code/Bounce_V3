@@ -1,27 +1,25 @@
-import { POOL_STATUS } from "@app/utils/pool";
+import { PROPOSAL_STATUS } from "@app/utils/governance";
 
 import { Status } from "./Status";
 
-const STATUS: Record<POOL_STATUS, string> = {
-	[POOL_STATUS.COMING]: "Coming soon",
-	[POOL_STATUS.LIVE]: "Live",
-	[POOL_STATUS.FILLED]: "Filled",
-	[POOL_STATUS.CLOSED]: "Closed",
-	[POOL_STATUS.ERROR]: "Error",
+const STATUS: Record<PROPOSAL_STATUS, string> = {
+	[PROPOSAL_STATUS.LIVE]: "Live",
+	[PROPOSAL_STATUS.PASSED]: "Passed",
+	[PROPOSAL_STATUS.FAILED]: "Failed",
 };
 
 export const Default = () => {
 	return (
 		<div>
-			<Status status={POOL_STATUS.LIVE} captions={STATUS} />
+			<Status status={PROPOSAL_STATUS.LIVE} captions={STATUS} />
 		</div>
 	);
 };
 
-export const Filled = () => {
+export const Passed = () => {
 	return (
 		<div>
-			<Status status={POOL_STATUS.FILLED} captions={STATUS} />
+			<Status status={PROPOSAL_STATUS.PASSED} captions={STATUS} />
 		</div>
 	);
 };
@@ -29,7 +27,7 @@ export const Filled = () => {
 export const Closed = () => {
 	return (
 		<div>
-			<Status status={POOL_STATUS.CLOSED} captions={STATUS} />
+			<Status status={PROPOSAL_STATUS.FAILED} captions={STATUS} />
 		</div>
 	);
 };

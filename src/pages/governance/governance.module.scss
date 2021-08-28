@@ -6,12 +6,13 @@
 	flex-direction: column;
 
 	min-height: calc(100vh - var(--header-height) - 1px);
+	min-width: 45rem;
 }
 
 .banner {
-	width: 100%;
+	width: calc(100% - 2 * 14rem);
+	padding: 0 14rem;
 	height: 21rem;
-	flex: 1;
 	background-color: black;
 
 	position: absolute;
@@ -20,14 +21,11 @@
 	justify-content: center;
 
 	.fakeTab {
-		max-width: var(--max-width);
 		width: 100%;
 		border-bottom: 1px solid rgba(var(--primary-white), 0.2);
-		// margin: auto;
 		display: flex;
 		justify-content: space-between;
-		// padding: 0 var(--gutters);
-		// margin: auto;
+		margin: 0 auto;
 
 		.strVoting {
 			color: rgba(var(--primary-white), 1);
@@ -56,7 +54,7 @@
 			height: 4.75rem;
 			background: rgba(var(--primary-white), 0.5);
 		}
-		
+
 		:after {
 			content: "";
 			position: absolute;
@@ -97,6 +95,7 @@
 .list {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(var(--governance-card-width), 1fr));
+	// grid-template-columns: repeat(auto-fit, minmax(var(--governance-card-width), 28.3rem));
 	grid-gap: calc(var(--spacing-unit) * 3);
 
 	margin: 0;
@@ -104,6 +103,10 @@
 	padding: 0;
 
 	list-style: none;
+
+	// @include mixin.from(media.$lg) {
+	// grid-template-columns: repeat(auto-fit, minmax(var(--governance-card-width), 450px));
+	// }
 }
 
 .pagination {

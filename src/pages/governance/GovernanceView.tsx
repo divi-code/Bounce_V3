@@ -1,6 +1,7 @@
 import classNames from "classnames";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 
+import { GOVERNANCE_PATH } from "@app/const/const";
 import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { Card } from "@app/modules/governance-card";
@@ -13,10 +14,13 @@ import { Caption, Heading2, Body1 } from "@app/ui/typography";
 
 import { PROPOSAL_STATUS } from "@app/utils/governance";
 
+import { IProposal } from "@app/utils/governance";
+import { useGovernance } from "@app/web3/api/bounce/governance";
+
 import styles from "./Governance.module.scss";
 
 type GovernanceType = {
-	result?: DisplayGovernanceInfoType[];
+	results?: DisplayGovernanceInfoType[];
 	// initialSearchState: any;
 	// numberOfPages: number;
 	// currentPage: number;
@@ -25,76 +29,15 @@ type GovernanceType = {
 	onSubmit?(values: any): any;
 };
 
-const result: DisplayGovernanceInfoType[] = [
-	{
-		id: 1,
-		href: "www.baidu.com",
-		status: PROPOSAL_STATUS.LIVE,
-		name: "test 1",
-		fill: 50,
-		proposer: "0xE748593A061c37739e7f3c74aB8Ada38eeE156fA",
-		description: "We propose",
-		forAmount: 1000,
-		againstAmount: 10000000,
-		endTime: 1629805512,
-	},
-	{
-		id: 2,
-		href: "www.baidu.com",
-		status: PROPOSAL_STATUS.LIVE,
-		name: "test 2",
-		fill: 50,
-		proposer: "0xE748593A061c37739e7f3c74aB8Ada38eeE156fA",
-		description:
-			"We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. ",
-		forAmount: 1000,
-		againstAmount: 500000000,
-		endTime: 1629805512,
-	},
-	{
-		id: 3,
-		href: "www.baidu.com",
-		status: PROPOSAL_STATUS.LIVE,
-		name: "test 3 test 3 test 3 test 3 test 3 test 3 test 3 test 3",
-		fill: 50,
-		proposer: "0xE748593A061c37739e7f3c74aB8Ada38eeE156fA",
-		description:
-			"We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. ",
-		forAmount: 1000,
-		againstAmount: 500000000,
-		endTime: 1629805512,
-	},
-	{
-		id: 4,
-		href: "www.baidu.com",
-		status: PROPOSAL_STATUS.LIVE,
-		name: "test 4",
-		fill: 50,
-		proposer: "0xE748593A061c37739e7f3c74aB8Ada38eeE156fA",
-		description:
-			"We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. ",
-		forAmount: 1000,
-		againstAmount: 500000000,
-		endTime: 1629805512,
-	},
-	{
-		id: 5,
-		href: "www.baidu.com",
-		status: PROPOSAL_STATUS.LIVE,
-		name: "test 5 test 5 test 5 test 5 test 5 test 5 test 5 test 5 test 5 ",
-		fill: 50,
-		proposer: "0xE748593A061c37739e7f3c74aB8Ada38eeE156fA",
-		description:
-			"We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. ",
-		forAmount: 1000,
-		againstAmount: 500000000,
-		endTime: 1629805512,
-	},
-];
+export const GovernanceView: FC<GovernanceType & MaybeWithClassName> = ({ className }) => {
+	const { govList, BOTStaked } = useGovernance();
+	const [results, setResults] = useState<IProposal[]>();
 
-export const GovernanceView: FC<GovernanceType & MaybeWithClassName> = ({
-	className /* , result */,
-}) => {
+	useEffect(() => {
+		setResults(govList);
+		console.log("result: ", results);
+	}, [govList]);
+
 	return (
 		<>
 			<div className={classNames(className, styles.component)}>
@@ -111,21 +54,35 @@ export const GovernanceView: FC<GovernanceType & MaybeWithClassName> = ({
 							Your Voting Power:
 						</Caption>
 						<div className={styles.line2}>
-							<Heading2 className={styles.powerAmount}>0,3</Heading2>
+							<Heading2 className={styles.powerAmount}>
+								{BOTStaked ? Number(BOTStaked) / 1e18 : ""}
+							</Heading2>
 							&nbsp;
 							<Body1 className={styles.strVotes}>Votes</Body1>
 						</div>
 					</div>
 				</div>
 
-				{result && result.length > 0 && (
+				{results && results.length > 0 && (
 					<section className={styles.result}>
 						<GutterBox>
-							{result && (
+							{results && (
 								<ul className={styles.list}>
-									{result.map((proposal) => (
-										<li key={proposal.id} className="animate__animated animate__flipInY">
-											<Card {...proposal} />
+									{results.map((proposal, index) => (
+										<li key={proposal.index} className="animate__animated animate__flipInY">
+											<Card
+												content={proposal.content}
+												yesCount={proposal.yesCount}
+												noCount={proposal.noCount}
+												cancelCount={proposal.cancelCount}
+												creator={proposal.creator}
+												index={index.toString()}
+												status={proposal.status}
+												time={proposal.time}
+												title={proposal.title}
+												voteResult={proposal.voteResult}
+												href={`${GOVERNANCE_PATH}/${index}/${proposal.index}`}
+											/>
 										</li>
 									))}
 								</ul>
@@ -134,6 +91,7 @@ export const GovernanceView: FC<GovernanceType & MaybeWithClassName> = ({
 					</section>
 				)}
 			</div>
+
 			<PopupTeleporterTarget />
 		</>
 	);

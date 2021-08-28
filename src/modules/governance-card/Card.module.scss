@@ -17,7 +17,7 @@
 
 	transition: all 0.1s ease-in;
 	&:hover {
-    transform: translate3d(0, -1px, -2px);    
+		transform: translate3d(0, -1px, -2px);
 		box-shadow: 0 0 30px rgb(0 0 0 / 15%);
 	}
 }
@@ -53,7 +53,7 @@
 
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	text-align: center;
+	text-align: left;
 
 	overflow: hidden;
 }
@@ -78,6 +78,11 @@
 	display: -webkit-box /*盒子模型微弹性伸缩模型*/;
 	-webkit-box-orient: vertical /*伸缩盒子的子元素垂直排列*/;
 	-webkit-line-clamp: 4 /*文本显示4行*/;
+
+	@include mixin.from(media.$lg) {
+		height: 6.6rem;
+		webkit-line-clamp: 5 /*文本显示4行*/;
+	}
 }
 
 .strVoteFor {

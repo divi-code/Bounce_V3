@@ -18,10 +18,9 @@ export const ProgressBar: FC<ProgressBarType & MaybeWithClassName> = ({
 	fillInPercentage,
 }) => {
 	const COLORS: Record<PROPOSAL_STATUS, any> = {
-		// [PROPOSAL_STATUS.COMING]: "var(--primary-black)",
-		[PROPOSAL_STATUS.PASSED]: "var(--success)",
-		[PROPOSAL_STATUS.LIVE]: "var(--process)",
-		[PROPOSAL_STATUS.FAILED]: "var(--error)",
+		[PROPOSAL_STATUS.PASSED]: "var(--primary-black)",
+		[PROPOSAL_STATUS.LIVE]: "var(--primary-black)",
+		[PROPOSAL_STATUS.FAILED]: "var(--primary-black)",
 	};
 
 	return (

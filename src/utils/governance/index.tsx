@@ -1,7 +1,7 @@
 export enum PROPOSAL_STATUS {
-	LIVE = "live",
-	PASSED = "passed",
-	FAILED = "failed",
+	LIVE = "Live",
+	PASSED = "Passed",
+	FAILED = "Failed",
 }
 
 export type MatchedProposalType = {
@@ -15,3 +15,22 @@ export type MatchedProposalType = {
 	forAmount: number;
 	againstAmount: number;
 };
+
+export interface IProposal {
+	content?: {
+		againstFor: string;
+		agreeFor: string;
+		details: string;
+		summary: string;
+		type: number;
+	};
+	yesCount?: string;
+	noCount?: string;
+	cancelCount?: string;
+	creator?: string;
+	index?: string;
+	status?: PROPOSAL_STATUS;
+	time?: string;
+	title?: string;
+	voteResult?: string;
+}

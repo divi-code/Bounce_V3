@@ -1,29 +1,52 @@
 import { useRouter } from "next/router";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
-import { MatchedProposalType, PROPOSAL_STATUS } from "@app/utils/governance";
+import { useControlPopUp } from "@app/hooks/use-control-popup";
+import { ProcessingPopUp } from "@app/modules/processing-pop-up";
+import { MatchedProposalType, PROPOSAL_STATUS, IProposal } from "@app/utils/governance";
+import { useGovDetail } from "@app/web3/api/bounce/governance";
+
+import { useWeb3Provider } from "@app/web3/hooks/use-web3";
 
 import { View } from "./View";
 
-export const ProposalDetail: FC<{ proposalId: number }> = ({ proposalId }) => {
+export const ProposalDetail: FC<{ proposalIndex: number; proposalId: string }> = ({
+	proposalId,
+	proposalIndex,
+}) => {
 	const { back: goBack } = useRouter();
 
-	const [proposal, setProposal] = useState<MatchedProposalType>({
-		id: 5,
-		status: PROPOSAL_STATUS.LIVE,
-		name: "test 5 test 5 test 5 test 5 test 5 test 5 test 5 test 5 test 5 ",
-		fill: 50,
-		proposer: "0xE748593A061c37739e7f3c74aB8Ada38eeE156fA",
-		description:
-			"We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. We propose to increase transaction fee to reduce malicious behaviors such as listing scams and wash trade. ",
-		forAmount: 1000,
-		againstAmount: 500000000,
-		endTime: 1629805512,
-	});
+	const { gov } = useGovDetail(proposalId);
+
+	const [proposalDetail, setProposalDetail] = useState<IProposal>();
+
+	const { popUp, close, open } = useControlPopUp();
+
+	useEffect(() => {
+		if (JSON.stringify(gov) === JSON.stringify({})) return;
+		setProposalDetail(gov);
+	}, [gov]);
 
 	return (
 		<>
-			<View {...proposal} onBack={() => goBack()}></View>
+			<View {...proposalDetail} proposalIndex={proposalIndex} onBack={() => goBack()}></View>
+			{/* {popUp.defined ? (
+				<ProcessingPopUp
+					title={"Vote PopUp"}
+					text={"Vote PopUp text text"}
+					onSuccess={() => {
+						close();
+					}}
+					onTry={() => console.log("on Try Again")}
+					isSuccess={false}
+					isLoading={true}
+					isError={false}
+					control={popUp}
+					close={() => {
+						close();
+					}}
+				/>
+			) : undefined} */}
 		</>
 	);
 };

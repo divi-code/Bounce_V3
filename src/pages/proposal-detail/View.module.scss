@@ -45,8 +45,10 @@
 	position: relative;
 	top: -1.25rem;
 
+	margin-bottom: 1.5rem;
+
 	.title {
-		margin: calc(var(--spacing-unit) * 2.5) 0 0 0;
+		margin: calc(var(--spacing-unit) * 2.5) 0 calc(var(--spacing-unit) * 1) 0;
 
 		text-align: center;
 	}
@@ -137,12 +139,25 @@
 	background: #f7f7f7;
 	border-radius: 0.5rem;
 	justify-items: center;
+	padding-top: 1.8rem;
+	padding-bottom: 2.875rem;
+	margin: 3.75rem auto 0 auto;
 
 	.strMakeDecision {
 	}
 
 	.description {
 		text-align: center;
+		padding-top: 1rem;
+		margin-bottom: 2.7rem;
+		height: 4.7rem;
+		width: 45rem;
+		line-height: 1.187rem;
+
+		overflow: hidden;
+		display: -webkit-box /*盒子模型微弹性伸缩模型*/;
+		-webkit-box-orient: vertical /*伸缩盒子的子元素垂直排列*/;
+		-webkit-line-clamp: 4 /*文本显示4行*/;
 	}
 
 	.strSubmit {
@@ -151,17 +166,17 @@
 
 	.submitBtn {
 		max-width: 25rem;
-    width: max-content;
+		width: max-content;
 		height: 3.75rem;
 		background-color: rgba(var(--primary-black), 1);
 		border-radius: 0.75rem;
+		padding: 0.625rem 11.5rem;
 	}
 }
 
 .tabsWrapper {
 	width: 100%;
 	max-width: 45rem;
-	margin: 0 auto;
 	// border-bottom: 1px solid rgba(var(--primary-black), 0.1);
 
 	.tabs {
@@ -182,12 +197,13 @@
 			flex-direction: column;
 			align-items: center;
 			box-sizing: border-box;
+			opacity: 0.5;
 
 			border-bottom: 1px solid rgba(var(--primary-black), 0.1);
 
-			&:hover {
-				background-color: rgba(var(--primary-black), 0.1);
-			}
+			// &:hover {
+			// 	background-color: rgba(var(--primary-black), 0.1);
+			// }
 
 			.price {
 				padding-bottom: 1.37rem;
@@ -195,6 +211,7 @@
 		}
 
 		.active {
+			opacity: 1;
 			border-bottom: 5px solid rgba(var(--primary-black), 1);
 		}
 	}

@@ -5,22 +5,21 @@ import { MaybeWithClassName } from "@app/helper/react/types";
 
 import { Caption } from "@app/ui/typography";
 
-import { POOL_STATUS } from "@app/utils/pool";
+import { PROPOSAL_STATUS } from "@app/utils/governance";
 
 import styles from "./Status.module.scss";
 
 type StatusProps = {
-	status: POOL_STATUS;
-	captions: Record<POOL_STATUS, ReactNode>;
+	status: PROPOSAL_STATUS;
+	captions: Record<PROPOSAL_STATUS, ReactNode>;
 };
 
 export const Status: FC<StatusProps & MaybeWithClassName> = ({ className, status, captions }) => {
-	const COLORS: Record<POOL_STATUS, string> = {
-		[POOL_STATUS.COMING]: "var(--primary-black)",
-		[POOL_STATUS.LIVE]: "var(--success)",
-		[POOL_STATUS.FILLED]: "var(--process)",
-		[POOL_STATUS.CLOSED]: "var(--error)",
-		[POOL_STATUS.ERROR]: "var(--error)",
+	const COLORS: Record<PROPOSAL_STATUS, string> = {
+		// [PROPOSAL_STATUS.COMING]: "var(--primary-black)",
+		[PROPOSAL_STATUS.LIVE]: "var(--success)",
+		[PROPOSAL_STATUS.PASSED]: "var(--success)",
+		[PROPOSAL_STATUS.FAILED]: "var(--error)",
 	};
 
 	return (
@@ -28,7 +27,7 @@ export const Status: FC<StatusProps & MaybeWithClassName> = ({ className, status
 			className={classNames(
 				className,
 				styles.component,
-				status === POOL_STATUS.COMING && styles.coming
+				status === PROPOSAL_STATUS.LIVE && styles.coming
 			)}
 			Component="span"
 			style={{ "--color": COLORS[status] } as CSSProperties}

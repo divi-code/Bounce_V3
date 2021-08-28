@@ -9,13 +9,13 @@ import { pageWithLayout } from "@app/utils/pageInLayout";
 const ProposalViewPage = pageWithLayout(
 	() => {
 		const {
-			query: { proposalId },
+			query: { proposalIndex, proposalId },
 		} = useRouter();
 
 		return (
 			<NoSsr>
 				<RequireConnectedWallet>
-					<ProposalDetail proposalId={+proposalId} />
+					<ProposalDetail proposalIndex={+proposalIndex} proposalId={String(proposalId)} />
 				</RequireConnectedWallet>
 			</NoSsr>
 		);
